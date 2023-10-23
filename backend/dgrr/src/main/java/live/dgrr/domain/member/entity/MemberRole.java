@@ -1,4 +1,5 @@
 package live.dgrr.domain.member.entity;
 
-public class MemberEntity {
+public enum MemberRole {
+    USER,ADMIN
 }
