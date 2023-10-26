@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,12 +16,18 @@ import java.util.List;
 public class WaitingRoom {
     @Id
     private int roomId;
-    private WaitingMember memberOne;
-    private WaitingMember memberTwo;
+    private List<WaitingMember> waitingMemberList;
     private List<WaitingMember> watchers;
 
 
     public WaitingRoom(int waitingRoomId) {
         this.roomId = waitingRoomId;
+    }
+
+    public void addMember(WaitingMember waitingMember) {
+        if(this.waitingMemberList == null) {
+            this.waitingMemberList = new ArrayList<>();
+        }
+        this.waitingMemberList.add(waitingMember);
     }
 }

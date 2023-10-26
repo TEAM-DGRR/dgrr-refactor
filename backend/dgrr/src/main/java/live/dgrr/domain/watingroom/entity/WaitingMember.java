@@ -1,21 +1,21 @@
 package live.dgrr.domain.watingroom.entity;
 
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.redis.core.RedisHash;
+import lombok.Builder;
 
+@Builder
+public record WaitingMember (
+        Long waitingMemberId,
+        String nickname,
+        String profileImage,
+        boolean isReady
+) {
+    public static WaitingMember of(Long waitingMemberId, String nickname, String profileImage, boolean isReady) {
+        return WaitingMember.builder()
+                .waitingMemberId(waitingMemberId)
+                .nickname(nickname)
+                .profileImage(profileImage)
+                .isReady(isReady)
+                .build();
 
-@Getter
-@RedisHash(value = "waitingmember",timeToLive = 600)
-@NoArgsConstructor
-@AllArgsConstructor
-public class WaitingMember {
-    @Id
-    private String waitingMemberId;
-    private String nickname;
-    private String profileImage;
-    private boolean isReady;
-
+    }
 }
