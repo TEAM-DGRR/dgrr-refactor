@@ -1,6 +1,7 @@
 package live.dgrr.domain.game.controller;
 
 import live.dgrr.domain.game.GameStartDto;
+import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.service.GameFirstRoundService;
 import live.dgrr.domain.watingroom.entity.GameStartEvent;
@@ -39,5 +40,11 @@ public class GameController {
     public void firstRoundPrepared(FirstRoundPreparedEvent event) {
         template.convertAndSendToUser(event.memberOneId(), FIRST_ROUND_START, "START");
         template.convertAndSendToUser(event.memberTwoId(), FIRST_ROUND_START, "START");
+    }
+
+    @EventListener
+    public void firstRoundEnd(FirstRoundEndEvent event) {
+        template.convertAndSendToUser(event.memberOneId(), event.destination(), event.roundResult());
+        template.convertAndSendToUser(event.memberTwoId(), event.destination(), event.roundResult());
     }
 }
