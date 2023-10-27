@@ -6,7 +6,7 @@ import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.entity.event.SecondRoundPreparedEvent;
 import live.dgrr.domain.game.service.GameFirstRoundService;
 import live.dgrr.domain.game.service.GameSecondRoundService;
-import live.dgrr.domain.watingroom.entity.GameStartEvent;
+import live.dgrr.domain.waitingroom.entity.GameStartEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;

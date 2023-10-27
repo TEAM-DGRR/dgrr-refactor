@@ -1,4 +1,4 @@
-package live.dgrr.domain.watingroom.entity;
+package live.dgrr.domain.waitingroom.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

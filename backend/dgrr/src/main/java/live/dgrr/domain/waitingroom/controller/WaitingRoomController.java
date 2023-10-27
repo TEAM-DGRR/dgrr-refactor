@@ -1,10 +1,11 @@
-package live.dgrr.domain.watingroom.controller;
+package live.dgrr.domain.waitingroom.controller;
 
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.service.MemberService;
-import live.dgrr.domain.watingroom.dto.response.WaitingMemberInfoResponseDto;
-import live.dgrr.domain.watingroom.entity.WaitingRoom;
-import live.dgrr.domain.watingroom.service.WaitingRoomService;
+import live.dgrr.domain.waitingroom.dto.response.WaitingMemberInfoResponseDto;
+import live.dgrr.domain.waitingroom.entity.MemberRoomMapping;
+import live.dgrr.domain.waitingroom.service.MemberRoomMappingService;
+import live.dgrr.domain.waitingroom.service.WaitingRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class WaitingRoomController {
 
     private final WaitingRoomService waitingRoomService;
     private final MemberService memberService;
+    private final MemberRoomMappingService memberRoomMappingService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping
@@ -40,7 +42,7 @@ public class WaitingRoomController {
         log.info("WaitingRoomController - enterWaitingRoom roomId : {}", roomId);
 
         //TODO: mebmerId 추후 수정
-        Long memberId = 3L;
+        Long memberId = 1L;
         Member member = memberService.findMemberById(memberId);
         WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.enterWaitingRoom(roomId, member);
 
@@ -53,5 +55,16 @@ public class WaitingRoomController {
 //                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, "/recv/room-enter", waitingMemberInfoDto));
 
         simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-enter", waitingMemberInfoDto);
+    }
+
+    @MessageMapping("/room-ready")
+    public void readyWaitingRoom (Principal principal) {
+        log.info("WaitingRoomController - readyWaitingRoom");
+        //TODO: mebmerId 추후 수정, 방 참여자에게 전부 메세지 보내기
+        Long memberId = 1L;
+        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(memberId);
+
+        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.readyWaitingRoom(memberRoomMapping.getRoomId(),memberId);
+        simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-ready", waitingMemberInfoDto);
     }
 }
