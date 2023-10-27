@@ -2,13 +2,17 @@ package live.dgrr.domain.waitingroom.service;
 
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.waitingroom.dto.response.WaitingMemberInfoResponseDto;
+import live.dgrr.domain.waitingroom.entity.GameStartEvent;
 import live.dgrr.domain.waitingroom.entity.MemberRoomMapping;
 import live.dgrr.domain.waitingroom.entity.WaitingMember;
 import live.dgrr.domain.waitingroom.entity.WaitingRoom;
 import live.dgrr.domain.waitingroom.repository.MemberRoomMappingRepository;
 import live.dgrr.domain.waitingroom.repository.WaitingRoomRepository;
+import live.dgrr.global.exception.ErrorCode;
+import live.dgrr.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +27,7 @@ public class WaitingRoomService {
 
     private final WaitingRoomRepository waitingRoomRepository;
     private final MemberRoomMappingRepository memberRoomMappingRepository;
+    private final ApplicationEventPublisher publisher;
 
     public WaitingRoom findWaitingRoomById(int roomId) {
         return waitingRoomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
@@ -65,13 +70,17 @@ public class WaitingRoomService {
     }
 
     private void saveToWaitingRoom(WaitingRoom waitingRoom, WaitingMember waitingMember) {
-        if (waitingRoom.getWaitingMemberList() !=null && waitingRoom.getWaitingMemberList().size() >= ROOM_MAX_NUM) {
+        if(checkMemberFull(waitingRoom)) {
             throw new RuntimeException("참여자 정원이 다 찼습니다.");
         }
 
         waitingRoom.addMember(waitingMember);
         waitingRoomRepository.save(waitingRoom);
         memberRoomMappingRepository.save(new MemberRoomMapping(waitingMember.getWaitingMemberId(),waitingRoom.getRoomId()));
+    }
+
+    private boolean checkMemberFull(WaitingRoom waitingRoom) {
+        return waitingRoom.getWaitingMemberList() != null && waitingRoom.getWaitingMemberList().size() >= ROOM_MAX_NUM;
     }
 
     private void checkWaitingRoomDuplicate(WaitingRoom waitingRoom, Long memberId) {
@@ -97,6 +106,43 @@ public class WaitingRoomService {
         }
 
         return WaitingMemberInfoResponseDto.of(roomId, waitingMember);
+
+    }
+
+    public void startWaitingRoom(int roomId, Long memberId) {
+        WaitingRoom waitingRoom = findWaitingRoomById(roomId);
+        List<WaitingMember> waitingMembers = waitingRoom.getWaitingMemberList();
+
+        checkGameStart(waitingRoom, waitingMembers, memberId);
+
+        //게임 시작 로직
+        log.info("WaitingRoomService - gameStart-member1: {}, member2: {}", waitingMembers.get(0).getWaitingMemberId().toString(), waitingMembers.get(1).getWaitingMemberId().toString());
+        waitingRoom.gameStart();
+        waitingRoomRepository.save(waitingRoom);
+        publisher.publishEvent(new GameStartEvent(waitingMembers.get(0).getWaitingMemberId().toString(), waitingMembers.get(1).getWaitingMemberId().toString()));
+
+    }
+
+    private void checkGameStart(WaitingRoom waitingRoom, List<WaitingMember> waitingMembers, Long memberId) {
+        //방장인지 확인
+        if(!waitingMembers.get(0).getWaitingMemberId().equals(memberId)) {
+            throw new GeneralException(ErrorCode.IS_NOT_ROOM_MANAGER);
+        }
+
+        //방 안에 2명인지 확인
+        if(!checkMemberFull(waitingRoom)) {
+            throw new GeneralException(ErrorCode.NOT_ENOUGH_MEMBERS_TO_START);
+        }
+
+        //모든 플레이어가 다 준비했는지 확인 (1번 인덱스만 확인)
+        if(!waitingMembers.get(1).isReady()) {
+            throw new GeneralException(ErrorCode.MEMBER_NOT_READY_YET);
+        }
+
+        //이미 시작된 방인지 확인
+        if(waitingRoom.isStart()) {
+            throw new GeneralException(ErrorCode.WAITING_ROOM_ALREADY_START);
+        }
 
     }
 }

@@ -18,10 +18,12 @@ public class WaitingRoom {
     private int roomId;
     private List<WaitingMember> waitingMemberList;
     private List<WaitingMember> watchers;
+    private boolean isStart;
 
 
     public WaitingRoom(int waitingRoomId) {
         this.roomId = waitingRoomId;
+        this.isStart = false;
     }
 
     public void addMember(WaitingMember waitingMember) {
@@ -29,5 +31,9 @@ public class WaitingRoom {
             this.waitingMemberList = new ArrayList<>();
         }
         this.waitingMemberList.add(waitingMember);
+    }
+
+    public void gameStart() {
+        this.isStart = true;
     }
 }
