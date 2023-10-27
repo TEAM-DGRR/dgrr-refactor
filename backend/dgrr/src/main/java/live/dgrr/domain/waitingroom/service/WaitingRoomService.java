@@ -98,7 +98,6 @@ public class WaitingRoomService {
 
         for(int j = 0; j < waitingMembers.size(); j++) {
             if(waitingMembers.get(j).getWaitingMemberId().equals(memberId)) {
-
                 waitingMember = waitingRoom.getWaitingMemberList().get(j);
                 waitingMember.toggleReady();
                 waitingRoomRepository.save(waitingRoom);
@@ -143,6 +142,25 @@ public class WaitingRoomService {
         if(waitingRoom.isStart()) {
             throw new GeneralException(ErrorCode.WAITING_ROOM_ALREADY_START);
         }
+
+    }
+
+    public WaitingMemberInfoResponseDto exitWaitingRoom(int roomId, Long memberId) {
+
+        WaitingRoom waitingRoom = findWaitingRoomById(roomId);
+        List<WaitingMember> waitingMembers = waitingRoom.getWaitingMemberList();
+        WaitingMember waitingMember = new WaitingMember();
+
+        for(int i = 0; i < waitingMembers.size(); i++) {
+            if(waitingMembers.get(i).getWaitingMemberId().equals(memberId)) {
+
+                waitingMember = waitingRoom.getWaitingMemberList().get(i);
+                waitingRoom.exitMember(i);
+                waitingRoomRepository.save(waitingRoom);
+            }
+        }
+
+        return WaitingMemberInfoResponseDto.of(roomId, waitingMember);
 
     }
 }

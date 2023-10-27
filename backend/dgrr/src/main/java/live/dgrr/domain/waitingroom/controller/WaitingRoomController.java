@@ -57,6 +57,19 @@ public class WaitingRoomController {
         simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-enter", waitingMemberInfoDto);
     }
 
+    @MessageMapping("/room-exit")
+    public void exitWaitingRoom (Principal principal) {
+        log.info("WaitingRoomController - exitWaitingRoom");
+        //TODO: mebmerId 추후 수정
+        Long memberId = 1L;
+        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(memberId);
+
+        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.exitWaitingRoom(memberRoomMapping.getRoomId(), memberId);
+
+//      TODO: 방 참여자에게 메세지 보내기 (받은사람은 무조건 방장)
+        simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-exit", waitingMemberInfoDto);
+    }
+
     @MessageMapping("/room-ready")
     public void readyWaitingRoom (Principal principal) {
         log.info("WaitingRoomController - readyWaitingRoom");
