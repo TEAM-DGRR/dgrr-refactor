@@ -1,6 +1,6 @@
-package live.dgrr.domain.watingroom.dto.response;
+package live.dgrr.domain.waitingroom.dto.response;
 
-import live.dgrr.domain.watingroom.entity.WaitingMember;
+import live.dgrr.domain.waitingroom.entity.WaitingMember;
 import lombok.Builder;
 
 @Builder
