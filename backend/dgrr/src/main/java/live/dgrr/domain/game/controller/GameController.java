@@ -15,6 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -69,5 +70,4 @@ public class GameController {
         template.convertAndSendToUser(event.memberOneId(), event.destination(), event.roundResult());
         template.convertAndSendToUser(event.memberTwoId(), event.destination(), event.roundResult());
     }
-
 }
