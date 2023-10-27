@@ -24,7 +24,11 @@ async def stomp_client(app, broker_url):
         try:
             stomp = await websockets.connect(broker_url, max_size=2**30)
             connect_message = (
-                "CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\n\n\0"
+                "CONNECT\n"
+                "accept-version:1.1,1.0\n"
+                "heart-beat:10000,10000\n"
+                "Authorization:python-emotion\n"
+                "\n\0"
             )
             await stomp.send(connect_message)
 
