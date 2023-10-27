@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     KEEP_ALIVE_INTERVAL: int = 10
 
     # .env 주입
+    WEBSOCKET_CONNECT_URI: str
     BROKER_URL: str
     CAPTURE_IMAGE_DEST: str
 
