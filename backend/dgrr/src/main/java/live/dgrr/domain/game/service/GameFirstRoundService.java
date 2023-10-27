@@ -67,7 +67,8 @@ public class GameFirstRoundService {
      * @param gameRoomId 게임 룸 아이디
      */
     public void prepareFirstRoundStart(String gameRoomId) {
-        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId).orElseThrow(() -> new RuntimeException());
+        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId)
+                .orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
         int prepareCounter = gameRoom.firstRoundPrepare();
         gameRoomRepository.save(gameRoom);
 
