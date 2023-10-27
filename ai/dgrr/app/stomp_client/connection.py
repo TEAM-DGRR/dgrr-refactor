@@ -27,7 +27,7 @@ async def stomp_client(app, broker_url):
                 "CONNECT\n"
                 "accept-version:1.1,1.0\n"
                 "heart-beat:10000,10000\n"
-                "Authorization:1\n"
+                "Authorization:python-emotion\n"
                 "\n\0"
             )
             await stomp.send(connect_message)
