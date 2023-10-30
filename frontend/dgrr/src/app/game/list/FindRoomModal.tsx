@@ -14,7 +14,7 @@ export const FindRoomModal = ({ handleModal }: FindModalProps) => {
   const submitRoomNum = () => {};
 
   return (
-    <div className="z-10 bg-black/30 w-full h-full max-w-[500px] fixed left-0 top-0 flex justify-center items-center">
+    <div className="z-10 bg-black/30 w-full h-full max-w-[500px] fixed top-0 flex justify-center items-center">
       <div className="w-80 h-fit bg-white rounded-lg border-2 border-black p-4">
         <div className="flex justify-between mb-3">
           <div className="w-6"></div>
