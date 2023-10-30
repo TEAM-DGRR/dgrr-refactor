@@ -4,6 +4,7 @@ import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.waitingroom.dto.response.WaitingMemberInfoResponseDto;
 import live.dgrr.domain.waitingroom.entity.MemberRoomMapping;
+import live.dgrr.domain.waitingroom.entity.WaitingMember;
 import live.dgrr.domain.waitingroom.service.MemberRoomMappingService;
 import live.dgrr.domain.waitingroom.service.WaitingRoomService;
 import lombok.RequiredArgsConstructor;
@@ -30,65 +31,64 @@ public class WaitingRoomController {
     private final MemberRoomMappingService memberRoomMappingService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    private static final String WAITING_ROOM_ENTER = "/recv/room-enter";
+    private static final String WAITING_ROOM_EXIT = "/recv/room-exit";
+    private static final String WAITING_ROOM_READY = "/recv/room-ready";
+
     @PostMapping
     public ResponseEntity<Integer> createWaitingRoom () {
         log.info("WaitingRoomController - createWaitingRoom");
-        int roomId = waitingRoomService.createWaitingRoom();
-        return new ResponseEntity<>(roomId, HttpStatus.OK);
+        return new ResponseEntity<>(waitingRoomService.createWaitingRoom(), HttpStatus.OK);
     }
 
     @MessageMapping("/room-enter")
     public void enterWaitingRoom (Principal principal, @Payload int roomId) {
-        log.info("WaitingRoomController - enterWaitingRoom roomId : {}", roomId);
+        log.info("WaitingRoomController - enterWaitingRoom by : {}, roomId : {}", principal.getName(), roomId);
 
-        //TODO: mebmerId 추후 수정
-        Long memberId = 1L;
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.findMemberById(Long.parseLong(principal.getName()));
         WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.enterWaitingRoom(roomId, member);
 
-//      TODO: 경로 수정 시 주석 해제 (방 참여자에게 전부 메세지 보냄)
-
-//        waitingRoomService.findWaitingRoomById(roomId)
-//                .getWaitingMemberList()
-//                .stream()
-//                .map(waitingMember -> String.valueOf(waitingMember.waitingMemberId()))
-//                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, "/recv/room-enter", waitingMemberInfoDto));
-
-        simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-enter", waitingMemberInfoDto);
+        waitingRoomService.findWaitingRoomById(roomId)
+                .getWaitingMemberList()
+                .stream()
+                .map(WaitingMember::getWaitingMemberId)
+                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, WAITING_ROOM_ENTER, waitingMemberInfoDto));
     }
 
     @MessageMapping("/room-exit")
     public void exitWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - exitWaitingRoom");
-        //TODO: mebmerId 추후 수정
-        Long memberId = 1L;
-        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(memberId);
+        log.info("WaitingRoomController - exitWaitingRoom by : {}", principal.getName());
 
-        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.exitWaitingRoom(memberRoomMapping.getRoomId(), memberId);
+        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
+        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.exitWaitingRoom(memberRoomMapping.getRoomId(), principal.getName());
 
-//      TODO: 방 참여자에게 메세지 보내기 (받은사람은 무조건 방장)
-        simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-exit", waitingMemberInfoDto);
+        waitingRoomService.findWaitingRoomById(waitingMemberInfoDto.roomId())
+                .getWaitingMemberList()
+                .stream()
+                .map(WaitingMember::getWaitingMemberId)
+                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, WAITING_ROOM_EXIT, waitingMemberInfoDto));
     }
 
     @MessageMapping("/room-ready")
     public void readyWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - readyWaitingRoom");
-        //TODO: mebmerId 추후 수정, 방 참여자에게 전부 메세지 보내기
-        Long memberId = 1L;
-        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(memberId);
+        log.info("WaitingRoomController - readyWaitingRoom by : {}", principal.getName());
 
-        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.readyWaitingRoom(memberRoomMapping.getRoomId(),memberId);
-        simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/recv/room-ready", waitingMemberInfoDto);
+        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
+        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.readyWaitingRoom(memberRoomMapping.getRoomId(),principal.getName());
+
+        waitingRoomService.findWaitingRoomById(waitingMemberInfoDto.roomId())
+                .getWaitingMemberList()
+                .stream()
+                .map(WaitingMember::getWaitingMemberId)
+                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, WAITING_ROOM_READY, waitingMemberInfoDto));
     }
 
     @MessageMapping("/room-start")
     public void startWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - startWaitingRoom by {} : ", principal.getName());
-        //TODO: mebmerId 추후 수정, 방 참여자에게 전부 메세지 보내기
-        Long memberId = 1L;
-        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(memberId);
+        log.info("WaitingRoomController - startWaitingRoom by : {}", principal.getName());
 
-        waitingRoomService.startWaitingRoom(memberRoomMapping.getRoomId(),memberId);
+        MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
+        waitingRoomService.startWaitingRoom(memberRoomMapping.getRoomId(),principal.getName());
 
     }
 }
