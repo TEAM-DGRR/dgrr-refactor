@@ -1,7 +1,6 @@
 package live.dgrr.domain.capture.entity;
 
 import lombok.*;
-import org.springframework.messaging.handler.annotation.Header;
 
 @Getter
 @AllArgsConstructor
