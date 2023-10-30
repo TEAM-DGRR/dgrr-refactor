@@ -31,6 +31,7 @@ public class GameController {
     private static final String FIRST_ROUND_START = "/recv/firstroundstart";
     private static final String SECOND_ROUND_START = "/recv/secondroundstart";
     private static final String GAME_RESULT_DEST = "/recv/game-result";
+    private static final String ENEMY_LEAVE_GAME = "/recv/enemy-left";
     @EventListener
     public void gameStart(GameStartEvent event) {
         List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(event.memberOneId(), event.memberTwoId());
@@ -77,5 +78,11 @@ public class GameController {
     public void gameResult(Principal principal, @Payload String gameRoomId) {
         GameResultResponse result = gameSecondRoundService.gameResult(principal.getName(), gameRoomId);
         template.convertAndSendToUser(principal.getName(),GAME_RESULT_DEST,result);
+    }
+
+    @MessageMapping("/game-leave")
+    public void leaveGame(Principal principal, @Payload String gameRoomId) {
+        GameResultResponse result = gameSecondRoundService.leaveGame(principal.getName(), gameRoomId);
+        template.convertAndSendToUser(result.myInfo().memberId(),ENEMY_LEAVE_GAME,result);
     }
 }
