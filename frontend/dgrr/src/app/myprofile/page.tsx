@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/elements/Header';
-import Link from "next/link";
+import Link from 'next/link';
 import Rank from '@/components/elements/Rank';
 import { IoChevronForwardOutline } from 'react-icons/io5';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
@@ -37,6 +37,10 @@ const MyProfile = () => {
       },
     ],
   });
+
+  const handleLogin = () => {
+    console.log('Logout')
+  }
 
   // 나중에 삭제할 더미 데이터
   useEffect(() => {
@@ -178,6 +182,9 @@ const MyProfile = () => {
             <div className='text-lg text-[#868E96]'>전적이 없습니다🧐</div>
           </div>
         )}
+      </div>
+      <div onClick={handleLogin} className='flex justify-center mt-[53px] mb-2 text-sm font-bold cursor-pointer hover:text-[#E83F57]'>
+        로그아웃
       </div>
     </div>
   );

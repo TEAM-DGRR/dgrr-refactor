@@ -1,10 +1,25 @@
 'use client';
 
 import Header from '@/components/elements/Header';
+import ModalWithX from '@/components/elements/ModalWithX';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
 import { useEffect, useState } from 'react';
 
 const RecentRecord = () => {
+  const [modalStatus, setModalStatus] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+
+  const openModal = (index: any) => {
+    setSelectedItemIndex(index);
+    setModalStatus(true);
+    console.log('Open Modal');
+  };
+  const closeModal = () => {
+    setModalStatus(false);
+    setSelectedItemIndex(0);
+    console.log('Close Modal');
+  };
+
   // Back에서 정보를 이 형태로 보내줌
   const [myInfo, setMyInfo] = useState({
     member: {
@@ -97,7 +112,7 @@ const RecentRecord = () => {
           gameTime: 30,
           holdingTime: 30,
           laughAmount: 415,
-          highlightImage: '/images/sample_image4.pnge',
+          highlightImage: '/images/sample_image4.png',
           opponentNickname: '뽀',
           opponentProfileImage: '/images/sample_image4.png',
           opponentDescription: '2023-10-27',
@@ -113,7 +128,7 @@ const RecentRecord = () => {
         {myInfo.gameDetailList.map((item, index) => (
           <div key={index}>
             {item.gameResult !== 'DRAW' ? (
-              <div className='cursor-pointer'>
+              <div onClick={() => openModal(index)} className='cursor-pointer'>
                 <RecentRecordItem item={item} />
               </div>
             ) : (
@@ -124,8 +139,13 @@ const RecentRecord = () => {
           </div>
         ))}
       </div>
+      <ModalWithX
+        closeModal={closeModal}
+        modalStatus={modalStatus}
+        item={myInfo.gameDetailList[selectedItemIndex]}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default RecentRecord;
