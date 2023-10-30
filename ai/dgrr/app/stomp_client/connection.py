@@ -1,7 +1,7 @@
 import asyncio, websockets
 
 from app.stomp_client.utils import cleanup_resources
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -11,10 +11,10 @@ async def keep_alive(app, broker_url):
     while True:  # while not stomp.open: 으로 바꿔도 되려나
         stomp = app.state.stomp
         if stomp is None or not stomp.open:
-            logger.warning("[Ping Test] Stomp 연결이 끊어졌습니다. 재연결을 시도합니다.")
+            logger.warning("[Ping] Stomp 연결이 끊어졌습니다. 재연결을 시도합니다.")
             await stomp_client(app, broker_url)
         else:
-            logger.info("[Ping Test] Stomp가 연결 되어있습니다.")
+            logger.info("[Ping] Stomp가 연결 되어있습니다.")
             await asyncio.sleep(sec)
 
 

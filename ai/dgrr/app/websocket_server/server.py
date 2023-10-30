@@ -1,7 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.websocket_server.handler import on_connect, on_disconnect, handle_message
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 from app.core.config import settings
 

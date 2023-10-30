@@ -1,7 +1,7 @@
 import json
 
 from app.websocket_server.utils import send_to_java_server
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 logger = get_logger(__name__)
 

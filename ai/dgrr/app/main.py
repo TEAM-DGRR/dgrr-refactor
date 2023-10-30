@@ -5,7 +5,7 @@ from keras.models import load_model
 from app.stomp_client import keep_alive
 from app.websocket_server import router
 from app.core.config import settings
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
