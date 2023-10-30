@@ -1,7 +1,7 @@
 import asyncio, cv2, base64, concurrent.futures
 import numpy as np
 
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 logger = get_logger(__name__)
 

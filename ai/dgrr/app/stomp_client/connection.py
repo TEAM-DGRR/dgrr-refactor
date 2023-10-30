@@ -1,7 +1,7 @@
 import asyncio, websockets
 
 from app.stomp_client.utils import cleanup_resources
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 logger = get_logger(__name__)
 

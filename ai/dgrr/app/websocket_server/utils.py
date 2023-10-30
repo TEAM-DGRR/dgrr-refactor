@@ -2,7 +2,7 @@ import json
 
 from app.shared.image_utils import image_data_to_np, analyze_image
 from app.core.config import settings
-from logger_config import get_logger
+from app.core.logger_config import get_logger
 
 logger = get_logger(__name__)
 
