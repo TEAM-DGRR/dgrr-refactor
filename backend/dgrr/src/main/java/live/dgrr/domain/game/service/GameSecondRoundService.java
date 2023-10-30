@@ -1,12 +1,13 @@
 package live.dgrr.domain.game.service;
 
-import live.dgrr.domain.game.entity.GameRoom;
-import live.dgrr.domain.game.entity.GameStatus;
-import live.dgrr.domain.game.entity.RoundResult;
+import live.dgrr.domain.game.dto.GameResultResponse;
+import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
+import live.dgrr.global.entity.Rank;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GameException;
+import live.dgrr.global.util.RankCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -89,5 +90,32 @@ public class GameSecondRoundService {
 
         publisher.publishEvent(new SecondRoundEndEvent(gameRoom.getMemberOne().memberId(),
                 gameRoom.getMemberTwo().memberId(), gameRoom.getFirstRoundResult(), destination));
+    }
+
+    /**
+     * 게임 결과 반환
+     * @param memberId
+     * @param gameRoomId
+     */
+    public GameResultResponse gameResult(String memberId, String gameRoomId) {
+        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId)
+                .orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
+
+        GameResult gameResult = gameRoom.judgeResult(memberId);
+        GameMember myInfo = gameRoom.getMyInfo(memberId);
+        GameMember enemyInfo = gameRoom.getEnemyInfo(memberId);
+        //todo: highlightImage 가져오는 로직 필요
+        //todo: rating 시스템 적용
+        int afterRating = myInfo.rating() + 20;
+        Rank afterRank = RankCalculator.calculateRank(afterRating);
+
+        return GameResultResponse.builder()
+                .gameResult(gameResult)
+                .myInfo(myInfo)
+                .enemyInfo(enemyInfo)
+                .highlightImage(null)
+                .afterRating(afterRating)
+                .afterRank(afterRank)
+                .build();
     }
 }
