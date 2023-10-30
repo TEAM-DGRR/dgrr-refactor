@@ -42,7 +42,7 @@ const Rank = ({ rank, rating }: RankProps) => {
     Toast.fire({
       html: `
       <div>
-        <div class="rank-item" style="margin-top: 18px">
+        <div class="rank-item" style="margin-top: 22px">
           <img class="rank-image" src="/images/Gold.png" />
           <div class="rank-text">
             <div class="rank-title">골드 Gold</div>
@@ -69,9 +69,10 @@ const Rank = ({ rank, rating }: RankProps) => {
   };
 
   return (
-    <div>
-      <div className='flex items-center mt-6 mb-4 ms-6'>
-        <div className='text-lg font-semibold me-1'>내 티어</div>
+    <div className='h-[220px] py-6 my-2'>
+      {/* <div className='flex items-center mt-6 mb-4 ps-6'> */}
+      <div className='flex items-center pb-4'>
+        <div className='text-lg font-semibold ps-6 me-1'>내 티어</div>
         <div className='inline-block cursor-pointer' onClick={showHelp}>
           <IoHelpCircleOutline fontSize={'18px'} />
         </div>
