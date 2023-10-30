@@ -3,6 +3,8 @@ package live.dgrr.domain.game.entity;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
@@ -59,5 +61,62 @@ public class GameRoom {
         this.secondRoundResult = roundResult;
         this.secondRoundEndTime = LocalDateTime.now();
         this.gameStatus = GameStatus.DONE;
+    }
+
+    public GameResult judgeResult(String memberId) {
+
+        //두명 모두 안 웃은 경우 DRAW
+        if(firstRoundResult.equals(RoundResult.NO_LAUGH) && secondRoundResult.equals(RoundResult.NO_LAUGH)) {
+            return GameResult.DRAW;
+        }
+
+        //두명 다 웃은 경우
+        if(firstRoundResult.equals(RoundResult.LAUGH) && secondRoundResult.equals(RoundResult.LAUGH)) {
+            long firstRoundDuration = Duration.between(firstRoundStartTime, firstRoundEndTime).toNanos();
+            long secondRoundDuration = Duration.between(secondRoundStartTime, secondRoundEndTime).toNanos();
+
+            // 1라운드 공격자 승리
+            if(firstRoundDuration < secondRoundDuration) {
+                return judgeWinLose(memberId, memberOne);
+            }
+            // 2라운드 공격자 승리
+            if(secondRoundDuration < firstRoundDuration) {
+                return judgeWinLose(memberId, memberTwo);
+            }
+        }
+        //1라운드에만 웃은 경우
+        else if(firstRoundResult.equals(RoundResult.LAUGH)) {
+            return judgeWinLose(memberId, memberOne);
+        }
+        //2라운드에만 웃은경우
+        else if(secondRoundResult.equals(RoundResult.LAUGH)){
+            return judgeWinLose(memberId, memberTwo);
+        }
+        return null;
+    }
+
+    private GameResult judgeWinLose(String memberId, GameMember winner) {
+        if (winner.memberId().equals(memberId)) {
+            return GameResult.WIN;
+        } else {
+            return GameResult.LOSE;
+        }
+    }
+
+    public GameMember getMyInfo(String memberId) {
+        if(memberOne.memberId().equals(memberId)) {
+            return memberOne;
+        }
+        else {
+            return memberTwo;
+        }
+    }
+    public GameMember getEnemyInfo(String memberId) {
+        if(memberOne.memberId().equals(memberId)) {
+            return memberTwo;
+        }
+        else {
+            return memberOne;
+        }
     }
 }

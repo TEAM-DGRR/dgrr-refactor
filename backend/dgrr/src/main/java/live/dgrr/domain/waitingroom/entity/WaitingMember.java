@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class WaitingMember {
-    private Long waitingMemberId;
+    private String waitingMemberId;
     private String nickname;
     private String profileImage;
     private boolean isReady;
 
-    public static WaitingMember of(Long waitingMemberId, String nickname, String profileImage, boolean isReady) {
+    public static WaitingMember of(String waitingMemberId, String nickname, String profileImage, boolean isReady) {
         return WaitingMember.builder()
                 .waitingMemberId(waitingMemberId)
                 .nickname(nickname)

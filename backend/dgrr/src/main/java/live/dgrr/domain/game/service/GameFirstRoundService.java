@@ -1,6 +1,6 @@
 package live.dgrr.domain.game.service;
 
-import live.dgrr.domain.game.GameStartDto;
+import live.dgrr.domain.game.dto.GameStartResponse;
 import live.dgrr.domain.game.entity.GameMember;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameStatus;
@@ -39,7 +39,7 @@ public class GameFirstRoundService {
      * @param memberOneId 멤버1아이디
      * @param memberTwoId 멤버2 아이디
      */
-    public List<GameStartDto> gameStart(String memberOneId, String memberTwoId) {
+    public List<GameStartResponse> gameStart(String memberOneId, String memberTwoId) {
         GameMember memberOne = new GameMember(memberOneId, memberOneId," ", "descript1", 1400, Rank.BRONZE);
         GameMember memberTwo = new GameMember(memberTwoId, memberTwoId," ", "descript2", 1400, Rank.GOLD);
 
@@ -56,10 +56,10 @@ public class GameFirstRoundService {
         gameRoomRepository.save(gameRoom);
 
         //GameStart 정보 전송
-        GameStartDto memberOneGameStartDto = new GameStartDto(memberOne,memberTwo,gameRoomId,openviduTokenOne,"FIRST");
-        GameStartDto memberTwoGameStartDto = new GameStartDto(memberTwo,memberOne,gameRoomId,openviduTokenTwo,"SECOND");
+        GameStartResponse memberOneGameStartResponse = new GameStartResponse(memberOne,memberTwo,gameRoomId,openviduTokenOne,"FIRST");
+        GameStartResponse memberTwoGameStartResponse = new GameStartResponse(memberTwo,memberOne,gameRoomId,openviduTokenTwo,"SECOND");
 
-        return List.of(memberOneGameStartDto, memberTwoGameStartDto);
+        return List.of(memberOneGameStartResponse, memberTwoGameStartResponse);
     }
 
     /**

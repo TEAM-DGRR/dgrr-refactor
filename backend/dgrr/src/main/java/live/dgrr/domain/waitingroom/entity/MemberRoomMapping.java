@@ -12,6 +12,6 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash(value = "member_room_mapping", timeToLive = 600)
 public class MemberRoomMapping {
     @Id
-    private Long memberId;
+    private String memberId;
     private int roomId;
 }
