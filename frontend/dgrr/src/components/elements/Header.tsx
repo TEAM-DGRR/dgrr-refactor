@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   IoTrophyOutline,
   IoPersonOutline,
@@ -59,7 +60,9 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
             <IoTrophyOutline fontSize={'27px'} />
           </div>
           <div className='me-4 cursor-pointer hover:text-white'>
-            <IoPersonOutline fontSize={'27px'} />
+            <Link href='/myprofile'>
+              <IoPersonOutline fontSize={'27px'} />
+            </Link>
           </div>
         </div>
       ) : headerType === 'PROFILE' ? (
