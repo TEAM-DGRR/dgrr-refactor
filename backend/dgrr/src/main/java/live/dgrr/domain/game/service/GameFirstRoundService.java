@@ -131,6 +131,4 @@ public class GameFirstRoundService {
         publisher.publishEvent(new FirstRoundEndEvent(gameRoom.getMemberOne().memberId(),
                 gameRoom.getMemberTwo().memberId(), gameRoom.getFirstRoundResult(), destination));
     }
-
-
 }

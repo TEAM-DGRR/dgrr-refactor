@@ -45,7 +45,7 @@ public class GameSecondRoundService {
         }
     }
 
-    private void secondRoundStart(String gameRoomId, GameRoom gameRoom) {
+    public void secondRoundStart(String gameRoomId, GameRoom gameRoom) {
         LocalDateTime now = LocalDateTime.now();
 
         //todo: timer 추후 변경 필요
@@ -90,7 +90,7 @@ public class GameSecondRoundService {
         }
 
         publisher.publishEvent(new SecondRoundEndEvent(gameRoom.getMemberOne().memberId(),
-                gameRoom.getMemberTwo().memberId(), gameRoom.getFirstRoundResult(), destination));
+                gameRoom.getMemberTwo().memberId(), gameRoom.getSecondRoundResult(), destination));
     }
 
     /**
