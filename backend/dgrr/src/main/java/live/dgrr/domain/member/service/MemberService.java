@@ -60,4 +60,10 @@ public class MemberService {
                 .orElseThrow(() -> new GeneralException(ErrorCode.OPPONENT_MEMBER_NOT_FOUND));
         return findMemberById(opponentGameHistory.getMember().getMemberId());
     }
+
+    @Transactional(readOnly=true)
+    public List<GameHistoryWithOpponentInfoResponse> getMyGameHistory(String memberId) {
+        List<GameHistory> gameHistoryList = gameHistoryRepository.findByMember_MemberIdOrderByCreatedAtDesc(Long.parseLong(memberId));
+        return changeGameHistoryDto(gameHistoryList);
+    }
 }

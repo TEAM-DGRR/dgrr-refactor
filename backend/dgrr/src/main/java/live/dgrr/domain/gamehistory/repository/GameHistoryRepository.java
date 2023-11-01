@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface GameHistoryRepository extends JpaRepository<GameHistory,Long> {
     List<GameHistory> findTop3ByMember_MemberIdOrderByCreatedAtDesc(Long memberId);
 
+    List<GameHistory> findByMember_MemberIdOrderByCreatedAtDesc(Long memberId);
+
     @Query("SELECT gh " +
             "FROM GameHistory gh " +
             "WHERE gh.gameRoomId = :gameRoomId " +

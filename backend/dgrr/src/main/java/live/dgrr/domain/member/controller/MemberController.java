@@ -28,4 +28,12 @@ public class MemberController {
         return new ResponseEntity<>(memberService.getMyInfo(memberId), HttpStatus.OK);
     }
 
+    @GetMapping("/game-history/member-id")
+    public ResponseEntity<?> getMyGameHistory(Principal principal) {
+        log.info("MemberController - getMyGameHistory");
+        //TODO: memberId 수정 필요
+        String memberId = "1";
+        return new ResponseEntity<>(memberService.getMyGameHistory(memberId), HttpStatus.OK);
+    }
+
 }
