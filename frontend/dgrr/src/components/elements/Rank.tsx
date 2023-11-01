@@ -73,7 +73,7 @@ const Rank = ({ rank, rating }: RankProps) => {
       {/* <div className='flex items-center mt-6 mb-4 ps-6'> */}
       <div className="flex items-center pb-4">
         <div className="text-lg font-semibold ps-6 me-1">내 티어</div>
-        <div className="inline-block cursor-pointer" onClick={showHelp}>
+        <div className="inline-block cursor-pointer hover:text-main-blue" onClick={showHelp}>
           <IoHelpCircleOutline fontSize={'18px'} />
         </div>
       </div>

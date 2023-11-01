@@ -151,7 +151,7 @@ const MyProfile = () => {
           {/* 전적이 아직 하나도 없다면 더 보기 버튼 생기지 않음 */}
           {myInfo.gameDetailList.length !== 0 ? (
             <Link href="/myprofile/recent-record">
-              <div className="flex cursor-pointer gap-x-[3px]">
+              <div className="flex cursor-pointer gap-x-[3px] hover:text-main-blue">
                 <div className="text-sm font-bold inline-block">더 보기</div>
                 <div className="inline-block">
                   <IoChevronForwardOutline fontSize={'18px'} />

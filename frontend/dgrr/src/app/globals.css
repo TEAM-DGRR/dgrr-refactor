@@ -39,3 +39,19 @@ body {
   top: 0px; /* 원하는 위치로 조정 */
   right: 0px; /* 원하는 위치로 조정 */
 }
+
+.custom-confirm-button {
+  width: 100px;
+}
+
+.custom-cancle-button {
+  margin-left: 20px;
+  width: 100px;
+}
+
+.swal2-container {
+  margin: 0 auto; /* 가로 중앙 정렬을 위해 margin 속성을 사용 */
+  display: flex;
+  justify-content: center;
+  width: 360px;
+}

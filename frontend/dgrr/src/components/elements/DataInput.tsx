@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 export type inputType = 'NICKNAME' | 'DESCRIPTION';
 export type pageType = 'SIGNUP' | 'PROFILE_EDIT';
 

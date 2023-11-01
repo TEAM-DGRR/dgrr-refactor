@@ -24,7 +24,7 @@ const ListPage = () => {
 
   return (
     <div className="bg-main-blue w-screen h-screen max-w-[500px]">
-      <Header headerType="OTHER" />
+      <Header headerType="GAMESTART" />
       {isModal && <FindRoomModal handleModal={handleModal} />}
 
       <div className="space-y-6">

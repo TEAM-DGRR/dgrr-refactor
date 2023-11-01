@@ -5,7 +5,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 interface ModalWithXProps {
   modalStatus: boolean;
   closeModal: () => void;
-  item: {
+  item?: {
     gameDetailId: number;
     gameRoomId: number;
     gameResult: string;
@@ -18,9 +18,10 @@ interface ModalWithXProps {
     opponentProfileImage: string;
     opponentDescription: string;
   };
+  children?: React.ReactNode;
 }
 
-const ModalWithX = ({ modalStatus, closeModal, item }: ModalWithXProps) => {
+const ModalWithX = ({ modalStatus, closeModal, item, children }: ModalWithXProps) => {
   return (
     <div>
       {modalStatus === true ? (
@@ -31,7 +32,11 @@ const ModalWithX = ({ modalStatus, closeModal, item }: ModalWithXProps) => {
                 <IoCloseOutline fontSize={'24px'} />
               </button>
             </div>
-            <img className="max-w-[290px]" src={item.highlightImage} />
+            {item !== undefined ? (
+              <img className='max-w-[290px]' src={item.highlightImage} />
+            ) : (
+              <div>{children}</div>
+            )}
           </div>
         </div>
       ) : null}
