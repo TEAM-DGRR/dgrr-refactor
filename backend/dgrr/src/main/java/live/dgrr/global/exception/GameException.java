@@ -11,4 +11,9 @@ public class GameException extends RuntimeException{
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
+
+    public GameException(ErrorCode errorCode, Exception exception) {
+        super(errorCode.getMessage(), exception);
+        this.errorCode = errorCode;
+    }
 }

@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ImageResult {
+public class CaptureResult {
 
     private boolean success;
     private String emotion;
