@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     EMOTIONS: list = ["Angry", "Disgust", "Fear", "Smile", "Sad", "Surprise", "Neutral"]
     THRESHOLD: float = 0.5
 
-    RECONNECT_DELAY: int = 3
-    KEEP_ALIVE_INTERVAL: int = 10
+    RECONNECT_DELAY: int = 5
+    KEEP_ALIVE_INTERVAL: int = 30
 
     # .env 주입
     WEBSOCKET_CONNECT_URI: str
