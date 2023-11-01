@@ -20,7 +20,7 @@ async def receive_capture(websocket: WebSocket):
 
     except WebSocketDisconnect:
         await on_disconnect(websocket)
-        await websocket.close()
+        #await websocket.close()
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
