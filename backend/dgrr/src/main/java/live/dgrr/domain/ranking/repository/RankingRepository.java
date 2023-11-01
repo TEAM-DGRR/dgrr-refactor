@@ -1,6 +1,6 @@
 package live.dgrr.domain.ranking.repository;
 
-import live.dgrr.domain.ranking.dto.RankingResponse;
+import live.dgrr.domain.ranking.dto.response.RankingResponse;
 import live.dgrr.global.config.redis.RankingConfig;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -15,14 +15,16 @@ public class RankingRepository {
 
     private final RedisTemplate<String, Long> redisTemplate;
     private final String key;
+    private final int CURRENT_SEASON;
 
     public RankingRepository(RedisTemplate<String, Long> redisTemplate, RankingConfig rankingConfig) {
         this.redisTemplate = redisTemplate;
         this.key = rankingConfig.getKey() + rankingConfig.getSeason();
+        this.CURRENT_SEASON = rankingConfig.getSeason();
     }
 
-    public boolean addRanking(Long memberId, double score) {
-        return redisTemplate.opsForZSet().add(key, memberId, score);
+    public boolean addRanking(Long memberId, double rating) {
+        return redisTemplate.opsForZSet().add(key, memberId, rating);
     }
 
     public List<RankingResponse> getRankingMember(Long memberId) {
@@ -31,11 +33,11 @@ public class RankingRepository {
         if (results != null) {
             for (ZSetOperations.TypedTuple<Long> result : results) {
                 String value = String.valueOf(result.getValue());
-                Double score = result.getScore();
+                Double rating = result.getScore();
                 rankings.add(
                         RankingResponse.of(
                                 Long.valueOf(value),
-                                score,
+                                rating,
                                 redisTemplate.opsForZSet().reverseRank(key, Long.valueOf(value))+1
                         )
                 );
@@ -44,13 +46,13 @@ public class RankingRepository {
         return rankings;
     }
 
-    public Double getScoreByMemberId(Long memberId) {
+    public Double getRatingByMemberId(Long memberId) {
         // 멤버 스코어 조회
-        Double score = redisTemplate.opsForZSet().score(key, memberId);
-        if (score == null) {
+        Double rating = redisTemplate.opsForZSet().score(key, memberId);
+        if (rating == null) {
             return null;
         }
-        return score;
+        return rating;
     }
 
     public Long getRankByMemberId(Long memberId) {
@@ -61,5 +63,9 @@ public class RankingRepository {
         }
         rank += 1;
         return rank;
+    }
+
+    public int getcurentSeason() {
+        return CURRENT_SEASON;
     }
 }

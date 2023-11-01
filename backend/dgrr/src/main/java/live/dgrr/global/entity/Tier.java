@@ -1,5 +1,5 @@
 package live.dgrr.global.entity;
 
-public enum Rank {
+public enum Tier {
     BRONZE,SILVER,GOLD
 }

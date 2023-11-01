@@ -4,11 +4,11 @@ import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
-import live.dgrr.global.entity.Rank;
+import live.dgrr.global.entity.Tier;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GameException;
 import live.dgrr.global.util.EloCalculator;
-import live.dgrr.global.util.RankCalculator;
+import live.dgrr.global.util.TierCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -107,7 +107,7 @@ public class GameSecondRoundService {
         GameMember enemyInfo = gameRoom.getEnemyInfo(memberId);
         //todo: highlightImage 가져오는 로직 필요
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), gameResult);
-        Rank afterRank = RankCalculator.calculateRank(afterRating);
+        Tier afterTier = TierCalculator.calculateRank(afterRating);
 
         return GameResultResponse.builder()
                 .gameResult(gameResult)
@@ -115,7 +115,7 @@ public class GameSecondRoundService {
                 .enemyInfo(enemyInfo)
                 .highlightImage(null)
                 .afterRating(afterRating)
-                .afterRank(afterRank)
+                .afterTier(afterTier)
                 .build();
     }
 
@@ -132,14 +132,14 @@ public class GameSecondRoundService {
         GameMember myInfo = gameRoom.getEnemyInfo(memberId);
         GameMember enemyInfo = gameRoom.getMyInfo(memberId);
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), GameResult.WIN);
-        Rank afterRank = RankCalculator.calculateRank(afterRating);
+        Tier afterTier = TierCalculator.calculateRank(afterRating);
 
         return GameResultResponse.builder()
                 .gameResult(GameResult.WIN)
                 .myInfo(myInfo)
                 .enemyInfo(enemyInfo)
                 .afterRating(afterRating)
-                .afterRank(afterRank)
+                .afterTier(afterTier)
                 .build();
     }
 }

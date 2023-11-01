@@ -19,7 +19,8 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Member Not Found"),
     WAITING_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "WaitingRoom Not Found"),
     MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "Member Already Exist"), //동일한 멤버가 이미 방에 존재하는 경우
-    MAX_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "Max Member Already Exist"); //대기 방 참여자 정원이 다 찬 경우
+    MAX_MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "Max Member Already Exist"), //대기 방 참여자 정원이 다 찬 경우
+    OPPONENT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Opponent Member Not Found");
     private final HttpStatus httpStatus;
     private final String message;
 }

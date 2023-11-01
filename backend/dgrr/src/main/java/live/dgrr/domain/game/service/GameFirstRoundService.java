@@ -10,7 +10,7 @@ import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundOverEvent;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.openvidu.OpenviduService;
-import live.dgrr.global.entity.Rank;
+import live.dgrr.global.entity.Tier;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GameException;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +40,8 @@ public class GameFirstRoundService {
      * @param memberTwoId 멤버2 아이디
      */
     public List<GameStartResponse> gameStart(String memberOneId, String memberTwoId) {
-        GameMember memberOne = new GameMember(memberOneId, memberOneId," ", "descript1", 1400, Rank.BRONZE);
-        GameMember memberTwo = new GameMember(memberTwoId, memberTwoId," ", "descript2", 1400, Rank.GOLD);
+        GameMember memberOne = new GameMember(memberOneId, memberOneId," ", "descript1", 1400, Tier.BRONZE);
+        GameMember memberTwo = new GameMember(memberTwoId, memberTwoId," ", "descript2", 1400, Tier.GOLD);
 
         //게임 ID 생성
         String gameRoomId = UUID.randomUUID().toString();

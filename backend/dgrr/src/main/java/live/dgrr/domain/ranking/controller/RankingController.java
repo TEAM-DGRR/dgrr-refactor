@@ -1,6 +1,6 @@
 package live.dgrr.domain.ranking.controller;
 
-import live.dgrr.domain.ranking.dto.RankingMemberResponse;
+import live.dgrr.domain.ranking.dto.response.RankingMemberResponse;
 import live.dgrr.domain.ranking.service.RankingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

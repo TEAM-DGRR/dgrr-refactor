@@ -1,7 +1,7 @@
 package live.dgrr.domain.ranking.service;
 
-import live.dgrr.domain.ranking.dto.RankingMemberResponse;
-import live.dgrr.domain.ranking.dto.RankingResponse;
+import live.dgrr.domain.ranking.dto.response.RankingMemberResponse;
+import live.dgrr.domain.ranking.dto.response.RankingResponse;
 import live.dgrr.domain.ranking.repository.RankingRepository;
 import live.dgrr.global.config.redis.RankingConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,8 @@ public class RankingService {
         this.key = rankingConfig.getKey() + rankingConfig.getSeason();
     }
 
-    public boolean addRanking(Long memberId, double score) {
-        return rankingRepository.addRanking(memberId, score);
+    public boolean addRanking(Long memberId, double rating) {
+        return rankingRepository.addRanking(memberId, rating);
     }
 
     public RankingMemberResponse getRankingMember(Long memberId) {
@@ -34,9 +34,9 @@ public class RankingService {
     }
 
     public RankingResponse getRanking(Long memberId) {
-        Double score = rankingRepository.getScoreByMemberId(memberId);
+        Double rating = rankingRepository.getRatingByMemberId(memberId);
         Long rank = rankingRepository.getRankByMemberId(memberId);
 
-        return RankingResponse.of(memberId, score, rank);
+        return RankingResponse.of(memberId, rating, rank);
     }
 }

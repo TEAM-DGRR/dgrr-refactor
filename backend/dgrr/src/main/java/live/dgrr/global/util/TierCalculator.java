@@ -1,26 +1,26 @@
 package live.dgrr.global.util;
 
-import live.dgrr.global.entity.Rank;
+import live.dgrr.global.entity.Tier;
 
-public class RankCalculator {
+public class TierCalculator {
 
 
 
-    private RankCalculator() {
+    private TierCalculator() {
     }
 
     private static final int GOLD_THRESHOLD =1600;
     private static final int SILVER_THRESHOLD =1400;
 
-    public static Rank calculateRank(int score) {
+    public static Tier calculateRank(int score) {
         if(score >= GOLD_THRESHOLD) {
-            return Rank.GOLD;
+            return Tier.GOLD;
         }
         else if(score >= SILVER_THRESHOLD) {
-            return Rank.SILVER;
+            return Tier.SILVER;
         }
         else {
-            return Rank.BRONZE;
+            return Tier.BRONZE;
         }
     }
 }
