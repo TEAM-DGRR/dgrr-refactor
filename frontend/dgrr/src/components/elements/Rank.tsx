@@ -6,11 +6,11 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { IoHelpCircleOutline } from 'react-icons/io5';
 
 interface RankProps {
-  rank: string;
+  tier: string;
   rating: number;
 }
 
-const Rank = ({ rank, rating }: RankProps) => {
+const Rank = ({ tier, rating }: RankProps) => {
   const [nowRating, setNowRating] = useState(0);
 
   useEffect(() => {
@@ -42,24 +42,24 @@ const Rank = ({ rank, rating }: RankProps) => {
     Toast.fire({
       html: `
       <div>
-        <div class="rank-item" style="margin-top: 22px">
-          <img class="rank-image" src="/images/Gold.png" />
-          <div class="rank-text">
-            <div class="rank-title">골드 Gold</div>
+        <div class="tier-item" style="margin-top: 22px">
+          <img class="tier-image" src="/images/Gold.png" />
+          <div class="tier-text">
+            <div class="tier-title">골드 Gold</div>
             <div style="font-size: 12px">1800 ~</div>
           </div>
         </div>
-        <div class="rank-item" style="margin: 11px 0px">
-          <img class="rank-image" src="/images/Sliver.png" />
-          <div class="rank-text">
-            <div class="rank-title">실버 Sliver</div>
+        <div class="tier-item" style="margin: 11px 0px">
+          <img class="tier-image" src="/images/Sliver.png" />
+          <div class="tier-text">
+            <div class="tier-title">실버 Sliver</div>
             <div style="font-size: 12px">1600 ~</div>
           </div>
         </div>
-        <div class="rank-item">
-          <img class="rank-image" src="/images/Bronze.png" />
-          <div class="rank-text">
-            <div class="rank-title">브론즈 Bronze</div>
+        <div class="tier-item">
+          <img class="tier-image" src="/images/Bronze.png" />
+          <div class="tier-text">
+            <div class="tier-title">브론즈 Bronze</div>
             <div style="font-size: 12px">1400 ~</div>
           </div>
         </div>
@@ -78,21 +78,21 @@ const Rank = ({ rank, rating }: RankProps) => {
         </div>
       </div>
       <div className="flex justify-center">
-        {rank === 'Gold' ? (
+        {tier === 'Gold' ? (
           <img src="/images/Gold.png" alt="Gold" className="w-[80px] aspect-square" />
-        ) : rank === 'Sliver' ? (
+        ) : tier === 'Sliver' ? (
           <img src="/images/Sliver.png" alt="Sliver" className="w-[80px] aspect-square" />
         ) : (
           <img src="/images/Bronze.png" alt="Bronze" className="w-[80px] aspect-square" />
         )}
       </div>
       <div className="flex justify-center mt-[19px]">
-        {rank === 'Gold' ? (
+        {tier === 'Gold' ? (
           <ProgressBar
             {...progressBarProps} // 기본 매개변수를 전달
             bgColor="#FCC858"
           />
-        ) : rank === 'Sliver' ? (
+        ) : tier === 'Sliver' ? (
           <ProgressBar
             {...progressBarProps} // 기본 매개변수를 전달
             bgColor="#B8B8B8"

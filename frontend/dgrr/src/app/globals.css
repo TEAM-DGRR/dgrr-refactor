@@ -9,7 +9,7 @@ body {
   align-items: center;
 }
 
-.rank-item {
+.tier-item {
   background-color: #e7e0ec;
   padding: 8px 15px;
   border-radius: 10px;
@@ -17,18 +17,18 @@ body {
   vertical-align: middle;
 }
 
-.rank-image {
+.tier-image {
   width: 38px;
   height: 38px;
   margin-right: 12px;
 }
 
-.rank-text {
+.tier-text {
   display: inline-block;
   margin: auto 0;
 }
 
-.rank-title {
+.tier-title {
   font-size: 14px;
   font-weight: 600;
 }

@@ -18,18 +18,20 @@ const Edit = () => {
     ranking: {
       season: 1,
       score: 1500,
-      rank: 'BRONZE',
+      rank: 1,
+      tier: 'BRONZE',
     },
-    gameDetailList: [
+    gameHistoryList: [
       {
-        gameDetailId: 1,
+        gameHistoryId: 1,
         gameRoomId: 123456,
         gameResult: 'WIN',
         gameType: 'RANDOM',
         gameTime: 30,
         holdingTime: 30,
-        laughAmount: 415,
+        ratingChange: 415,
         highlightImage: '/images/sample_image1.png',
+        createdAt: '2023-10-31T16:00:05',
         opponentNickname: '보라돌이',
         opponentProfileImage: '/images/sample_image1.png',
         opponentDescription: '2023-10-30',

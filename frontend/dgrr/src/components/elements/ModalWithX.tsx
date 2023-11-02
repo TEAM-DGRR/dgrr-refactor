@@ -6,13 +6,13 @@ interface ModalWithXProps {
   modalStatus: boolean;
   closeModal: () => void;
   item?: {
-    gameDetailId: number;
+    gameHistoryId: number;
     gameRoomId: number;
     gameResult: string;
     gameType: string;
     gameTime: number;
     holdingTime: number;
-    laughAmount: number;
+    ratingChange: number;
     highlightImage: string;
     opponentNickname: string;
     opponentProfileImage: string;
@@ -33,7 +33,7 @@ const ModalWithX = ({ modalStatus, closeModal, item, children }: ModalWithXProps
               </button>
             </div>
             {item !== undefined ? (
-              <img className='max-w-[290px]' src={item.highlightImage} />
+              <img className="max-w-[290px]" src={item.highlightImage} />
             ) : (
               <div>{children}</div>
             )}
