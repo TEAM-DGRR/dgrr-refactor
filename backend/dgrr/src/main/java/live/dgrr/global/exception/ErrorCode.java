@@ -24,8 +24,20 @@ public enum ErrorCode {
     IMAGE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Error Processing Image"), // 이미지 처리 중 오류났을 때
     OPPONENT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Opponent Member Not Found"),
     OPENVIDU_SESSION_ERROR(HttpStatus.BAD_REQUEST, "Openvidu Session Create Error"),
-    OPENVIDU_CONNECTION_ERROR(HttpStatus.BAD_REQUEST, "Openvidu Connection Create Error");
-
+    OPENVIDU_CONNECTION_ERROR(HttpStatus.BAD_REQUEST, "Openvidu Connection Create Error"),
+    VALIDATION_DESCRIPTION_LENGTH_INVALID(HttpStatus.BAD_REQUEST,"Validation Description Length Invalid"),
+    VALIDATION_NICKNAME_LENGTH_INVALID(HttpStatus.BAD_REQUEST,"Validation Nickname Length Invalid"),
+    NICKNAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "Nickname Already Exist"),
+    VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation Error");
     private final HttpStatus httpStatus;
     private final String message;
+
+    public static ErrorCode findByErrorMessage(String errorMessage) {
+        for (ErrorCode errorCode : values()) {
+            if (errorCode.getMessage().equals(errorMessage)) {
+                return errorCode;
+            }
+        }
+        return VALIDATION_ERROR; // 기본 에러 코드
+    }
 }

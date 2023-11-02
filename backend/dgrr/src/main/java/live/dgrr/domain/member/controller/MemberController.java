@@ -1,16 +1,18 @@
 package live.dgrr.domain.member.controller;
 
+import jakarta.validation.Valid;
+import live.dgrr.domain.gamehistory.dto.response.GameHistoryWithOpponentInfoResponse;
+import live.dgrr.domain.member.dto.request.MemberRequest;
 import live.dgrr.domain.member.dto.response.MemberInfoResponse;
 import live.dgrr.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -29,11 +31,20 @@ public class MemberController {
     }
 
     @GetMapping("/game-history/member-id")
-    public ResponseEntity<?> getMyGameHistory(Principal principal) {
+    public ResponseEntity<List<GameHistoryWithOpponentInfoResponse>> getMyGameHistory(Principal principal) {
         log.info("MemberController - getMyGameHistory");
         //TODO: memberId 수정 필요
         String memberId = "1";
         return new ResponseEntity<>(memberService.getMyGameHistory(memberId), HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> updateMember(Principal principal, @Valid @RequestBody MemberRequest memberRequest) {
+        log.info("MemberController - updateMember");
+        //TODO: memberId 수정 필요
+        String memberId = "1";
+        memberService.updateByMember(memberId, memberRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

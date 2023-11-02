@@ -25,4 +25,9 @@ public class Member extends BaseEntity {
     private String description;
     private MemberRole memberRole;
 
+    public void updateMember(String nickname, String profileImage, String description) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.description = description;
+    }
 }

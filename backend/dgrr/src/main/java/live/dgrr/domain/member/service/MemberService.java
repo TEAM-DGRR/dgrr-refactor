@@ -3,6 +3,7 @@ package live.dgrr.domain.member.service;
 import live.dgrr.domain.gamehistory.entity.GameHistory;
 import live.dgrr.domain.gamehistory.repository.GameHistoryRepository;
 import live.dgrr.domain.gamehistory.dto.response.GameHistoryWithOpponentInfoResponse;
+import live.dgrr.domain.member.dto.request.MemberRequest;
 import live.dgrr.domain.member.dto.response.MemberInfoResponse;
 import live.dgrr.domain.ranking.dto.response.MemberRankingInfoResponse;
 import live.dgrr.domain.member.dto.response.MemberResponse;
@@ -25,6 +26,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RankingRepository rankingRepository;
     private final GameHistoryRepository gameHistoryRepository;
+
+    private final int MAX_NICKNAME_LENGTH = 12;
+    private final int MAX_DESCRIPTION_LENGTH = 20;
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
@@ -66,4 +70,30 @@ public class MemberService {
         List<GameHistory> gameHistoryList = gameHistoryRepository.findByMember_MemberIdOrderByCreatedAtDesc(Long.parseLong(memberId));
         return changeGameHistoryDto(gameHistoryList);
     }
+
+    @Transactional
+    public void updateByMember(String memberId, MemberRequest memberRequest) {
+        Member member = findMemberById(Long.parseLong(memberId));
+
+        if(!member.getNickname().equals(memberRequest.nickname())) {
+            checkNickname(memberRequest.nickname());
+        }
+
+        member.updateMember(memberRequest.nickname(),memberRequest.profileImage(),memberRequest.description());
+    }
+
+
+    private void checkNickname(String nickname) {
+        if (isDuplicateNickname(nickname)) {
+            throw new GeneralException(ErrorCode.NICKNAME_ALREADY_EXIST);
+        }
+    }
+    private boolean isDuplicateNickname(String nickname) {
+        List<Member> memberList = memberRepository.findByNickname(nickname);
+        if(memberList.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
 }
