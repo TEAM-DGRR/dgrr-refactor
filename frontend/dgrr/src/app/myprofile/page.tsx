@@ -150,7 +150,7 @@ const MyProfile = () => {
         </div>
       </div>
       {/* 내 티어 */}
-      <Rank tier={myInfo.ranking.tier} rating={myInfo.ranking.score} />
+      <Rank pageType='PROFILE' tier={myInfo.ranking.tier} rating={myInfo.ranking.score} />
       {/* 최근 전적 */}
       <div className="h-[220px] p-6">
         <div className="flex justify-between items-center mb-4">
