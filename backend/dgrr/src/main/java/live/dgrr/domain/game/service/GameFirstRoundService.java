@@ -16,9 +16,11 @@ import live.dgrr.global.exception.GameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -28,8 +30,9 @@ public class GameFirstRoundService {
     private final OpenviduService openviduService;
     private final GameRoomRepository gameRoomRepository;
     private final ApplicationEventPublisher publisher;
+    private final TaskScheduler taskScheduler;
 
-    private static final long ROUND_TIME = 5000L;
+    private static final long ROUND_TIME = 30L;
 
     private static final String FIRST_ROUND_LAUGH = "/recv/firstroundend-laugh";
     private static final String FIRST_ROUND_NO_LAUGH = "/recv/firstroundend-no-laugh";
@@ -84,23 +87,18 @@ public class GameFirstRoundService {
      * @param gameRoomId 게임 룸 아이디
      * @param gameRoom 게임룸 객체
      */
-    public void firstRoundStart(String gameRoomId, GameRoom gameRoom) {
-        LocalDateTime now = LocalDateTime.now();
+    public Instant firstRoundStart(String gameRoomId, GameRoom gameRoom) {
+        Instant now = Instant.now();
 
-        //todo: timer 추후 변경 필요
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                publisher.publishEvent(new FirstRoundOverEvent(gameRoomId, RoundResult.NO_LAUGH));
-            }
-        };
+        taskScheduler.schedule(() -> {
+            publisher.publishEvent(new FirstRoundOverEvent(gameRoomId, RoundResult.NO_LAUGH));
+        }, now.plusSeconds(ROUND_TIME));
 
-        gameRoom.startFirstRound(now);
+        gameRoom.startFirstRound(now.atZone(ZoneId.systemDefault()).toLocalDateTime());
         gameRoomRepository.save(gameRoom);
-        timer.schedule(timerTask,ROUND_TIME);
 
         publisher.publishEvent(new FirstRoundPreparedEvent(gameRoom.getMemberOne().memberId(), gameRoom.getMemberTwo().memberId()));
+        return now;
     }
 
     /**

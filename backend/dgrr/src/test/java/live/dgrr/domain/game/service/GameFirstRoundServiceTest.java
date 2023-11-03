@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ class GameFirstRoundServiceTest {
 
     @Mock
     OpenviduService openviduService;
+    @Mock
+    TaskScheduler taskScheduler;
     @Spy
     GameRoomRepository gameRoomRepository;
     @Spy
