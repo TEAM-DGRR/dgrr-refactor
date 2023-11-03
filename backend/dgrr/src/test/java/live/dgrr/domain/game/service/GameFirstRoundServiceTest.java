@@ -9,9 +9,11 @@ import live.dgrr.domain.game.entity.RoundResult;
 import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundOverEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
+import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.openvidu.OpenviduService;
 import live.dgrr.global.entity.Tier;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -44,26 +46,34 @@ class GameFirstRoundServiceTest {
 
     @InjectMocks
     GameFirstRoundService gameFirstRoundService;
+
+    String gameRoomId;
+    String memberOneId;
+    String memberTwoId;
+
+    GameMember memberOne;
+    GameMember memberTwo;
+    GameRoom gameRoom;
+
+    @BeforeEach
+    void setUp() {
+        gameRoomId = "roomId";
+        memberOneId = "M1";
+        memberTwoId = "M2";
+
+        memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
+        memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
+        gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.BEFORE_START, GameType.RANDOM);
+    }
     @Test
     void gameStartTest() {
-        String memberOneId = "oneId";
-        String memberTwoId = "twoId";
-        List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(memberOneId, memberTwoId);
+        List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(memberOneId, memberTwoId, GameType.RANDOM);
         assertThat(gameStartResponses.get(0).myInfo().memberId()).isEqualTo(memberOneId);
         assertThat(gameStartResponses.get(1).myInfo().memberId()).isEqualTo(memberTwoId);
     }
 
     @Test
     void firstRoundStart() {
-        //given
-        String gameRoomId = "roomId";
-        String memberOneId = "M1";
-        String memberTwoId = "M2";
-
-        GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-        GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-        GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.BEFORE_START);
-
         //when
         gameFirstRoundService.firstRoundStart(gameRoomId,gameRoom);
 
@@ -78,16 +88,7 @@ class GameFirstRoundServiceTest {
     @Test
     void 웃은경우_첫라운드_종료() {
 
-        //given
-        String gameRoomId = "id";
-        String memberOneId = "M1";
-        String memberTwoId = "M2";
-        doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
-            return Optional.of(gameRoom);
-        }).when(gameRoomRepository).findById(gameRoomId);
+        doAnswer(invocation -> Optional.of(gameRoom)).when(gameRoomRepository).findById(gameRoomId);
 
         //when
         gameFirstRoundService.firstRoundOver(new FirstRoundOverEvent(gameRoomId, RoundResult.LAUGH));
@@ -103,16 +104,7 @@ class GameFirstRoundServiceTest {
     @Test
     void 안웃은경우_첫라운드_종료() {
 
-        //given
-        String gameRoomId = "id";
-        String memberOneId = "M1";
-        String memberTwoId = "M2";
-        doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
-            return Optional.of(gameRoom);
-        }).when(gameRoomRepository).findById(gameRoomId);
+        doAnswer(invocation -> Optional.of(gameRoom)).when(gameRoomRepository).findById(gameRoomId);
 
         //when
         gameFirstRoundService.firstRoundOver(new FirstRoundOverEvent(gameRoomId, RoundResult.NO_LAUGH));

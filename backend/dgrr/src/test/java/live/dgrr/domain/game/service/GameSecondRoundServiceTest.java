@@ -6,14 +6,13 @@ import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.global.entity.Tier;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.util.Optional;
 
@@ -31,22 +30,35 @@ class GameSecondRoundServiceTest {
     ApplicationEventPublisher publisher;
     @InjectMocks
     GameSecondRoundService gameSecondRoundService;
+    @Mock
+    TaskScheduler taskScheduler;
     @Captor
     private ArgumentCaptor<SecondRoundPreparedEvent> secondRoundPreparedEventCaptor;
 
     @Captor
     private ArgumentCaptor<SecondRoundEndEvent> secondRoundEndEventCaptor;
 
-    String gameRoomId = "roomId";
-    String memberOneId = "M1";
-    String memberTwoId = "M2";
+    String gameRoomId;
+    String memberOneId;
+    String memberTwoId;
+
+    GameMember memberOne;
+    GameMember memberTwo;
+    GameRoom gameRoom;
+
+    @BeforeEach
+    void setUp() {
+        gameRoomId = "roomId";
+        memberOneId = "M1";
+        memberTwoId = "M2";
+
+        memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
+        memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
+        gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.BEFORE_START, GameType.RANDOM);
+    }
 
     @Test
     void 이라운드_시작() {
-        //given
-        GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-        GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-        GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.BEFORE_START);
 
         //when
         gameSecondRoundService.secondRoundStart(gameRoomId,gameRoom);
@@ -62,12 +74,7 @@ class GameSecondRoundServiceTest {
     @Test
     void 웃은경우_이라운드_종료() {
         //given
-        doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
-            return Optional.of(gameRoom);
-        }).when(gameRoomRepository).findById(gameRoomId);
+        doAnswer(invocation -> Optional.of(gameRoom)).when(gameRoomRepository).findById(gameRoomId);
 
         //when
         gameSecondRoundService.secondRoundOver(new SecondRoundOverEvent(gameRoomId, RoundResult.LAUGH));
@@ -83,12 +90,7 @@ class GameSecondRoundServiceTest {
     @Test
     void 안웃은경우_이라운드_종료() {
         //given
-        doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
-            return Optional.of(gameRoom);
-        }).when(gameRoomRepository).findById(gameRoomId);
+        doAnswer(invocation -> Optional.of(gameRoom)).when(gameRoomRepository).findById(gameRoomId);
 
         //when
         gameSecondRoundService.secondRoundOver(new SecondRoundOverEvent(gameRoomId, RoundResult.NO_LAUGH));
@@ -164,12 +166,7 @@ class GameSecondRoundServiceTest {
     @Test
     void 상대방_탈주() {
         //given
-        doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
-            return Optional.of(gameRoom);
-        }).when(gameRoomRepository).findById(gameRoomId);
+        doAnswer(invocation -> Optional.of(gameRoom)).when(gameRoomRepository).findById(gameRoomId);
 
         //when
         GameResultResponse result = gameSecondRoundService.leaveGame(memberOneId, gameRoomId);
@@ -181,9 +178,6 @@ class GameSecondRoundServiceTest {
 
     private void mockGameRoom(RoundResult firstRoundResult, RoundResult secondRoundResult) {
         doAnswer(invocation -> {
-            GameMember memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1400, Tier.SILVER);
-            GameMember memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1400, Tier.SILVER);
-            GameRoom gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.FIRST_ROUND);
             gameRoom.finishFirstRound(firstRoundResult);
             gameRoom.finishSecondRound(secondRoundResult);
             return Optional.of(gameRoom);

@@ -33,7 +33,7 @@ public class GameController {
     private static final String ENEMY_LEAVE_GAME = "/recv/enemy-left";
     @EventListener
     public void gameStart(GameStartEvent event) {
-        List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(event.memberOneId(), event.memberTwoId());
+        List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(event.memberOneId(), event.memberTwoId(), event.gameType());
 
         template.convertAndSendToUser(gameStartResponses.get(0).myInfo().memberId(),GAME_START_DEST, gameStartResponses.get(0));
         template.convertAndSendToUser(gameStartResponses.get(1).myInfo().memberId(),GAME_START_DEST, gameStartResponses.get(1));

@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.entity;
 
+import live.dgrr.domain.game.entity.event.GameType;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -13,6 +14,7 @@ public class GameRoom {
 
     @Id
     private String gameRoomId;
+    private GameType gameType;
     private GameMember memberOne;
     private GameMember memberTwo;
     private GameStatus gameStatus;
@@ -25,11 +27,12 @@ public class GameRoom {
     private RoundResult firstRoundResult;
     private RoundResult secondRoundResult;
 
-    public GameRoom(String gameRoomId, GameMember memberOne, GameMember memberTwo, GameStatus gameStatus) {
+    public GameRoom(String gameRoomId, GameMember memberOne, GameMember memberTwo, GameStatus gameStatus, GameType gameType) {
         this.gameRoomId = gameRoomId;
         this.memberOne = memberOne;
         this.memberTwo = memberTwo;
         this.gameStatus = gameStatus;
+        this.gameType = gameType;
     }
 
     public int firstRoundPrepare() {
