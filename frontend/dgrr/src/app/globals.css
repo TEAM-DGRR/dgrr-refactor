@@ -53,5 +53,5 @@ body {
   margin: 0 auto; /* 가로 중앙 정렬을 위해 margin 속성을 사용 */
   display: flex;
   justify-content: center;
-  width: 360px;
+  max-width: 500px;
 }

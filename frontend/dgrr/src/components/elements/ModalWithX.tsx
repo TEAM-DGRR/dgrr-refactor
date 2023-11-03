@@ -25,7 +25,7 @@ const ModalWithX = ({ modalStatus, closeModal, item, children }: ModalWithXProps
   return (
     <div>
       {modalStatus === true ? (
-        <div className="z-10 bg-black/30 w-full h-full max-w-[360px] fixed top-0 flex justify-center items-center">
+        <div className="z-10 bg-black/30 w-screen h-full max-w-[500px] fixed top-0 flex justify-center items-center">
           <div className="w-80 h-fit bg-white rounded-lg border-2 border-black p-3">
             <div className="flex justify-end mb-1" onClick={closeModal}>
               <button className="hover:text-[#E83F57]">

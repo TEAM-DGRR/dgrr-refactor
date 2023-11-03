@@ -121,7 +121,7 @@ const MyProfile = () => {
   }, []);
 
   return (
-    <div>
+    <div className='w-screen max-w-[500px]'>
       <Header headerType="PROFILE" />
       <div className="h-[220px] flex justify-center items-center">
         <div>

@@ -130,13 +130,13 @@ const RecentRecord = () => {
   }, []);
 
   return (
-    <div>
+    <div className='w-screen max-w-[500px]'>
       <Header headerType="OTHER">최근 전적</Header>
       <div className="px-6 pt-2">
         {myInfo.gameHistoryList.map((item, index) => (
           <div key={index}>
             {item.gameResult !== 'DRAW' ? (
-              <div onClick={() => openModal(index)} className="cursor-pointer">
+              <div onClick={() => openModal(index)} className="cursor-pointer hover:px-1 hover:bg-blue-200 hover:rounded-lg">
                 <RecentRecordItem item={item} />
               </div>
             ) : (

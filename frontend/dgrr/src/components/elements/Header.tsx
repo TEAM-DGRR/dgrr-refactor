@@ -54,7 +54,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
     // WAITING : 대기실에서의 헤더(클립보드 복사 버튼, 나가기 버튼)
     // GAME : 게임 화면에서의 헤더(시간, 나가기 버튼)
     // OTHER : 랭킹 조회, 프로필 수정, 최근 전적에서의 헤더(뒤로 가기 버튼)
-    <div className='w-screen 2sm:w-[360px]'>
+    <div className='max-w-[500px]'>
       {headerType === 'MAIN' ? (
         <div className='bg-main-blue h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex ms-4 cursor-pointer hover:text-white'>

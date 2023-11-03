@@ -23,11 +23,11 @@ const ListPage = () => {
   const [isModal, setIsModal] = useState(false);
 
   return (
-    <div className="bg-main-blue w-screen h-screen max-w-[500px]">
+    <div className="bg-main-blue w-screen h-screen max-w-[500px] min-h-[565px]">
       <Header headerType="GAMESTART" />
       {isModal && <FindRoomModal handleModal={handleModal} />}
 
-      <div className="space-y-6">
+      <div className="pt-6 space-y-6">
         {gameList.map((item, index) =>
           index === 1 ? (
             <div className={`${commonClass} cursor-pointer`} key={index} onClick={handleModal}>

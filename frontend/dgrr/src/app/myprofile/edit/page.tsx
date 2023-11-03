@@ -92,36 +92,36 @@ const Edit = () => {
   }, []);
 
   return (
-    <div>
-      <Header headerType="OTHER">프로필 수정</Header>
+    <div className='w-screen max-w-[500px]'>
+      <Header headerType='OTHER'>프로필 수정</Header>
       <div>
         <ImageInput myProfileImage={sampleData.member.profileImage} />
         <DataInput
-          inputType="NICKNAME"
-          pageType="PROFILE_EDIT"
+          inputType='NICKNAME'
+          pageType='PROFILE_EDIT'
           onChange={handleNicknameChange}
           value={nowNickname}
         />
         <DataInput
-          inputType="DESCRIPTION"
-          pageType="PROFILE_EDIT"
+          inputType='DESCRIPTION'
+          pageType='PROFILE_EDIT'
           onChange={handleDescirptChange}
           value={nowDescription}
         />
       </div>
-      <div className="px-6">
+      <div className='px-6'>
         <div
           onClick={handleSaveButton}
-          className="bg-main-blue rounded-lg w-full max-w-xs p-4 hover:brightness-110"
+          className='bg-main-blue rounded-lg w-full max-w-[500px] p-4 hover:brightness-110'
         >
-          <div className="text-white text-center text-base font-bold cursor-pointer uppercase leading-none">
+          <div className='text-white text-center text-base font-bold cursor-pointer uppercase leading-none'>
             저장
           </div>
         </div>
       </div>
       <div
         onClick={openWithdrawModal}
-        className="flex justify-center mt-40 mb-3 text-xs font-semibold cursor-pointer hover:text-[#E83F57]"
+        className='flex justify-center mt-40 mb-3 text-xs font-semibold cursor-pointer hover:text-[#E83F57]'
       >
         회원 탈퇴
       </div>
