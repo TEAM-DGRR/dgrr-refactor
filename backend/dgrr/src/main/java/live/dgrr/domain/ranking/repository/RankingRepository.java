@@ -1,6 +1,9 @@
 package live.dgrr.domain.ranking.repository;
 
+import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.ranking.dto.response.RankingResponse;
+import live.dgrr.domain.ranking.entity.Season;
 import live.dgrr.global.config.redis.RankingConfig;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -15,30 +18,38 @@ public class RankingRepository {
 
     private final RedisTemplate<String, Long> redisTemplate;
     private final String key;
+    private final String lastKey;
     private final int CURRENT_SEASON;
+    private final MemberRepository memberRepository;
 
-    public RankingRepository(RedisTemplate<String, Long> redisTemplate, RankingConfig rankingConfig) {
+    public RankingRepository(RedisTemplate<String, Long> redisTemplate, RankingConfig rankingConfig, MemberRepository memberRepository) {
         this.redisTemplate = redisTemplate;
         this.key = rankingConfig.getKey() + rankingConfig.getSeason();
+        this.lastKey = rankingConfig.getKey() + (rankingConfig.getSeason() - 1);
         this.CURRENT_SEASON = rankingConfig.getSeason();
+        this.memberRepository = memberRepository;
     }
 
     public boolean addRanking(Long memberId, double rating) {
         return redisTemplate.opsForZSet().add(key, memberId, rating);
     }
 
-    public List<RankingResponse> getRankingMember(Long memberId) {
+    public List<RankingResponse> getRankingMember(Member member, Season season) {
         List<RankingResponse> rankings = new ArrayList<>();
-        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().rangeWithScores(key, 0, -1);
+        String seasonKey = season == Season.CURRENT? key : lastKey;
+        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().rangeWithScores(seasonKey, 0, -1);
         if (results != null) {
             for (ZSetOperations.TypedTuple<Long> result : results) {
                 String value = String.valueOf(result.getValue());
                 Double rating = result.getScore();
+                Member memberForRank = memberRepository.findById(Long.valueOf(value)).get();
                 rankings.add(
                         RankingResponse.of(
                                 Long.valueOf(value),
                                 rating,
-                                redisTemplate.opsForZSet().reverseRank(key, Long.valueOf(value))+1
+                                redisTemplate.opsForZSet().reverseRank(seasonKey, Long.valueOf(value))+1,
+                                memberForRank.getNickname(),
+                                memberForRank.getProfileImage()
                         )
                 );
             }
