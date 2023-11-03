@@ -2,8 +2,10 @@ package live.dgrr.domain.member.controller;
 
 import jakarta.validation.Valid;
 import live.dgrr.domain.gamehistory.dto.response.GameHistoryWithOpponentInfoResponse;
+import live.dgrr.domain.member.dto.request.MemberAddRequest;
 import live.dgrr.domain.member.dto.request.MemberRequest;
 import live.dgrr.domain.member.dto.response.MemberInfoResponse;
+import live.dgrr.domain.member.dto.response.MemberResponse;
 import live.dgrr.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,12 @@ public class MemberController {
         String memberId = "1";
         memberService.updateByMember(memberId, memberRequest);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<MemberResponse> addMember(@RequestBody MemberAddRequest memberAddRequest) {
+        MemberResponse memberResponse = memberService.addMember(memberAddRequest);
+        return new ResponseEntity<>(memberResponse, HttpStatus.OK);
     }
 
 }

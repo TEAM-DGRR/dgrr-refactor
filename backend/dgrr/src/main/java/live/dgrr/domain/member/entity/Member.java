@@ -1,19 +1,14 @@
 package live.dgrr.domain.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import live.dgrr.global.entity.BaseEntity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Member extends BaseEntity {
 
     @Id
@@ -23,6 +18,7 @@ public class Member extends BaseEntity {
     private String nickname;
     private String profileImage;
     private String description;
+    @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
     public void updateMember(String nickname, String profileImage, String description) {

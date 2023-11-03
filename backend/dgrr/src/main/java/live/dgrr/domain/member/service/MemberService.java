@@ -3,6 +3,7 @@ package live.dgrr.domain.member.service;
 import live.dgrr.domain.gamehistory.entity.GameHistory;
 import live.dgrr.domain.gamehistory.repository.GameHistoryRepository;
 import live.dgrr.domain.gamehistory.dto.response.GameHistoryWithOpponentInfoResponse;
+import live.dgrr.domain.member.dto.request.MemberAddRequest;
 import live.dgrr.domain.member.dto.request.MemberRequest;
 import live.dgrr.domain.member.dto.response.MemberInfoResponse;
 import live.dgrr.domain.ranking.dto.response.MemberRankingInfoResponse;
@@ -96,4 +97,9 @@ public class MemberService {
         return true;
     }
 
+    public MemberResponse addMember(MemberAddRequest memberAddRequest) {
+        Member member = memberRepository.save(memberAddRequest.forAddMember());
+        MemberResponse memberResponse = MemberResponse.of(member);
+        return memberResponse;
+    }
 }

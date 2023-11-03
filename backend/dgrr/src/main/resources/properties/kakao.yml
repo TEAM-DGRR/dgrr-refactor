@@ -1,0 +1,4 @@
+# value for kakao login
+kakao:
+  clientId: ${KAKAO_CLIENT_ID}
+  redirectUri: ${KAKAO_REDIRECT_URI}
