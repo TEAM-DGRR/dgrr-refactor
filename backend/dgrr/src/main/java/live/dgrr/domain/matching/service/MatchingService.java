@@ -1,5 +1,6 @@
 package live.dgrr.domain.matching.service;
 
+import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.matching.repository.MatchingRepository;
 import live.dgrr.domain.waitingroom.entity.GameStartEvent;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class MatchingService {
 
         if(!matchingRepository.isMemberSetEmpty() && !matchingRepository.isFirstMember(memberId)) {
             //member가 있고 제일 첫번째가 본인이 아니면 매칭해서 보내기
-            publisher.publishEvent(new GameStartEvent(matchingRepository.publishFirstMember(),memberId));
+            publisher.publishEvent(new GameStartEvent(matchingRepository.publishFirstMember(),memberId, GameType.RANDOM));
         }else {
             //사용자 넣기
             matchingRepository.addMember(memberId, (double) System.currentTimeMillis());
