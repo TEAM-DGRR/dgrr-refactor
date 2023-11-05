@@ -58,7 +58,9 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       {headerType === 'MAIN' ? (
         <div className='bg-main-blue h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex ms-4 cursor-pointer hover:text-white'>
-            <IoTrophyOutline fontSize={'27px'} />
+            <Link href='/ranking'>
+              <IoTrophyOutline fontSize={'27px'} />
+            </Link>
           </div>
           <div className='me-4 cursor-pointer hover:text-white'>
             <Link href='/myprofile'>
