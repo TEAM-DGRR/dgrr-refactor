@@ -5,6 +5,7 @@ import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
+import live.dgrr.domain.gamehistory.service.GameHistoryService;
 import live.dgrr.global.entity.Tier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.springframework.scheduling.TaskScheduler;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class GameSecondRoundServiceTest {
 
+    @Mock
+    GameHistoryService gameHistoryService;
     @Spy
     GameRoomRepository gameRoomRepository;
     @Spy
@@ -49,8 +51,8 @@ class GameSecondRoundServiceTest {
     @BeforeEach
     void setUp() {
         gameRoomId = "roomId";
-        memberOneId = "M1";
-        memberTwoId = "M2";
+        memberOneId = "6";
+        memberTwoId = "5";
 
         memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
         memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);

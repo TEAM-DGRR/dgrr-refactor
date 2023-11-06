@@ -4,6 +4,7 @@ import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
+import live.dgrr.domain.gamehistory.service.GameHistoryService;
 import live.dgrr.global.entity.Tier;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GameException;
@@ -25,6 +26,7 @@ public class GameSecondRoundService {
     private final GameRoomRepository gameRoomRepository;
     private final ApplicationEventPublisher publisher;
     private final TaskScheduler taskScheduler;
+    private final GameHistoryService gameHistoryService;
 
     private static final long ROUND_TIME = 30L;
     private static final String SECOND_ROUND_LAUGH = "/recv/secondroundend-laugh";
@@ -105,6 +107,9 @@ public class GameSecondRoundService {
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), gameResult);
         Tier afterTier = TierCalculator.calculateRank(afterRating);
 
+        //게임 결과 저장
+        gameHistoryService.save(gameRoom, gameRoomId, memberId, gameResult, afterRating - myInfo.rating(), null);
+
         return GameResultResponse.builder()
                 .gameResult(gameResult)
                 .myInfo(myInfo)
@@ -129,6 +134,9 @@ public class GameSecondRoundService {
         GameMember enemyInfo = gameRoom.getMyInfo(memberId);
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), GameResult.WIN);
         Tier afterTier = TierCalculator.calculateRank(afterRating);
+
+        //todo: 게임 팅겼을 시 history 저장
+//        gameHistoryService.save(gameRoom, gameRoomId, memberId, GameResult.WIN, afterRating - myInfo.rating(), null);
 
         return GameResultResponse.builder()
                 .gameResult(GameResult.WIN)

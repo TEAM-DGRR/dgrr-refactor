@@ -5,13 +5,11 @@ import live.dgrr.domain.game.entity.GameResult;
 import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.global.entity.BaseEntity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GameHistory extends BaseEntity {
@@ -29,7 +27,6 @@ public class GameHistory extends BaseEntity {
     private GameType gameType; //RANDOM, PRIVATE
     private Long gameTime;
     private Integer ratingChange; //해당 게임으로 반영되는 점수
-    private Integer holdingTime;
+    private Long holdingTime;
     private String highlightImage;
-
 }

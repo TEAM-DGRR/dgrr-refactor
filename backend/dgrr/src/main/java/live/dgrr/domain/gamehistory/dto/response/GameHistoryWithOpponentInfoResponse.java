@@ -13,7 +13,7 @@ public record GameHistoryWithOpponentInfoResponse(
         Long gameHistoryId,
         GameResult gameResult,
         GameType gameType,
-        Integer holdingTime,
+        Long holdingTime,
         Integer ratingChange,
         String highlightImage,
         LocalDateTime createdAt,

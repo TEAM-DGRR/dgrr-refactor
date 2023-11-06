@@ -122,4 +122,17 @@ public class GameRoom {
             return memberOne;
         }
     }
+
+    public long getGameTime() {
+        long firstRoundDuration = Duration.between(firstRoundStartTime, firstRoundEndTime).toMillis();
+        long secondRoundDuration = Duration.between(secondRoundStartTime, secondRoundEndTime).toMillis();
+        return firstRoundDuration + secondRoundDuration;
+    }
+
+    public long getHoldingTime(String memberId) {
+        if(memberId.equals(memberOne.memberId())) {
+            return Duration.between(secondRoundStartTime, secondRoundEndTime).toMillis();
+        }
+        return Duration.between(firstRoundStartTime, firstRoundEndTime).toMillis();
+    }
 }
