@@ -11,9 +11,14 @@ import live.dgrr.domain.game.entity.event.FirstRoundOverEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.game.repository.GameRoomRepository;
+import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.entity.MemberRole;
+import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.openvidu.OpenviduService;
+import live.dgrr.domain.ranking.repository.RankingRepository;
 import live.dgrr.global.entity.Tier;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -30,8 +35,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class GameFirstRoundServiceTest {
 
+    @Spy
+    MemberRepository memberRepository;
     @Mock
     OpenviduService openviduService;
+    @Mock
+    RankingRepository rankingRepository;
     @Mock
     TaskScheduler taskScheduler;
     @Spy
@@ -58,15 +67,23 @@ class GameFirstRoundServiceTest {
     @BeforeEach
     void setUp() {
         gameRoomId = "roomId";
-        memberOneId = "M1";
-        memberTwoId = "M2";
+        memberOneId = "5";
+        memberTwoId = "6";
 
-        memberOne = new GameMember(memberOneId, "Player1", "jpg", "This is description", 1500, Tier.SILVER);
-        memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "This is description", 1200, Tier.BRONZE);
+
+        memberOne = new GameMember(memberOneId, "Player1", "jpg", "des", 1500, Tier.SILVER);
+        memberTwo = new GameMember(memberTwoId, "Player2", "jpg", "des", 1200, Tier.BRONZE);
         gameRoom = new GameRoom(gameRoomId, memberOne, memberTwo, GameStatus.BEFORE_START, GameType.RANDOM);
     }
+    @DisplayName("게임 시작 테스트")
     @Test
     void gameStartTest() {
+        Member mOne = new Member(Long.parseLong(memberOneId), "kakao1", "Player1", "jpg", "des", MemberRole.USER);
+        Member mTwo = new Member(Long.parseLong(memberTwoId), "kakao1", "Player1", "jpg", "des", MemberRole.USER);
+
+        doAnswer(invocation -> Optional.of(mOne)).when(memberRepository).findById(Long.parseLong(memberOneId));
+        doAnswer(invocation -> Optional.of(mTwo)).when(memberRepository).findById(Long.parseLong(memberTwoId));
+
         List<GameStartResponse> gameStartResponses = gameFirstRoundService.gameStart(memberOneId, memberTwoId, GameType.RANDOM);
         assertThat(gameStartResponses.get(0).myInfo().memberId()).isEqualTo(memberOneId);
         assertThat(gameStartResponses.get(1).myInfo().memberId()).isEqualTo(memberTwoId);

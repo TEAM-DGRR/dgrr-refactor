@@ -10,10 +10,14 @@ import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundOverEvent;
 import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.game.repository.GameRoomRepository;
+import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.openvidu.OpenviduService;
+import live.dgrr.domain.ranking.repository.RankingRepository;
 import live.dgrr.global.entity.Tier;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GameException;
+import live.dgrr.global.util.TierCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -32,6 +36,8 @@ public class GameFirstRoundService {
     private final GameRoomRepository gameRoomRepository;
     private final ApplicationEventPublisher publisher;
     private final TaskScheduler taskScheduler;
+    private final MemberRepository memberRepository;
+    private final RankingRepository rankingRepository;
 
     private static final long ROUND_TIME = 30L;
 
@@ -44,8 +50,8 @@ public class GameFirstRoundService {
      * @param memberTwoId 멤버2 아이디
      */
     public List<GameStartResponse> gameStart(String memberOneId, String memberTwoId, GameType gameType) {
-        GameMember memberOne = new GameMember(memberOneId, memberOneId," ", "descript1", 1400, Tier.BRONZE);
-        GameMember memberTwo = new GameMember(memberTwoId, memberTwoId," ", "descript2", 1400, Tier.GOLD);
+        GameMember memberOne = makeGameMember(Long.parseLong(memberOneId));
+        GameMember memberTwo = makeGameMember(Long.parseLong(memberTwoId));
 
         //게임 ID 생성
         String gameRoomId = UUID.randomUUID().toString();
@@ -129,5 +135,13 @@ public class GameFirstRoundService {
 
         publisher.publishEvent(new FirstRoundEndEvent(gameRoom.getMemberOne().memberId(),
                 gameRoom.getMemberTwo().memberId(), gameRoom.getFirstRoundResult(), destination));
+    }
+
+    private GameMember makeGameMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GameException(ErrorCode.MEMBER_NOT_FOUND));
+        int rating = rankingRepository.getRatingByMemberId(memberId).intValue();
+        Tier tier = TierCalculator.calculateRank(rating);
+        return new GameMember(member,rating,tier);
     }
 }
