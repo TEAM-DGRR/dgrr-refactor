@@ -1,35 +1,19 @@
 'use client';
 
-import { useState } from 'react';
 import { IoCamera } from 'react-icons/io5';
 
 interface ImageInputProps {
   myProfileImage: string;
+  profileImageUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ImageInput = ({ myProfileImage }: ImageInputProps) => {
-  const [nowProfileImage, setNowProfileImage] = useState(myProfileImage);
-
-  // 프로필 이미지 업로드해서 변경하는 코드
-  const changeProfileImage = (event: any) => {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      if (event && event.target && typeof event.target.result === 'string') {
-        setNowProfileImage(event.target.result);
-      }
-    };
-
-    if (event && event.target && event.target.files && event.target.files[0]) {
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  };
-
+const ImageInput = ({ myProfileImage, profileImageUpdate }: ImageInputProps) => {
   return (
     <div className='px-6 py-8'>
       <div className='w-[121px] relative'>
         <img
           className='w-[121px] aspect-square rounded-full'
-          src={nowProfileImage}
+          src={myProfileImage}
           alt='기본 사진'
         />
         <label
@@ -44,7 +28,7 @@ const ImageInput = ({ myProfileImage }: ImageInputProps) => {
           id='fileInput'
           style={{ display: 'none' }}
           accept='img/*'
-          onChange={changeProfileImage}
+          onChange={profileImageUpdate}
         />
       </div>
     </div>

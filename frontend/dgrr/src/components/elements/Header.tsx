@@ -79,16 +79,18 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'PROFILE' ? (
         <div className='h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex gap-2 ms-2'>
-            <div onClick={handleMoveBack} className='cursor-pointer hover:text-main-blue'>
-              <IoChevronBackOutline fontSize={'27px'} />
+            <div className='cursor-pointer hover:text-main-blue'>
+              <Link href='/main'>
+                <IoChevronBackOutline fontSize={'27px'} />
+              </Link>
             </div>
             <div className='inline-block text-lg font-semibold'>마이 프로필</div>
+          </div>
+          <Link href='/myprofile/edit'>
+            <div className='me-4 hover:text-main-blue'>
+              <IoPencilSharp fontSize={'25px'} />
             </div>
-            <Link href='/myprofile/edit'>
-              <div className='me-4 hover:text-main-blue'>
-                <IoPencilSharp fontSize={'25px'} />
-              </div>
-            </Link>
+          </Link>
         </div>
       ) : headerType === 'WAITING' ? (
         <div className='bg-black h-[60px] top-0 right-0 gap-2 pe-4 flex justify-end items-center'>
