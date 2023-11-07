@@ -1,0 +1,1 @@
+export const setUrl = process.env.NEXT_PUBLIC_BACK_URL;
