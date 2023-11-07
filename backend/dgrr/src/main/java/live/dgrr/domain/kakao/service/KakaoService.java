@@ -2,10 +2,13 @@ package live.dgrr.domain.kakao.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import live.dgrr.domain.member.dto.response.MemberLoginResponse;
 import live.dgrr.domain.member.dto.response.MemberResponse;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.global.config.kakao.KakaoConfig;
+import live.dgrr.global.security.jwt.JwtProperties;
+import live.dgrr.global.security.jwt.TokenProvider;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -18,10 +21,12 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final KakaoConfig kakaoConfig;
+    private final TokenProvider tokenProvider;
 
-    public KakaoService(MemberRepository memberRepository, KakaoConfig kakaoConfig) {
+    public KakaoService(MemberRepository memberRepository, KakaoConfig kakaoConfig, TokenProvider tokenProvider) {
         this.memberRepository = memberRepository;
         this.kakaoConfig = kakaoConfig;
+        this.tokenProvider = tokenProvider;
     }
 
     public String getKakaoAccessToken (String code) {
@@ -105,14 +110,19 @@ public class KakaoService {
 
     public MemberResponse getMemberByKakaoId(String kakaoId) {
         Optional<Member> memberOpt = memberRepository.findByKakaoId(kakaoId);
-
         return memberOpt.map(member -> MemberResponse.builder()
+                        .kakaoId(member.getKakaoId())
                         .memberId(member.getMemberId())
                         .nickname(member.getNickname())
                         .profileImage(member.getProfileImage())
                         .description(member.getDescription())
                         .build())
                 .orElse(null);
+    }
+
+    public MemberLoginResponse getTokenFromMember(String kakaoId) {
+        MemberResponse member = getMemberByKakaoId(kakaoId);
+        return new MemberLoginResponse(JwtProperties.TOKEN_PREFIX+tokenProvider.generateTokenDto(member.kakaoId(), member.memberId()).accessToken(), member);
     }
 
 }

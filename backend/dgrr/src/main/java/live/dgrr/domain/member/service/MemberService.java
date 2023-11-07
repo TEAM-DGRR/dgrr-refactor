@@ -28,9 +28,6 @@ public class MemberService {
     private final RankingRepository rankingRepository;
     private final GameHistoryRepository gameHistoryRepository;
 
-    private final int MAX_NICKNAME_LENGTH = 12;
-    private final int MAX_DESCRIPTION_LENGTH = 20;
-
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
     }
@@ -38,7 +35,7 @@ public class MemberService {
     @Transactional(readOnly=true)
     public MemberInfoResponse getMyInfo(String memberId) {
         Member member = findMemberById(Long.parseLong(memberId));
-        MemberResponse memberDto = MemberResponse.of(member.getMemberId(), member.getNickname(), member.getProfileImage(), member.getDescription());
+        MemberResponse memberDto = MemberResponse.of(member.getMemberId(), member.getKakaoId(), member.getNickname(), member.getProfileImage(), member.getDescription());
 
         MemberRankingInfoResponse ranking = MemberRankingInfoResponse.of(
                 rankingRepository.getcurentSeason(),

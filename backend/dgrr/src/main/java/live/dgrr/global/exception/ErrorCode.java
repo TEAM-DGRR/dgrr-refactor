@@ -28,6 +28,10 @@ public enum ErrorCode {
     VALIDATION_DESCRIPTION_LENGTH_INVALID(HttpStatus.BAD_REQUEST,"Validation Description Length Invalid"),
     VALIDATION_NICKNAME_LENGTH_INVALID(HttpStatus.BAD_REQUEST,"Validation Nickname Length Invalid"),
     NICKNAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "Nickname Already Exist"),
+    WRONG_JWT_SIGNATURE(HttpStatus.NOT_FOUND, "Wrong JWT Signature"), // 잘못된 jwt 서명
+    EXPIRED_JWT(HttpStatus.NOT_FOUND, "Expired JWT Token"), // 만료된 jwt 토큰
+    UNSUPPORTED_JWT(HttpStatus.NOT_FOUND, "Unsupported JWT Token"), // 지원되지 않는 jwt 토큰
+    WRONG_JWT_TOKEN(HttpStatus.NOT_FOUND, "Wrong JWT Token"), // JWT 토큰이 잘못됨
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation Error");
     private final HttpStatus httpStatus;
     private final String message;
