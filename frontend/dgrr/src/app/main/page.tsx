@@ -1,14 +1,18 @@
-'use client';
-import character from '@/../public/images/logo_character.png';
-import title from '@/../public/images/logo_title.png';
-import Image from 'next/image';
-import { LinkButton } from '@/components/LinkButton';
-import { FuncButton } from '@/components/FuncButton';
-import Header from '@/components/elements/Header';
+"use client";
+import character from "@/../public/images/logo_character.png";
+import title from "@/../public/images/logo_title.png";
+import Image from "next/image";
+import { LinkButton } from "@/components/LinkButton";
+import { FuncButton } from "@/components/FuncButton";
+import Header from "@/components/elements/Header";
+import { ExplainModal } from "@/components/elements/ExplainModal";
+import { useState } from "react";
 
 const MainPage = () => {
-  // 나중에 설명 모달 on/off 로직 추가할 예정
-  const handleModal = () => {};
+  const [openModal, setOpenModal] = useState(false)
+  const handleModal = () => {
+    setOpenModal(!openModal)
+  };
   return (
     <div className='bg-main-blue w-screen h-screen min-h-[580px] max-w-[500px]'>
       <Header headerType='MAIN' />
