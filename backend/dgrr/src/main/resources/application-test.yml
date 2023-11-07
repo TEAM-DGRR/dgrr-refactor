@@ -1,0 +1,6 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1 # 기본 데이터베이스가 아닌 다른 번호를 사용합니다.

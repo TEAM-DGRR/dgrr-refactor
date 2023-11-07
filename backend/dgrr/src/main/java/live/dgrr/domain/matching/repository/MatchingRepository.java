@@ -2,9 +2,13 @@ package live.dgrr.domain.matching.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -16,8 +20,8 @@ public class MatchingRepository {
     private static final String WAITING_MEMBERS_KEY = "waitingQueue";
 
 
-    public void addMember(String memberId, Double currentTimeMillis) {
-        redisTemplate.opsForZSet().add(WAITING_MEMBERS_KEY, memberId, currentTimeMillis);
+    public void addMember(String memberId, Double rating) {
+        redisTemplate.opsForZSet().add(WAITING_MEMBERS_KEY, memberId, rating);
     }
 
     public boolean isMemberSetEmpty() {
@@ -25,22 +29,53 @@ public class MatchingRepository {
         return (size == null || size == 0);
     }
 
-    public boolean isFirstMember(String memberId) {
-        Set<String> members = redisTemplate.opsForZSet().range(WAITING_MEMBERS_KEY, 0, 0);
-        if (members != null && !members.isEmpty()) {
-            return members.iterator().next().equals(memberId);
-        }
-        return false;
-    }
-
-    public String publishFirstMember() {
-        Set<String> members = redisTemplate.opsForZSet().range(WAITING_MEMBERS_KEY, 0, 0);
-        String memberId = members.iterator().next();
-        redisTemplate.opsForZSet().remove(WAITING_MEMBERS_KEY, memberId);
-        return memberId;
-    }
-
     public void removeMember(String memberId) {
         redisTemplate.opsForZSet().remove(WAITING_MEMBERS_KEY, memberId);
+    }
+
+    public String findClosestRatingMember(double memberRating) {
+        // 정의된 레이팅 범위. +/- 50 내에서 검색
+        double minRatingRange = memberRating - 50;
+        double maxRatingRange = memberRating + 50;
+
+        Set<String> closeRatingMembers = redisTemplate.opsForZSet().rangeByScore(WAITING_MEMBERS_KEY, minRatingRange, maxRatingRange);
+
+        String closestMemberId = null;
+        double closestDistance = Double.MAX_VALUE;
+
+        // Rating이 가까운 멤버 찾기
+        for (String closeMemberId : closeRatingMembers) {
+            Double rating = redisTemplate.opsForZSet().score(WAITING_MEMBERS_KEY, closeMemberId);
+            if (rating != null) {
+                double distance = Math.abs(rating - memberRating);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestMemberId = closeMemberId;
+                }
+            }
+        }
+
+        // Rating이 맞는 멤버가 없다면 바로 null 반환
+        if (closestMemberId == null) {
+            return null;
+        }
+
+        // 트랜잭션 내에서 멤버 삭제
+        String finalClosestMemberId = closestMemberId;
+        List<Object> txResults = redisTemplate.execute(new SessionCallback<>() {
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi(); // 트랜잭션 시작
+                operations.opsForZSet().remove(WAITING_MEMBERS_KEY, finalClosestMemberId); // 멤버 삭제
+                return operations.exec(); // 트랜잭션 실행
+            }
+        });
+
+        // 트랜잭션 실행 결과 확인
+        if (txResults.isEmpty()) {
+            return null; // 트랜잭션 실패 또는 멤버 삭제 실패
+        }
+
+        // 성공적으로 멤버 삭제되었으면 ID 반환
+        return closestMemberId;
     }
 }
