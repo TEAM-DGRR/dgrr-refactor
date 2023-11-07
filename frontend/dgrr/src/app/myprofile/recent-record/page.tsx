@@ -136,7 +136,7 @@ const RecentRecord = () => {
         {myInfo.gameHistoryList.map((item, index) => (
           <div key={index}>
             {item.gameResult !== 'DRAW' ? (
-              <div onClick={() => openModal(index)} className="cursor-pointer hover:px-1 hover:bg-blue-200 hover:rounded-lg">
+              <div onClick={() => openModal(index)} className="cursor-pointer hover:bg-blue-200 hover:rounded-lg">
                 <RecentRecordItem item={item} />
               </div>
             ) : (

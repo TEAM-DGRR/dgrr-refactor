@@ -24,7 +24,7 @@ const RecentRecordItem = ({ item }: RecentRecordItemProps) => {
   return (
     <div>
       <div className="flex h-[40px] mb-1 justify-between">
-        <div className="gap-x-[10px] flex items-center">
+        <div className="gap-x-[10px] flex items-center ms-2">
           {item.gameResult === 'WIN' ? (
             <div className="bg-[#5383E8] w-[24px] h-[24px] text-white text-center rounded-full font-semibold">
               승
@@ -45,7 +45,7 @@ const RecentRecordItem = ({ item }: RecentRecordItemProps) => {
           />
           <div className="text-[14px] inline-block">{item.opponentNickname}</div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center me-2">
           {item.gameResult !== 'DRAW' ? (
             <div>
               <IoImageOutline fontSize={'24px'} />

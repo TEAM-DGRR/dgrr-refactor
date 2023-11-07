@@ -9,30 +9,6 @@ body {
   align-items: center;
 }
 
-.tier-item {
-  background-color: #e7e0ec;
-  padding: 8px 15px;
-  border-radius: 10px;
-  display: flex;
-  vertical-align: middle;
-}
-
-.tier-image {
-  width: 38px;
-  height: 38px;
-  margin-right: 12px;
-}
-
-.tier-text {
-  display: inline-block;
-  margin: auto 0;
-}
-
-.tier-title {
-  font-size: 14px;
-  font-weight: 600;
-}
-
 .custom-close-button {
   position: absolute;
   display: block;

@@ -1,6 +1,4 @@
 'use client';
-
-import Swal from 'sweetalert2';
 import React, { useState, useEffect } from 'react';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { IoHelpCircleOutline } from 'react-icons/io5';
@@ -15,6 +13,28 @@ interface RankProps {
 
 const Rank = ({ pageType, tier, rating }: RankProps) => {
   const [nowRating, setNowRating] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const myTier =
+    tier === 'Gold'
+      ? { name: 'Gold', image: '/images/Gold.png', bgColor: '#FCC858' }
+      : tier === 'Sliver'
+      ? { name: 'Sliver', image: '/images/Sliver.png', bgColor: '#B8B8B8' }
+      : { name: 'Bronze', image: '/images/Bronze.png', bgColor: '#C4872F' };
+
+  const tierList = [
+    { image: '/images/Gold.png', title: '골드 Gold', explain: '1800 ~' },
+    { image: '/images/Sliver.png', title: '실버 Sliver', explain: '1600 ~' },
+    { image: '/images/Bronze.png', title: '브론즈 Bronze', explain: '1400 ~' },
+  ];
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setNowRating(rating - 1400);
@@ -22,121 +42,75 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
 
   // ProgressBar 컴포넌트에 대한 기본 매개변수 설정
   const progressBarProps = {
+    // 지금 게이지바가 얼마나 찼는지
     completed: nowRating,
+    // 게이지바 전체 용량
     maxCompleted: 400,
-    customLabel: rating.toString(),
+    // 게이지바 안에 들어갈 문구
+    customLabel: ' ',
     width: '270px',
     height: '25px',
-  };
-
-  const showHelp = () => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: 'center',
-      width: 350,
-      showConfirmButton: false,
-      allowOutsideClick: true,
-      showCloseButton: true,
-      customClass: {
-        closeButton: 'custom-close-button', // 사용자 정의 클래스를 closeButton에 지정
-      },
-    });
-
-    Toast.fire({
-      html: `
-      <div>
-        <div class="tier-item" style="margin-top: 22px">
-          <img class="tier-image" src="/images/Gold.png" />
-          <div class="tier-text">
-            <div class="tier-title">골드 Gold</div>
-            <div style="font-size: 12px">1800 ~</div>
-          </div>
-        </div>
-        <div class="tier-item" style="margin: 11px 0px">
-          <img class="tier-image" src="/images/Sliver.png" />
-          <div class="tier-text">
-            <div class="tier-title">실버 Sliver</div>
-            <div style="font-size: 12px">1600 ~</div>
-          </div>
-        </div>
-        <div class="tier-item">
-          <img class="tier-image" src="/images/Bronze.png" />
-          <div class="tier-text">
-            <div class="tier-title">브론즈 Bronze</div>
-            <div style="font-size: 12px">1400 ~</div>
-          </div>
-        </div>
-      </div>
-    `,
-    });
   };
 
   return (
     <div>
       {pageType === 'PROFILE' ? (
-        <div className="h-[220px] py-6 my-2">
-          <div className="flex items-center pb-4">
-            <div className="text-lg font-semibold ps-6 me-1">내 티어</div>
-            <div className="inline-block cursor-pointer hover:text-main-blue" onClick={showHelp}>
+        <div className='h-[220px] py-6 my-2'>
+          <div className='flex items-center pb-4'>
+            <div className='text-lg font-semibold ps-6 me-1'>내 티어</div>
+            <div
+              className='inline-block cursor-pointer hover:text-main-blue'
+              onClick={handleModalOpen}
+              onMouseLeave={handleModalClose}
+            >
               <IoHelpCircleOutline fontSize={'18px'} />
             </div>
+            <div>
+              {/* 물음표 누르면 티어 정보 모달이 뜸 */}
+              <div>
+                {isModalOpen === true ? (
+                  <div className='z-10 w-full h-full fixed top-[-16px] flex items-center'>
+                    <div className='w-2/3 2sm:ms-3 h-fit bg-white rounded-lg border-2 border-black p-3'>
+                      <div className='bg-white rounded-lg space-y-2'>
+                        {tierList.map((tier, index) => [
+                          <div
+                            className='bg-[#e7e0ec] py-[10px] px-[8px]  rounded-md flex items-center gap-x-3'
+                            key={index}
+                          >
+                            <img src={tier.image} className='w-[38px] aspect-square ms-3' />
+                            <div>
+                              <div className='text-sm font-semibold'>{tier.title}</div>
+                              <div className='text-xs'>{tier.explain}</div>
+                            </div>
+                          </div>,
+                        ])}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
-          <div className="flex justify-center">
-            {tier === 'Gold' ? (
-              <img src="/images/Gold.png" alt="Gold" className="w-[80px] aspect-square" />
-            ) : tier === 'Sliver' ? (
-              <img src="/images/Sliver.png" alt="Sliver" className="w-[80px] aspect-square" />
-            ) : (
-              <img src="/images/Bronze.png" alt="Bronze" className="w-[80px] aspect-square" />
-            )}
+          <div className='flex justify-center'>
+            <img src={myTier.image} alt={myTier.name} className='w-[80px] aspect-square' />
           </div>
-          <div className="flex justify-center mt-[19px]">
-            {tier === 'Gold' ? (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#FCC858"
-              />
-            ) : tier === 'Sliver' ? (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#B8B8B8"
-              />
-            ) : (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#C4872F"
-              />
-            )}
+          <div className='flex justify-center mt-[19px]'>
+            <ProgressBar
+              {...progressBarProps} // 기본 매개변수를 전달
+              bgColor={myTier.bgColor}
+            />
           </div>
         </div>
       ) : (
         <div>
-          <div className="flex justify-center">
-            {tier === 'Gold' ? (
-              <img src="/images/Gold.png" alt="Gold" className="w-[90px] aspect-square" />
-            ) : tier === 'Sliver' ? (
-              <img src="/images/Sliver.png" alt="Sliver" className="w-[90px] aspect-square" />
-            ) : (
-              <img src="/images/Bronze.png" alt="Bronze" className="w-[90px] aspect-square" />
-            )}
+          <div className='flex justify-center'>
+            <img src={myTier.image} alt={myTier.name} className='w-[90px] aspect-square' />
           </div>
-          <div className="flex justify-center mt-[25px]">
-            {tier === 'Gold' ? (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#FCC858"
-              />
-            ) : tier === 'Sliver' ? (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#B8B8B8"
-              />
-            ) : (
-              <ProgressBar
-                {...progressBarProps} // 기본 매개변수를 전달
-                bgColor="#C4872F"
-              />
-            )}
+          <div className='flex justify-center mt-[25px]'>
+            <ProgressBar
+              {...progressBarProps} // 기본 매개변수를 전달
+              bgColor={myTier.bgColor}
+            />
           </div>
         </div>
       )}
