@@ -40,6 +40,9 @@ class CaptureServiceTest {
     @Mock
     ApplicationEventPublisher publisher;
 
+    @Mock
+    HighlightServiceImpl highlightServiceImpl;
+
     @Captor
     private ArgumentCaptor<FirstRoundOverEvent> firstRoundOverEventCaptor;
 
@@ -66,7 +69,6 @@ class CaptureServiceTest {
         when(gameRoomRepository.findById(gameRoomId)).thenReturn(Optional.of(gameRoom));
     }
 
-    // Common method to handle the CaptureResult creation and assertions
     private CaptureResult processCaptureResult(String captureJson, int expectedRound, boolean expectImage) {
         CaptureResult captureResult = captureService.deSerializationCapture(captureJson);
 
@@ -85,7 +87,6 @@ class CaptureServiceTest {
         return captureResult;
     }
 
-    // Common method to handle the event publishing assertions
     private void verifyCaptureResultEventPublished(CaptureResult captureResult) {
         verify(publisher).publishEvent(captureResultEventCaptor.capture());
         CaptureResultEvent publishedEvent = captureResultEventCaptor.getValue();
@@ -94,7 +95,6 @@ class CaptureServiceTest {
         assertThat(publishedEvent.captureResult()).isEqualTo(captureResult);
     }
 
-    // Example test case for the 1st Round where the player laughs
     @DisplayName("1라운드 - 웃었을 때")
     @Test
     void deSerializationCaptureTest_1Round_LAUGH() {
@@ -173,30 +173,27 @@ class CaptureServiceTest {
                 gameSessionId
         );
 
-        // Encoding image data for the example, conditionally included based on emotion and probability
         String imageJson = "";
         if ("Smile".equals(emotion) && probability >= 0.5) {
             imageJson = ",\"encodedImage\": \"AABS@9XX1234\"";
         }
 
-        // Constructing the entire JSON
-        String captureJson = String.format(
+
+        return String.format(
                 "{" +
-                        "\"header\": %s%s," + // Include the imageJson conditionally
+                        "\"header\": %s%s," +
                         "\"success\": %b," +
                         "\"emotion\": \"%s\"," +
                         "\"probability\": %.2f," +
                         "\"smileProbability\": %.2f" +
                         "}",
                 headerJson,
-                imageJson, // Conditionally included based on emotion and probability
+                imageJson,
                 isSuccess,
                 emotion,
                 probability,
                 smileProbability
         );
-
-        return captureJson;
     }
 
 

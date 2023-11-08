@@ -3,6 +3,7 @@ package live.dgrr.domain.capture.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import live.dgrr.domain.capture.entity.CaptureResult;
+import live.dgrr.domain.capture.entity.HighlightID;
 import live.dgrr.domain.capture.entity.event.CaptureResultEvent;
 import live.dgrr.domain.game.entity.GameMember;
 import live.dgrr.domain.game.entity.GameRoom;
@@ -27,9 +28,11 @@ public class CaptureService {
     private final ApplicationEventPublisher publisher;
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final GameRoomRepository gameRoomRepository;
+    private final HighlightServiceImpl highlightServiceImpl;
 
     public static final int FIRST_ROUND = 1;
     public static final int SECOND_ROUND = 2;
+
 
     public CaptureResult deSerializationCapture(String capture) {
         try {
@@ -41,6 +44,7 @@ public class CaptureService {
 
             if (captureResult.getEncodedImage() != null) {
                 publishingLaugh(captureResult);
+
             }
 
             String memberOneId = Optional.ofNullable(gameRoom.getMemberOne())
@@ -64,10 +68,13 @@ public class CaptureService {
 
     public void publishingLaugh(CaptureResult captureResult) {
         String gameSessionId = captureResult.getHeader().getGameSessionId();
+        String encodedImage = captureResult.getEncodedImage();
         int round = captureResult.getHeader().getRound();
+        highlightServiceImpl.saveHighlight(new HighlightID(gameSessionId, round), encodedImage);
 
         if (round == FIRST_ROUND) {
             publisher.publishEvent(new FirstRoundOverEvent(gameSessionId, RoundResult.LAUGH));
+
         } else if (round == SECOND_ROUND) {
             publisher.publishEvent(new SecondRoundOverEvent(gameSessionId, RoundResult.LAUGH));
         }

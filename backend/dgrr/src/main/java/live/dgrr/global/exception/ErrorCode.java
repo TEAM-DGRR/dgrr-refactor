@@ -32,7 +32,10 @@ public enum ErrorCode {
     EXPIRED_JWT(HttpStatus.NOT_FOUND, "Expired JWT Token"), // 만료된 jwt 토큰
     UNSUPPORTED_JWT(HttpStatus.NOT_FOUND, "Unsupported JWT Token"), // 지원되지 않는 jwt 토큰
     WRONG_JWT_TOKEN(HttpStatus.NOT_FOUND, "Wrong JWT Token"), // JWT 토큰이 잘못됨
-    VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation Error");
+    VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation Error"),
+    IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "Image upload error"),
+    HIGHLIGHT_NOT_FOUND(HttpStatus.BAD_REQUEST, "Highlight not found");
+
     private final HttpStatus httpStatus;
     private final String message;
 
