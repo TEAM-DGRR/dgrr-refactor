@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.service;
 
+import live.dgrr.domain.capture.service.IHighlightService;
 import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
@@ -31,6 +32,7 @@ public class GameSecondRoundService {
     private final GameHistoryService gameHistoryService;
     private final GamePrepareRepository gamePrepareRepository;
     private final WaitingRoomService waitingRoomService;
+    private final IHighlightService iHighlightService;
 
     private static final long ROUND_TIME = 30L;
     private static final String SECOND_ROUND_LAUGH = "/recv/secondroundend-laugh";
@@ -107,20 +109,27 @@ public class GameSecondRoundService {
         GameResult gameResult = gameRoom.judgeResult(memberId);
         GameMember myInfo = gameRoom.getMyInfo(memberId);
         GameMember enemyInfo = gameRoom.getEnemyInfo(memberId);
-        //todo: highlightImage 가져오는 로직 필요
+
+        //highlight Image 가져오는 로직
+        String highlightImage = null;
+        Integer winRound = gameRoom.judgeWinningRound();
+        if(winRound != null) {
+            highlightImage = iHighlightService.highlightImage(gameRoomId, winRound);
+        }
+
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), gameResult);
         Tier afterTier = TierCalculator.calculateRank(afterRating);
 
         int roomId = waitingRoomService.createWaitingRoom();
 
         //게임 결과 저장
-        gameHistoryService.save(gameRoom, gameRoomId, memberId, gameResult, afterRating - myInfo.rating(), null);
+        gameHistoryService.save(gameRoom, gameRoomId, memberId, gameResult, afterRating - myInfo.rating(), highlightImage);
 
         return GameResultResponse.builder()
                 .gameResult(gameResult)
                 .myInfo(myInfo)
                 .enemyInfo(enemyInfo)
-                .highlightImage(null)
+                .highlightImage(highlightImage)
                 .afterRating(afterRating)
                 .afterTier(afterTier)
                 .roomId(roomId)

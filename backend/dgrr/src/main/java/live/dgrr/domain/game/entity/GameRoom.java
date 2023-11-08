@@ -124,4 +124,19 @@ public class GameRoom {
         }
         return Duration.between(firstRoundStartTime, firstRoundEndTime).toMillis();
     }
+
+    public Integer judgeWinningRound() {
+        if(firstRoundResult.equals(RoundResult.NO_LAUGH) && secondRoundResult.equals(RoundResult.NO_LAUGH)) {
+            return null;
+        }
+        long firstRoundDuration = Duration.between(firstRoundStartTime, firstRoundEndTime).toNanos();
+        long secondRoundDuration = Duration.between(secondRoundStartTime, secondRoundEndTime).toNanos();
+
+        // 1라운드가 더 빨리 웃엇을 경우
+        if(firstRoundDuration < secondRoundDuration) {
+            return 1;
+        }
+        // 2라운드가 더 빨리 웃엇을 경우
+        return 2;
+    }
 }
