@@ -27,6 +27,10 @@ const config: Config = {
         xl: '1280px',
         '2xl': '1536px',
       },
+      cursor: {
+        'default': `url(/images/cursor_default.cur), auto;`,
+        'hover': `url(/images/cursor_hover.cur), auto;`,
+      }
     },
   },
   plugins: [],

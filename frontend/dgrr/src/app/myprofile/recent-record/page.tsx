@@ -137,14 +137,14 @@ const RecentRecord = () => {
             {item.gameResult === 'WIN' ? (
               <div
                 onClick={() => openModal(index)}
-                className='cursor-pointer hover:bg-blue-200 hover:rounded-lg'
+                className='cursor-hover hover:bg-blue-200 hover:rounded-lg'
               >
                 <RecentRecordItem pageType='RECENT-RECORD' item={item} />
               </div>
             ) : item.gameResult === 'LOSE' ? (
               <div
                 onClick={() => openModal(index)}
-                className='cursor-pointer hover:bg-red-200 hover:rounded-lg'
+                className='cursor-hover hover:bg-red-200 hover:rounded-lg'
               >
                 <RecentRecordItem pageType='RECENT-RECORD' item={item} />
               </div>

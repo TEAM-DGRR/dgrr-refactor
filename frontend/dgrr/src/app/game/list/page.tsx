@@ -55,7 +55,7 @@ const ListPage = () => {
       <div className="pt-6 space-y-6">
         {gameList.map((item, index) =>
           index === 1 ? (
-            <div className={`${commonClass} cursor-pointer`} key={index} onClick={handleModal}>
+            <div className={`${commonClass} cursor-hover`} key={index} onClick={handleModal}>
               <Image src={item.imgLink} alt="이미지예시" className="w-20 h-20" />
               <p className="font-bold text-base">{item.value}</p>
             </div>

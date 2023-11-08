@@ -59,7 +59,7 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
           <div className='flex items-center pb-4'>
             <div className='text-lg font-semibold ps-6 me-1'>내 티어</div>
             <div
-              className='inline-block cursor-pointer hover:text-main-blue'
+              className='inline-block cursor-hover hover:text-main-blue'
               onClick={handleModalOpen}
               onMouseLeave={handleModalClose}
             >

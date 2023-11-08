@@ -21,7 +21,7 @@ export const FuncButton = ({
   return (
     <button
       onClick={clickEvent}
-      className={`${bgColor} rounded-lg border-2 max-w-xs py-5 hover:brightness-110 ${size}`}
+      className={`${bgColor} rounded-lg border-2 max-w-xs py-5 hover:brightness-110 ${size} cursor-hover`}
     >
       <p className={`${fontColor} text-center text-base font-bold uppercase leading-none`}>
         {value}

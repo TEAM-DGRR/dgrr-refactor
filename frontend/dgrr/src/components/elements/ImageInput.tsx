@@ -18,7 +18,7 @@ const ImageInput = ({ myProfileImage, profileImageUpdate }: ImageInputProps) => 
         />
         <label
           htmlFor='fileInput'
-          className='absolute bottom-0 right-0 bg-[#E0E0E0] w-[25px] aspect-square rounded-full flex justify-center items-center cursor-pointer hover:text-main-blue'
+          className='absolute bottom-0 right-0 bg-[#E0E0E0] w-[25px] aspect-square rounded-full flex justify-center items-center cursor-hover hover:text-main-blue'
         >
           <IoCamera fontSize={'17px'} />
         </label>
