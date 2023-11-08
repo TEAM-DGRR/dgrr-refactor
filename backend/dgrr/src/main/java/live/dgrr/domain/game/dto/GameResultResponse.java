@@ -7,5 +7,5 @@ import lombok.Builder;
 
 @Builder
 public record GameResultResponse(GameMember myInfo, GameMember enemyInfo, String highlightImage, GameResult gameResult,
-                                 int afterRating, Tier afterTier)  {
+                                 int afterRating, Tier afterTier, int roomId)  {
 }

@@ -6,6 +6,7 @@ import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.gamehistory.service.GameHistoryService;
+import live.dgrr.domain.waitingroom.service.WaitingRoomService;
 import live.dgrr.global.entity.Tier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class GameSecondRoundServiceTest {
 
+    @Mock
+    WaitingRoomService waitingRoomService;
     @Mock
     GameHistoryService gameHistoryService;
     @Spy
