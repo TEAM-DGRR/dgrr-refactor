@@ -2,26 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0 auto; /* 가로 중앙 정렬을 위해 margin 속성을 사용 */
+  display: flex;
+  justify-content: center; /* 내용을 수평으로 중앙 정렬 */
+  align-items: center;
+}
+
+.custom-close-button {
+  position: absolute;
+  display: block;
+  top: 0px; /* 원하는 위치로 조정 */
+  right: 0px; /* 원하는 위치로 조정 */
+}
+
+.custom-confirm-button {
+  width: 100px;
+}
+
+.custom-cancle-button {
+  margin-left: 20px;
+  width: 100px;
+}
+
+.swal2-container {
+  margin: 0 auto; /* 가로 중앙 정렬을 위해 margin 속성을 사용 */
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
 }
