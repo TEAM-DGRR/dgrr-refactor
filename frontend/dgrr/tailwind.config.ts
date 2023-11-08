@@ -18,6 +18,7 @@ const config: Config = {
         'main-blue': '#469FF6',
       },
       screens: {
+        '4sm': '280px',
         '3sm': '360px',
         '2sm': '395px',
         sm: '640px',

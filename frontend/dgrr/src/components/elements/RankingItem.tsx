@@ -40,8 +40,8 @@ const RankingItem = ({ itemType, item }: RankingItemProps) => {
           src={profileImage}
           alt='프로필 사진'
         />
-        <div className='inline-block'>
-          <div className='mb-1 font-semibold'>{item.nickname}</div>
+        <div className='inline-block me-3'>
+          <div className='mb-1 font-semibold text-sm'>{item.nickname}</div>
           <div className='flex gap-x-2'>
             <div className='flex w-[24px] aspect-square'>
               <img src={medalColor} />

@@ -48,7 +48,7 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
     maxCompleted: 400,
     // 게이지바 안에 들어갈 문구
     customLabel: ' ',
-    width: '270px',
+    width: '250px',
     height: '25px',
   };
 

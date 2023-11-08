@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 const RecentRecord = () => {
   const [modalStatus, setModalStatus] = useState(false);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  const currentDate = new Date();
 
   const openModal = (index: any) => {
     setSelectedItemIndex(index);
@@ -76,7 +75,7 @@ const RecentRecord = () => {
           gameType: 'RANDOM',
           gameTime: 30,
           holdingTime: 30,
-          ratingChange: 415,
+          ratingChange: 15,
           highlightImage: '/images/sample_image1.png',
           createdAt: 'Thu Oct 02 2023 05:46:15 GMT+0900 (한국 표준시)',
           opponentNickname: '보라돌이',
@@ -90,7 +89,7 @@ const RecentRecord = () => {
           gameType: 'RANDOM',
           gameTime: 30,
           holdingTime: 30,
-          ratingChange: 415,
+          ratingChange: 0,
           highlightImage: '',
           createdAt: 'Thu Sep 01 2023 05:46:15 GMT+0900 (한국 표준시)',
           opponentNickname: '뚜비',
@@ -104,7 +103,7 @@ const RecentRecord = () => {
           gameType: 'RANDOM',
           gameTime: 30,
           holdingTime: 30,
-          ratingChange: 415,
+          ratingChange: -15,
           highlightImage: '/images/sample_image3.png',
           createdAt: 'Thu Nov 02 2023 09:46:15 GMT+0900 (한국 표준시)',
           opponentNickname: '나나',
@@ -118,7 +117,7 @@ const RecentRecord = () => {
           gameType: 'RANDOM',
           gameTime: 30,
           holdingTime: 30,
-          ratingChange: 415,
+          ratingChange: 999,
           highlightImage: '/images/sample_image4.png',
           createdAt: 'Thu Oct 15 2023 09:46:15 GMT+0900 (한국 표준시)',
           opponentNickname: '뽀',
@@ -131,17 +130,27 @@ const RecentRecord = () => {
 
   return (
     <div className='w-screen max-w-[500px]'>
-      <Header headerType="OTHER">최근 전적</Header>
-      <div className="px-6 pt-2">
+      <Header headerType='OTHER'>최근 전적</Header>
+      <div className='px-4 pt-2'>
         {myInfo.gameHistoryList.map((item, index) => (
           <div key={index}>
-            {item.gameResult !== 'DRAW' ? (
-              <div onClick={() => openModal(index)} className="cursor-pointer hover:bg-blue-200 hover:rounded-lg">
-                <RecentRecordItem item={item} />
+            {item.gameResult === 'WIN' ? (
+              <div
+                onClick={() => openModal(index)}
+                className='cursor-pointer hover:bg-blue-200 hover:rounded-lg'
+              >
+                <RecentRecordItem pageType='RECENT-RECORD' item={item} />
+              </div>
+            ) : item.gameResult === 'LOSE' ? (
+              <div
+                onClick={() => openModal(index)}
+                className='cursor-pointer hover:bg-red-200 hover:rounded-lg'
+              >
+                <RecentRecordItem pageType='RECENT-RECORD' item={item} />
               </div>
             ) : (
               <div>
-                <RecentRecordItem item={item} />
+                <RecentRecordItem pageType='RECENT-RECORD' item={item} />
               </div>
             )}
           </div>
