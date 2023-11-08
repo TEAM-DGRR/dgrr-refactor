@@ -37,7 +37,7 @@ public class RankingRepository {
     public List<RankingResponse> getRankingMember(Member member, Season season) {
         List<RankingResponse> rankings = new ArrayList<>();
         String seasonKey = season == Season.CURRENT? key : lastKey;
-        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().rangeWithScores(seasonKey, 0, -1);
+        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().reverseRangeWithScores (seasonKey, 0, -1);
         if (results != null) {
             for (ZSetOperations.TypedTuple<Long> result : results) {
                 String value = String.valueOf(result.getValue());
