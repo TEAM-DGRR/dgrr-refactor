@@ -18,10 +18,8 @@ public class GameRoom {
     private GameMember memberOne;
     private GameMember memberTwo;
     private GameStatus gameStatus;
-    private int firstRoundPrepareCounter;
     private LocalDateTime firstRoundStartTime;
     private LocalDateTime firstRoundEndTime;
-    private int secondRoundPrepareCounter;
     private LocalDateTime secondRoundStartTime;
     private LocalDateTime secondRoundEndTime;
     private RoundResult firstRoundResult;
@@ -35,10 +33,6 @@ public class GameRoom {
         this.gameType = gameType;
     }
 
-    public int firstRoundPrepare() {
-        this.firstRoundPrepareCounter++;
-        return this.firstRoundPrepareCounter;
-    }
 
     public void startFirstRound(LocalDateTime now) {
         this.firstRoundStartTime = now;
@@ -49,11 +43,6 @@ public class GameRoom {
         this.firstRoundResult = roundResult;
         this.firstRoundEndTime = LocalDateTime.now();
         this.gameStatus = GameStatus.SECOND_ROUND;
-    }
-
-    public int secondRoundPrepare() {
-        this.secondRoundPrepareCounter++;
-        return this.secondRoundPrepareCounter;
     }
 
     public void startSecondRound(LocalDateTime now) {

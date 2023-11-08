@@ -3,6 +3,7 @@ package live.dgrr.domain.game.service;
 import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
+import live.dgrr.domain.game.repository.GamePrepareRepository;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.gamehistory.service.GameHistoryService;
 import live.dgrr.global.entity.Tier;
@@ -27,6 +28,7 @@ public class GameSecondRoundService {
     private final ApplicationEventPublisher publisher;
     private final TaskScheduler taskScheduler;
     private final GameHistoryService gameHistoryService;
+    private final GamePrepareRepository gamePrepareRepository;
 
     private static final long ROUND_TIME = 30L;
     private static final String SECOND_ROUND_LAUGH = "/recv/secondroundend-laugh";
@@ -37,13 +39,13 @@ public class GameSecondRoundService {
      * @param gameRoomId
      */
     public void prepareSecondRoundStart(String gameRoomId) {
-        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId).orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
-        int prepareCounter = gameRoom.secondRoundPrepare();
-        gameRoomRepository.save(gameRoom);
 
-        //todo: 동시성 이슈 처리 필요
+        Long prepareCounter = gamePrepareRepository.prepareRoundTwo(gameRoomId);
+
         //둘 모두 준비되었을때만 시작
         if(prepareCounter == 2) {
+            GameRoom gameRoom = gameRoomRepository.findById(gameRoomId).orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
+            gamePrepareRepository.deletePrepareRoundTwo(gameRoomId);
             secondRoundStart(gameRoomId, gameRoom);
         }
     }
