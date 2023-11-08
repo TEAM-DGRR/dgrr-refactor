@@ -1,11 +1,10 @@
-package live.dgrr.domain.capture.entity;
+package live.dgrr.domain.capture.dto;
 
 import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class CaptureResult {
 
     private boolean success;
@@ -18,7 +17,6 @@ public class CaptureResult {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @ToString
     public static class Header {
         private int round;
         private String gameSessionId;
