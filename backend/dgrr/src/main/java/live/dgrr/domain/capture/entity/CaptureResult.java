@@ -1,0 +1,27 @@
+package live.dgrr.domain.capture.entity;
+
+import lombok.*;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class CaptureResult {
+
+    private boolean success;
+    private String emotion;
+    private double probability;
+    private double smileProbability;
+    private String encodedImage;
+    private Header header;
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    public static class Header {
+        private int round;
+        private String gameSessionId;
+    }
+
+}
