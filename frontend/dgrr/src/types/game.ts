@@ -1,10 +1,13 @@
 import { Client, StompHeaders } from '@stomp/stompjs';
-import { StreamManager } from 'openvidu-browser';
+import { Publisher, StreamManager, Subscriber } from 'openvidu-browser';
 
 export type GameType = {
   client: Client | undefined;
   gameInfo: IGameConfig;
   gameResult: IGameResult;
+  publisher: Publisher | undefined;
+  subscriber: Subscriber | undefined;
+  websocket: WebSocket | undefined;
 };
 
 export interface IGameConfig {

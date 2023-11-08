@@ -36,7 +36,7 @@ const GameLoading = () => {
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
-      router.push('/game/play');
+      router.push('/game/match');
     });
   };
 
