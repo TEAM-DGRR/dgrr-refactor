@@ -122,7 +122,7 @@ public class KakaoService {
 
     public MemberLoginResponse getTokenFromMember(String kakaoId) {
         MemberResponse member = getMemberByKakaoId(kakaoId);
-        return new MemberLoginResponse(JwtProperties.TOKEN_PREFIX+tokenProvider.generateTokenDto(member.kakaoId(), member.memberId()).accessToken(), member);
+        return new MemberLoginResponse(JwtProperties.TOKEN_PREFIX+tokenProvider.generateTokenDto(member.memberId()).accessToken(), member);
     }
 
 }
