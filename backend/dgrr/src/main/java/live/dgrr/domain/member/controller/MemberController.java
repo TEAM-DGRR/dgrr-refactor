@@ -55,4 +55,10 @@ public class MemberController {
         return new ResponseEntity<>(memberResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/nickname-check/{nickname}")
+    public ResponseEntity<Void> nicknameCheck(@PathVariable(value="nickname") String nickname) {
+        memberService.checkNickname(nickname);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
