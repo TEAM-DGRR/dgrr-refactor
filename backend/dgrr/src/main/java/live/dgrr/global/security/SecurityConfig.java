@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeRequests((requests) -> requests
-                        .requestMatchers("/api/v1/kakao/**", "/ws", "/api/v1/member", "/api/v1/member/").permitAll()
+                        .requestMatchers("/api/v1/kakao/**", "/api/connect", "/api/v1/member", "/api/v1/member/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .apply(new JwtSecurityConfig(tokenProvider));
