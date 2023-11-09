@@ -28,13 +28,13 @@ public class RankingService {
         Member member = memberRepository.findById(memberId).get();
         List<RankingResponse> rankings = rankingRepository.getRankingMember(member, season);
 
-        return RankingMemberResponse.of(getRanking(memberId), rankings);
+        return RankingMemberResponse.of(getRanking(memberId, season), rankings);
     }
 
-    public RankingResponse getRanking(Long memberId) {
+    public RankingResponse getRanking(Long memberId, Season season) {
         Member member = memberRepository.findById(memberId).get();
-        Double rating = rankingRepository.getRatingByMemberId(memberId);
-        Long rank = rankingRepository.getRankByMemberId(memberId);
+        Double rating = rankingRepository.getRatingByMemberIdAndSeason(memberId, season);
+        Long rank = rankingRepository.getRankByMemberIdAndSeason(memberId, season);
         return RankingResponse.of(memberId, rating, rank, member.getNickname(), member.getProfileImage());
     }
 }
