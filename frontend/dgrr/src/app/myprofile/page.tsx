@@ -6,8 +6,10 @@ import Link from 'next/link';
 import Rank from '@/components/elements/Rank';
 import { IoChevronForwardOutline } from 'react-icons/io5';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
+import { KAKAO_LOGOUT_REDIRECT_URL } from '../../metadata/OAuth';
 
 const MyProfile = () => {
+
   // Back에서 정보를 이 형태로 보내줌
   const [myInfo, setMyInfo] = useState({
     member: {
@@ -41,6 +43,7 @@ const MyProfile = () => {
   });
 
   const handleLogin = () => {
+    window.location.href = KAKAO_LOGOUT_REDIRECT_URL;
     console.log('Logout');
   };
 
