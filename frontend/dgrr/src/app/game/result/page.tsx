@@ -4,7 +4,6 @@ import { FuncButton } from '@/components/FuncButton';
 import Rank from '@/components/elements/Rank';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@/store/hooks';
-import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { Client, StompHeaders } from '@stomp/stompjs';
 import { createClient } from '@/store/gameSlice';
@@ -74,7 +73,7 @@ const Result = () => {
           <div>{gameResult.gameResult}</div>
           {/* 하이라이트 사진 미리보기 */}
           {gameResult.highlightImage
-            ? <Image
+            ? <img
               onClick={openModal}
               src={gameResult.highlightImage}
               alt='하이라이트 이미지'

@@ -41,7 +41,6 @@ const PlayPage = () => {
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(true);
   const [when, setWhen] = useState<'START' | 'ROUND' | 'END'>('START');
-  const [round, setRound] = useState(0);
   const router = useRouter();
 
   let intervalId: any;
@@ -51,15 +50,14 @@ const PlayPage = () => {
       console.log('1라운드 메세지: ', message.body);
       if (message.body == 'START') {
         console.log('1라운드 시작');
-        setRound(1);
         setWhen('ROUND');
+        client?.subscribe(STATUS_URI, (message) => {
+          console.log('표정인식 결과: ', message.body);
+        });
         if (turn === 'SECOND') {
           // 표정 분석 결과
-          client?.subscribe(STATUS_URI, (message) => {
-            // console.log('표정인식 결과: ', message.body);
-          });
           console.log('캡쳐 시작해줘');
-          intervalId = setInterval(captureAndSend, 1000);
+          intervalId = setInterval(() => captureAndSend(1), 1000);
         }
       }
     });
@@ -126,13 +124,10 @@ const PlayPage = () => {
       console.log('2라운드 메세지: ', message.body);
       if (message.body == 'START') {
         console.log('2라운드 시작');
-        setRound(2);
         if (turn === 'FIRST') {
           // 표정 분석 결과
-          client?.subscribe(STATUS_URI, (message) => {
-            // console.log('표정인식 결과: ', message.body);
-          });
-          intervalId = setInterval(captureAndSend, 1000);
+          console.log('캡쳐 시작해줘');
+          intervalId = setInterval(() => captureAndSend(2), 1000);
         }
       }
     });
@@ -218,10 +213,11 @@ const PlayPage = () => {
     return null;
   };
 
-  const sendCapturedImage = (imageData: any) => {
+  const sendCapturedImage = (imageData: any, round: number) => {
     // console.log(5);
     // console.log(ws);
     if (ws && ws.readyState === WebSocket.OPEN) {
+      console.log(round)
       const message = {
         image: imageData,
         header: {
@@ -233,10 +229,10 @@ const PlayPage = () => {
       ws.send(JSON.stringify(message));
     }
   };
-  const captureAndSend = () => {
+  const captureAndSend = (round: number) => {
     const capturedImage = capturePublisherScreen();
     if (capturedImage) {
-      sendCapturedImage(capturedImage);
+      sendCapturedImage(capturedImage, round);
     }
   };
 
