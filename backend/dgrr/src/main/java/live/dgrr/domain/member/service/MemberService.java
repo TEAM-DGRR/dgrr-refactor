@@ -32,13 +32,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RankingRepository rankingRepository;
     private final GameHistoryRepository gameHistoryRepository;
-    private final String SECRET_KEY;
 
-    public MemberService(MemberRepository memberRepository, RankingRepository rankingRepository, GameHistoryRepository gameHistoryRepository, JwtConfig jwtConfig) {
+    public MemberService(MemberRepository memberRepository, RankingRepository rankingRepository, GameHistoryRepository gameHistoryRepository) {
         this.memberRepository = memberRepository;
         this.rankingRepository = rankingRepository;
         this.gameHistoryRepository = gameHistoryRepository;
-        this.SECRET_KEY = jwtConfig.getSecret();
     }
 
     public Member findMemberById(Long memberId) {
@@ -113,18 +111,5 @@ public class MemberService {
         return memberResponse;
     }
 
-    public String getIdFromToken(String token) {
-        Claims claims = parseClaims(token);
-        return String.valueOf(claims.get("id"));
-    }
 
-    private Claims parseClaims(String accessToken) {
-        try {
-            byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-            Key key = Keys.hmacShaKeyFor(keyBytes);
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {
-            throw new GeneralException(ErrorCode.EXPIRED_JWT, e);
-        }
-    }
 }
