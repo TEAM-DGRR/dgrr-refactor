@@ -4,7 +4,7 @@ import { ChildMethods, stompConfig } from '@/types/game';
 import { useEffect, useRef, useState } from 'react';
 import { UserVideoComponent } from './videoComponent';
 import { useDispatch } from 'react-redux';
-import { saveGameResult } from '@/store/gameSlice';
+import { saveGameResult, saveRoundResult } from '@/store/gameSlice';
 import { publishMessage } from '@/components/Game/stomp';
 import { GameStateModal } from '@/components/elements/GameStateModal';
 import { useRouter } from 'next/navigation';
@@ -34,9 +34,9 @@ const PlayPage = () => {
     RESULT_URI,
     STATUS_URI,
     END_URI,
+    ENEMY_LEFT_URI,
   } = DESTINATION_URI;
   const [firstRoundResult, setFirstRoundResult] = useState('');
-  const [secondRoundResult, setSecondRoundResult] = useState('');
   const childRef = useRef<ChildMethods | null>(null);
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(true);
@@ -56,7 +56,7 @@ const PlayPage = () => {
         if (turn === 'SECOND') {
           // 표정 분석 결과
           client?.subscribe(STATUS_URI, (message) => {
-            console.log('표정인식 결과: ', message.body);
+            // console.log('표정인식 결과: ', message.body);
           });
           console.log('캡쳐 시작해줘');
           intervalId = setInterval(captureAndSend, 1000);
@@ -66,22 +66,27 @@ const PlayPage = () => {
     client?.subscribe(FIRST_ROUND_NO_LAUGH_URI, (message) => {
       console.log('1라운드 결과: ', message.body);
       if (message) {
-        setFirstRoundResult(message.body);
+        dispatch(saveRoundResult('NO_LAUGH'));
         subscribeSecondGame();
         setModalOpen(true);
         clearInterval(intervalId);
+        if (turn === 'SECOND') {
+          disconnectWs();
+        }
         // 1초 후 modalOpen를 false로 설정
         setTimeout(() => {
           setModalOpen(false);
-        }, 1000);
+        }, 3000);
       }
     });
     client?.subscribe(FIRST_ROUND_LAUGH_URI, (message) => {
       console.log('1라운드 결과: ', message.body);
-      setFirstRoundResult(message.body);
+      dispatch(saveRoundResult(message.body));
       subscribeSecondGame();
       setModalOpen(true);
-
+      if (turn === 'SECOND') {
+        disconnectWs();
+      }
       // 1초 후 modalOpen를 false로 설정
       setTimeout(() => {
         setModalOpen(false);
@@ -97,11 +102,21 @@ const PlayPage = () => {
     client?.subscribe(RESULT_URI, (message) => {
       console.log(message.body);
       if (message.body) {
-        dispatch(saveGameResult(message.body));
+        dispatch(saveGameResult(JSON.parse(message.body)));
+        client.deactivate();
+        disconnectWs();
         router.push('/game/result');
       }
     });
 
+    // 상대 탈주 정보
+    client?.subscribe(ENEMY_LEFT_URI, (message) => {
+      console.log('상대 나감: ', message.body);
+      dispatch(saveGameResult(JSON.parse(message.body)));
+      client.deactivate();
+      disconnectWs();
+      router.push('/game/result');
+    });
     firstRoundStart();
   };
 
@@ -115,7 +130,7 @@ const PlayPage = () => {
         if (turn === 'FIRST') {
           // 표정 분석 결과
           client?.subscribe(STATUS_URI, (message) => {
-            console.log('표정인식 결과: ', message.body);
+            // console.log('표정인식 결과: ', message.body);
           });
           intervalId = setInterval(captureAndSend, 1000);
         }
@@ -123,7 +138,6 @@ const PlayPage = () => {
     });
     client?.subscribe(SECOND_ROUND_NO_LAUGH_URI, (message) => {
       console.log('2라운드 결과: ', message.body);
-      setSecondRoundResult(message.body);
       setWhen('END');
       clearInterval(intervalId);
       setModalOpen(true);
@@ -134,10 +148,8 @@ const PlayPage = () => {
     });
     client?.subscribe(SECOND_ROUND_LAUGH_URI, (message) => {
       console.log('2라운드 결과: ', message.body);
-      setSecondRoundResult(message.body);
       setWhen('END');
       clearInterval(intervalId);
-      setModalOpen(true);
       gameEnd();
       setTimeout(() => {
         setModalOpen(false);
@@ -169,6 +181,14 @@ const PlayPage = () => {
     if (client) {
       console.log('게임 종료 메세지 보낼거임');
       publishMessage(client, END_URI, gameRoomID);
+    }
+  };
+
+  // 웹소켓 해제
+  const disconnectWs = () => {
+    if (ws) {
+      ws.close();
+      console.log('연결 해제');
     }
   };
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -209,7 +229,7 @@ const PlayPage = () => {
           gameSessionId: gameRoomID, // 게임 세션 ID 설정
         },
       };
-      console.log('이미지 보낸다');
+      // console.log('이미지 보낸다');
       ws.send(JSON.stringify(message));
     }
   };
@@ -223,19 +243,19 @@ const PlayPage = () => {
   useEffect(() => {
     const alertTimeout = setTimeout(() => {
       console.log(turn);
+      setModalOpen(false);
       subscribeFirstGame();
     }, 2000);
 
     return () => {
       clearTimeout(alertTimeout);
-      setModalOpen(false);
     };
   }, []);
 
   return (
     <div className="w-screen h-screen max-w-[500px] min-h-[565px] bg-black">
       <Header headerType="GAME" />
-      {modalOpen && <GameStateModal when={when} gameState={turn} roundResult={firstRoundResult} />}
+      {modalOpen && <GameStateModal when={when} gameState={turn} />}
       <UserVideoComponent ref={childRef} streamManager={publisher} />
       <UserVideoComponent streamManager={subscriber} />
       <canvas ref={canvasRef} width="640" height="480" style={{ display: 'none' }} />

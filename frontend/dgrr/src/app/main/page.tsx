@@ -6,13 +6,26 @@ import { LinkButton } from '@/components/LinkButton';
 import { FuncButton } from '@/components/FuncButton';
 import Header from '@/components/elements/Header';
 import { ExplainModal } from '@/components/elements/ExplainModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const MainPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const handleModal = () => {
     setOpenModal(!openModal);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id
+      localStorage.setItem('memberId', id)
+    }
+  }, []);
   return (
     <div className="bg-main-blue w-screen h-screen min-h-[580px] max-w-[500px]">
       <Header headerType="MAIN" />

@@ -12,6 +12,10 @@ import {
   IoExitOutline,
   IoPencilSharp,
 } from 'react-icons/io5';
+import { useAppSelector } from '@/store/hooks';
+import { publishMessage } from '../Game/stomp';
+import { stompConfig } from '@/types/game';
+import WarningAlert from './WarningAlert';
 
 export type headerType = 'MAIN' | 'GAMESTART' | 'PROFILE' | 'WAITING' | 'GAME' | 'OTHER';
 
@@ -26,12 +30,38 @@ interface HeaderProps {
 const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const client = useAppSelector((state) => state.game.client);
+  const gameRoomId = useAppSelector((state) => state.game.gameInfo.gameRoomId);
+  const ws = useAppSelector((state) => state.game.websocket)
+  const { DESTINATION_URI } = stompConfig;
+  const { EXIT_URI } = DESTINATION_URI;
 
   // 뒤로 가기
   const handleMoveBack = () => {
     router.back();
     history.pushState({}, '', pathname);
     console.log('Go Back');
+  };
+
+  const exitGame = async () => {
+    const askExit = await WarningAlert();
+
+    if (askExit) {
+      if (client) {
+        publishMessage(client, EXIT_URI, gameRoomId);
+        client.deactivate();
+        disconnectWs();
+        router.push('/main');
+      };
+    }
+  };
+
+  // 웹소켓 해제
+  const disconnectWs = () => {
+    if (ws) {
+      ws.close();
+      console.log('연결 해제');
+    }
   };
 
   // 코드 복사
@@ -107,7 +137,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'GAME' ? (
         <div className='bg-black h-[60px] top-0 right-0 gap-[107px] pe-4 flex justify-end items-center'>
           <div className='text-white text-3xl font-semibold'>0:11</div>
-          <div className='cursor-hover text-white hover:text-main-blue'>
+          <div className='cursor-hover text-white hover:text-main-blue' onClick={exitGame}>
             <IoExitOutline fontSize={'30px'} />
           </div>
         </div>

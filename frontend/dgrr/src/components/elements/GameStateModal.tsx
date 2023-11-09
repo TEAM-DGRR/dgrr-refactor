@@ -2,14 +2,15 @@ import attackImg from '@/../public/images/match-attack.png';
 import defenseImg from '@/../public/images/match-defense.png';
 import waitImg from '@/../public/images/ico_bread_wink.png';
 import Image from 'next/image';
+import { useAppSelector } from '@/store/hooks';
 
 interface GameStateInfo {
   when: 'START' | 'ROUND' | 'END';
   gameState?: 'FIRST' | 'SECOND';
-  roundResult?: string;
 }
 
-export const GameStateModal = ({ when, gameState, roundResult }: GameStateInfo) => {
+export const GameStateModal = ({ when, gameState }: GameStateInfo) => {
+  const roundResult = useAppSelector((state) => state.game.roundResult);
   return (
     <div className="z-10 bg-black/30 w-full h-full max-w-[500px] fixed top-0 flex justify-center items-center">
       <div className="w-4/5 h-1/2 max-h-[300px] bg-white rounded-lg border-2 border-black p-8 flex flex-col items-center justify-center">
@@ -34,7 +35,7 @@ export const GameStateModal = ({ when, gameState, roundResult }: GameStateInfo) 
               className="w-40"
             />
             {when === 'ROUND' && (
-              <p className="font-bold text-2xl">
+                <p className="font-bold text-2xl">
                 {gameState === 'SECOND'
                   ? roundResult === 'NO_LAUGH'
                     ? '웃음을 참았어요'

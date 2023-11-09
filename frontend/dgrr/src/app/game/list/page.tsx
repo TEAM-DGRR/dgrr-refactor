@@ -6,14 +6,14 @@ import keyImg from '@/../public/images/key.svg';
 import welcomeImg from '@/../public/images/welcome.svg';
 import Link from 'next/link';
 import { FindRoomModal } from './FindRoomModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Client, StompHeaders } from '@stomp/stompjs';
 import { useDispatch } from 'react-redux';
 import { createClient } from '@/store/gameSlice';
 
 const ListPage = () => {
   const gameList = [
-    { value: '방 만들기', imgLink: doorImg, navLink: '/game/room' },
+    { value: '방 만들기', imgLink: doorImg, navLink: '/main' },
     { value: '방 찾기', imgLink: keyImg, navLink: '' },
     { value: '랜덤 매칭', imgLink: welcomeImg, navLink: '/game/loading' },
   ];
@@ -24,7 +24,8 @@ const ListPage = () => {
   };
   const [isModal, setIsModal] = useState(false);
   const dispatch = useDispatch();
-  
+  const [memberId, setMemberId] = useState('')
+
   const connectStomp = (headers: StompHeaders) => {
     const client = new Client({
       brokerURL: process.env.NEXT_PUBLIC_BROKER_URL,
@@ -47,6 +48,13 @@ const ListPage = () => {
     };
   };
 
+  useEffect(() => {
+    const memberId = localStorage.getItem('memberId')
+    if (memberId) {
+      setMemberId(memberId)
+    }
+  }, [])
+
   return (
     <div className="bg-main-blue w-screen h-screen max-w-[500px] min-h-[565px]">
       <Header headerType="GAMESTART" />
@@ -62,7 +70,7 @@ const ListPage = () => {
           ) : (
             <button
               key={index}
-              onClick={() => connectStomp({ Authorization: '1' })}
+              onClick={() => connectStomp({ Authorization: memberId })}
               className={commonClass}
             >
               <Link href={item.navLink} className="w-full h-full flex flex-col items-center">
