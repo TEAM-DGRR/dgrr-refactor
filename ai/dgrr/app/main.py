@@ -25,9 +25,3 @@ async def on_startup():
     app.state.keep_alive_interval = settings.KEEP_ALIVE_INTERVAL
     asyncio.create_task(keep_alive(app, settings.BROKER_URL))
     pass
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
