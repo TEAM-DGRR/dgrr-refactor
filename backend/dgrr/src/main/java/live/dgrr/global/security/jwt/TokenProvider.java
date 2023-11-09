@@ -34,13 +34,13 @@ public class TokenProvider {
     }
 
     // 토큰 생성
-    public TokenDto generateTokenDto(String kakaoId, Long memberId) {
+    public TokenDto generateTokenDto(Long memberId) {
 
         long now = (new Date()).getTime();
 
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(kakaoId)
+                .setSubject(String.valueOf(memberId))
                 .claim("id", memberId)
                 .setExpiration(tokenExpiresIn)
                 .signWith(SignatureAlgorithm.HS512, key)
