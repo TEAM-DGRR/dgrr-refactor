@@ -3,7 +3,7 @@
 import { IoCamera } from 'react-icons/io5';
 
 interface ImageInputProps {
-  myProfileImage: string;
+  myProfileImage: string|undefined;
   profileImageUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

@@ -85,7 +85,7 @@ const Ranking = () => {
               </div>
               <div
                 onClick={clickCurrent}
-                className="flex items-center justify-center w-1/2 h-full bg-main-blue rounded-t-lg text-sm font-bold cursor-hover cursor-hover hover:brightness-90"
+                className="flex items-center justify-center w-1/2 h-full bg-main-blue rounded-t-lg text-sm font-bold cursor-hover hover:brightness-90"
               >
                 현 시즌 랭킹
               </div>

@@ -6,24 +6,11 @@ import Link from 'next/link';
 import Rank from '@/components/elements/Rank';
 import { IoChevronForwardOutline } from 'react-icons/io5';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
+import { getMyInfoApi } from '@/apis/myProfileApi';
 import { KAKAO_LOGOUT_REDIRECT_URL } from '../../metadata/OAuth';
 
 const MyProfile = () => {
-
-  // Back에서 정보를 이 형태로 보내줌
   const [myInfo, setMyInfo] = useState({
-    member: {
-      memberId: 0,
-      nickname: '',
-      profileImage: '',
-      description: '',
-    },
-    ranking: {
-      season: 0,
-      score: 0,
-      rank: 0,
-      tier: '',
-    },
     gameHistoryList: [
       {
         gameHistoryId: 0,
@@ -40,6 +27,19 @@ const MyProfile = () => {
         opponentDescription: '',
       },
     ],
+    member: {
+      memberId: 0,
+      nickname: '',
+      profileImage: '',
+      description: '',
+    },
+    ranking: {
+      season: 0,
+      rating: 0,
+      rank: 0,
+      tier: '',
+      score: 0, // score 속성 추가
+    },
   });
 
   const handleLogin = () => {
@@ -47,80 +47,22 @@ const MyProfile = () => {
     console.log('Logout');
   };
 
-  // 나중에 삭제할 더미 데이터
   useEffect(() => {
-    setMyInfo({
-      member: {
-        memberId: 1,
-        nickname: '가나다라마바사아자차카타',
-        profileImage: '/images/nongdam.jpg',
-        description: '행복한 하루 보내길',
-      },
-      ranking: {
-        season: 1,
-        score: 1500,
-        rank: 1,
-        tier: 'BRONZE',
-      },
-      gameHistoryList: [
-        {
-          gameHistoryId: 1,
-          gameRoomId: 123456,
-          gameResult: 'WIN',
-          gameType: 'RANDOM',
-          gameTime: 30,
-          holdingTime: 30,
-          ratingChange: 415,
-          highlightImage: '/images/sample_image1.png',
-          createdAt: '2023-11-01T10:53:23',
-          opponentNickname: '보라돌이',
-          opponentProfileImage: '/images/sample_image1.png',
-          opponentDescription: '2023-10-30',
-        },
-        {
-          gameHistoryId: 2,
-          gameRoomId: 123456,
-          gameResult: 'DRAW',
-          gameType: 'RANDOM',
-          gameTime: 30,
-          holdingTime: 30,
-          ratingChange: 415,
-          highlightImage: '',
-          createdAt: '2023-10-31T16:00:05',
-          opponentNickname: '뚜비',
-          opponentProfileImage: '/images/sample_image2.png',
-          opponentDescription: '2023-10-29',
-        },
-        {
-          gameHistoryId: 3,
-          gameRoomId: 123456,
-          gameResult: 'LOSE',
-          gameType: 'RANDOM',
-          gameTime: 30,
-          holdingTime: 30,
-          ratingChange: 415,
-          highlightImage: '/images/sample_image3.png',
-          createdAt: '2023-11-01T14:53:23',
-          opponentNickname: '나나',
-          opponentProfileImage: '/images/sample_image3.png',
-          opponentDescription: '2023-10-28',
-        },
-        {
-          gameHistoryId: 4,
-          gameRoomId: 123456,
-          gameResult: 'WIN',
-          gameType: 'RANDOM',
-          gameTime: 30,
-          holdingTime: 30,
-          ratingChange: 415,
-          highlightImage: '/images/sample_image4.pnge',
-          createdAt: '2023-10-31T16:00:05',
-          opponentNickname: '뽀',
-          opponentProfileImage: '/images/sample_image4.png',
-          opponentDescription: '2023-10-27',
-        },
-      ],
-    });
+    const fetchData = async () => {
+      try {
+        const response = await getMyInfoApi();
+        console.log('데이터 가져오기 성공:', response);
+        await setMyInfo(response)
+  
+        // response의 PromiseResult를 추출
+        const { gameHistoryList, member, ranking } = response;
+  
+      } catch (error) {
+        console.error('데이터 가져오기 실패:', error);
+      }
+    };
+  
+    fetchData();
   }, []);
 
   return (
@@ -153,7 +95,7 @@ const MyProfile = () => {
         </div>
       </div>
       {/* 내 티어 */}
-      <Rank pageType='PROFILE' tier={myInfo.ranking.tier} rating={myInfo.ranking.score} />
+      <Rank pageType='PROFILE' tier={myInfo.ranking.tier} rating={myInfo.ranking.rating} />
       {/* 최근 전적 */}
       <div className='h-[220px] p-6'>
         <div className='flex justify-between items-center mb-4'>

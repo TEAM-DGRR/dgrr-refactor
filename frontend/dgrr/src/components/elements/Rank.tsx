@@ -37,7 +37,7 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
   };
 
   useEffect(() => {
-    setNowRating(rating - 1400);
+    setNowRating(rating);
   }, [rating]);
 
   // ProgressBar 컴포넌트에 대한 기본 매개변수 설정
@@ -45,7 +45,7 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
     // 지금 게이지바가 얼마나 찼는지
     completed: nowRating,
     // 게이지바 전체 용량
-    maxCompleted: 400,
+    maxCompleted: 1800,
     // 게이지바 안에 들어갈 문구
     customLabel: ' ',
     width: '250px',
@@ -69,7 +69,7 @@ const Rank = ({ pageType, tier, rating }: RankProps) => {
               {/* 물음표 누르면 티어 정보 모달이 뜸 */}
               <div>
                 {isModalOpen === true ? (
-                  <div className='z-10 w-full h-full fixed top-[-16px] flex items-center'>
+                  <div className='z-10 max-w-[500px] w-full h-full fixed top-[-16px] flex items-center'>
                     <div className='w-2/3 2sm:ms-3 h-fit bg-white rounded-lg border-2 border-black p-3'>
                       <div className='bg-white rounded-lg space-y-2'>
                         {tierList.map((tier, index) => [

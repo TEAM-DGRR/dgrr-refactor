@@ -19,7 +19,6 @@ const SignUp = () => {
   let kakaoId = searchParams.get('id');
 
   useEffect(() => {
-    console.log('kakaoId: ' + kakaoId);
     if (nickname === '농담곰의 농담') {
       setNicknameExists(true);
     } else {
@@ -84,7 +83,6 @@ const SignUp = () => {
           }
         )
         .then((res: any) => {
-          console.log(res.data.member);
           axios
             .get(`${setUrl}/kakao/login/${res.data.kakaoId}`)
             .then((res: any) => {

@@ -77,7 +77,7 @@ const Result = () => {
               onClick={openModal}
               src={gameResult.highlightImage}
               alt='하이라이트 이미지'
-              className='inline-block w-1/6 aspect-square animate-bounce hover:cursor-pointer'
+              className='inline-block rounded-lg w-1/6 aspect-square animate-bounce hover:cursor-pointer'
             />
             : <div className='inline-block w-1/6'></div>
           }
