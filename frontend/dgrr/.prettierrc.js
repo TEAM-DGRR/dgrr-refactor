@@ -3,5 +3,6 @@ module.exports = {
   tabWidth: 2, // 탭너비 2로 설정
   semi: true, // 세미콜론 자동수정
   singleQuote: true, // 큰따옴표를 작은따옴표로 자동수정
+  jsxSingleQuote: true, // className 관련해서 작은 따옴표로 통일
   printWidth: 100, // 줄바꿈할 길이 설정
 };

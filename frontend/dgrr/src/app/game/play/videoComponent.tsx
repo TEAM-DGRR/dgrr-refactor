@@ -21,8 +21,8 @@ export const UserVideoComponent = forwardRef<ChildMethods, IUserVideoComponent>(
     }, [streamManager]);
 
     return (
-      <div>
-        <video autoPlay={true} ref={videoRef} className="w-80" />
+      <div className="userVideo w-full">
+        <video autoPlay={true} ref={videoRef} className="h-full" />
       </div>
     );
   }

@@ -16,7 +16,7 @@ export default function Home() {
           <img
             src="/images/kakao_login.png"
             alt="카카오 로그인 버튼"
-            className="cursor-pointer hover:brightness-110"
+            className="cursor-hover hover:brightness-110"
           />
         </div>
       </div>

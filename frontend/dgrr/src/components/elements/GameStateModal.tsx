@@ -2,14 +2,15 @@ import attackImg from '@/../public/images/match-attack.png';
 import defenseImg from '@/../public/images/match-defense.png';
 import waitImg from '@/../public/images/ico_bread_wink.png';
 import Image from 'next/image';
+import { useAppSelector } from '@/store/hooks';
 
 interface GameStateInfo {
   when: 'START' | 'ROUND' | 'END';
-  gameState?: 'ATTACK' | 'DEFENSE';
-  roundResult?: 'NO_LAUGH' | 'LAUGH';
+  gameState?: 'FIRST' | 'SECOND';
 }
 
-export const GameStateModal = ({ when, gameState, roundResult }: GameStateInfo) => {
+export const GameStateModal = ({ when, gameState }: GameStateInfo) => {
+  const roundResult = useAppSelector((state) => state.game.roundResult);
   return (
     <div className="z-10 bg-black/30 w-full h-full max-w-[500px] fixed top-0 flex justify-center items-center">
       <div className="w-4/5 h-1/2 max-h-[300px] bg-white rounded-lg border-2 border-black p-8 flex flex-col items-center justify-center">
@@ -21,13 +22,21 @@ export const GameStateModal = ({ when, gameState, roundResult }: GameStateInfo) 
         ) : (
           <div className="flex flex-col items-center">
             <Image
-              src={gameState === 'ATTACK' ? attackImg : defenseImg}
+              src={
+                when === 'START'
+                  ? gameState === 'FIRST'
+                    ? attackImg
+                    : defenseImg
+                  : gameState === 'FIRST'
+                  ? defenseImg
+                  : attackImg
+              }
               alt="공방 이미지"
               className="w-40"
             />
             {when === 'ROUND' && (
-              <p className="font-bold text-2xl">
-                {gameState === 'ATTACK'
+                <p className="font-bold text-2xl">
+                {gameState === 'SECOND'
                   ? roundResult === 'NO_LAUGH'
                     ? '웃음을 참았어요'
                     : '웃음을 참지 못했어요'
@@ -37,7 +46,13 @@ export const GameStateModal = ({ when, gameState, roundResult }: GameStateInfo) 
               </p>
             )}
             <p className="font-bold text-2xl">
-              {gameState === 'ATTACK' ? '상대방을 웃기세요!' : '웃음을 참아보세요!'}
+              {when === 'START'
+                ? gameState === 'FIRST'
+                  ? '상대방을 웃기세요!'
+                  : '웃음을 참아보세요!'
+                : gameState === 'FIRST'
+                ? '웃음을 참아보세요'
+                : '상대방을 웃기세요!'}
             </p>
           </div>
         )}

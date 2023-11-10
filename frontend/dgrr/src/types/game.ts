@@ -1,10 +1,14 @@
 import { Client, StompHeaders } from '@stomp/stompjs';
-import { StreamManager } from 'openvidu-browser';
+import { Publisher, StreamManager, Subscriber } from 'openvidu-browser';
 
 export type GameType = {
   client: Client | undefined;
   gameInfo: IGameConfig;
   gameResult: IGameResult;
+  publisher: Publisher | undefined;
+  subscriber: Subscriber | undefined;
+  websocket: WebSocket | undefined;
+  roundResult: string;
 };
 
 export interface IGameConfig {
@@ -37,7 +41,7 @@ export const stompConfig = {
     // 게임 시작 정보
     GAME_URI: '/user/recv/game-start',
     // 표정/얼굴 인식 정보
-    STATUS_URI: '/user/recv/captrue-result',
+    STATUS_URI: '/user/recv/capture-result',
     // 게임 결과 정보
     RESULT_URI: '/user/recv/game-result',
     // 1라운드 시작 정보
@@ -54,6 +58,8 @@ export const stompConfig = {
     SECOND_ROUND_LAUGH_URI: '/user/recv/secondroundend-laugh',
     // 에러 처리
     ERROR_URI: '/user/recv/errors',
+    // 상대방 탈주 정보
+    ENEMY_LEFT_URI: '/user/recv/enemy-left',
   },
   CAPTURE_INTERVAL: 500,
 };
@@ -104,11 +110,11 @@ export interface IGameResult {
 
   // 게임 결과
   highlightImage: string;
-  gameResult: 'WIN' | 'LOSE' | 'Draw';
+  gameResult: 'WIN' | 'LOSE' | 'DRAW';
 
   // 점수 변화
   afterRating: number;
-  afterRank: 'BRONZE' | 'SILVER' | 'GOLD';
+  afterTier: 'BRONZE' | 'SILVER' | 'GOLD';
 }
 
 export interface ChildMethods {

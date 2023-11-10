@@ -161,14 +161,14 @@ const Edit = () => {
           onClick={handleSaveButton}
           className='bg-main-blue rounded-lg w-full max-w-[500px] p-4 hover:brightness-110'
         >
-          <div className='text-white text-center text-base font-bold cursor-pointer uppercase leading-none'>
+          <div className='text-white text-center text-base font-bold cursor-hover uppercase leading-none'>
             저장
           </div>
         </div>
       </div>
       <div
         onClick={openWithdrawModal}
-        className='flex justify-center mt-40 mb-3 text-xs font-semibold cursor-pointer hover:text-[#E83F57]'
+        className='flex justify-center mt-40 mb-3 text-xs font-semibold cursor-hover hover:text-[#E83F57]'
       >
         회원 탈퇴
       </div>

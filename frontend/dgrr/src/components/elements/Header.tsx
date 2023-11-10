@@ -12,6 +12,10 @@ import {
   IoExitOutline,
   IoPencilSharp,
 } from 'react-icons/io5';
+import { useAppSelector } from '@/store/hooks';
+import { publishMessage } from '../Game/stomp';
+import { stompConfig } from '@/types/game';
+import WarningAlert from './WarningAlert';
 
 export type headerType = 'MAIN' | 'GAMESTART' | 'PROFILE' | 'WAITING' | 'GAME' | 'OTHER';
 
@@ -26,12 +30,38 @@ interface HeaderProps {
 const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const client = useAppSelector((state) => state.game.client);
+  const gameRoomId = useAppSelector((state) => state.game.gameInfo.gameRoomId);
+  const ws = useAppSelector((state) => state.game.websocket)
+  const { DESTINATION_URI } = stompConfig;
+  const { EXIT_URI } = DESTINATION_URI;
 
   // 뒤로 가기
   const handleMoveBack = () => {
     router.back();
     history.pushState({}, '', pathname);
     console.log('Go Back');
+  };
+
+  const exitGame = async () => {
+    const askExit = await WarningAlert();
+
+    if (askExit) {
+      if (client) {
+        publishMessage(client, EXIT_URI, gameRoomId);
+        client.deactivate();
+        disconnectWs();
+        router.push('/main');
+      };
+    }
+  };
+
+  // 웹소켓 해제
+  const disconnectWs = () => {
+    if (ws) {
+      ws.close();
+      console.log('연결 해제');
+    }
   };
 
   // 코드 복사
@@ -57,13 +87,13 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
     <div className='max-w-[500px]'>
       {headerType === 'MAIN' ? (
         <div className='bg-main-blue h-[60px] top-0 right-0 flex justify-between items-center'>
-          <div className='flex ms-4 cursor-pointer hover:text-white'>
-            <Link href='/ranking'>
+          <div className='flex ms-4 hover:text-white'>
+            <Link href='/ranking' className='cursor-hover'>
               <IoTrophyOutline fontSize={'27px'} />
             </Link>
           </div>
-          <div className='me-4 cursor-pointer hover:text-white'>
-            <Link href='/myprofile'>
+          <div className='me-4 hover:text-white'>
+            <Link href='/myprofile' className='cursor-hover'>
               <IoPersonOutline fontSize={'27px'} />
             </Link>
           </div>
@@ -71,7 +101,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'GAMESTART' ? (
         <div className='h-[60px] top-0 right-0 flex items-center'>
           <div className='flex gap-2 ms-2'>
-            <div onClick={handleMoveBack} className='cursor-pointer hover:text-white'>
+            <div onClick={handleMoveBack} className='cursor-hover hover:text-white'>
               <IoChevronBackOutline fontSize={'27px'} />
             </div>
           </div>
@@ -79,14 +109,14 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'PROFILE' ? (
         <div className='h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex gap-2 ms-2'>
-            <div className='cursor-pointer hover:text-main-blue'>
-              <Link href='/main'>
+            <div className='cursor-hover hover:text-main-blue'>
+              <Link href='/main' className='cursor-hover'>
                 <IoChevronBackOutline fontSize={'27px'} />
               </Link>
             </div>
-            <div className='inline-block text-lg font-semibold'>마이 프로필</div>
+            <div className='inline-block text-lg font-semibold '>마이 프로필</div>
           </div>
-          <Link href='/myprofile/edit'>
+          <Link href='/myprofile/edit' className='cursor-hover'>
             <div className='me-4 hover:text-main-blue'>
               <IoPencilSharp fontSize={'25px'} />
             </div>
@@ -96,25 +126,25 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
         <div className='bg-black h-[60px] top-0 right-0 gap-2 pe-4 flex justify-end items-center'>
           <div
             onClick={() => handleCopyCode(roomCode)}
-            className='cursor-pointer text-white hover:text-main-blue'
+            className='cursor-hover text-white hover:text-main-blue'
           >
             <IoCopyOutline fontSize={'27px'} />
           </div>
-          <div className='cursor-pointer text-white hover:text-main-blue'>
+          <div className='cursor-hover text-white hover:text-main-blue'>
             <IoExitOutline fontSize={'30px'} />
           </div>
         </div>
       ) : headerType === 'GAME' ? (
         <div className='bg-black h-[60px] top-0 right-0 gap-[107px] pe-4 flex justify-end items-center'>
           <div className='text-white text-3xl font-semibold'>0:11</div>
-          <div className='cursor-pointer text-white hover:text-main-blue'>
+          <div className='cursor-hover text-white hover:text-main-blue' onClick={exitGame}>
             <IoExitOutline fontSize={'30px'} />
           </div>
         </div>
       ) : (
         <div className='h-[60px] top-0 right-0 flex items-center'>
           <div className='flex gap-2 ms-2'>
-            <div onClick={handleMoveBack} className='cursor-pointer hover:text-main-blue'>
+            <div onClick={handleMoveBack} className='cursor-hover hover:text-main-blue'>
               <IoChevronBackOutline fontSize={'27px'} />
             </div>
             <div className='inline-block text-lg font-semibold'>{children}</div>

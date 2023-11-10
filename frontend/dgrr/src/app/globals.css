@@ -31,3 +31,7 @@ body {
   justify-content: center;
   max-width: 500px;
 }
+
+.userVideo {
+  height: calc((100% - 60px) / 2);
+}
