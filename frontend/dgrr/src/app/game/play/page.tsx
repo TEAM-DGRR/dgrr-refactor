@@ -1,6 +1,6 @@
 'use client';
 import { useAppSelector } from '@/store/hooks';
-import { ChildMethods, stompConfig } from '@/types/game';
+import { ChildMethods, stompConfig, IImageResult } from '@/types/game';
 import { useEffect, useRef, useState } from 'react';
 import { UserVideoComponent } from './videoComponent';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import { publishMessage } from '@/components/Game/stomp';
 import { GameStateModal } from '@/components/elements/GameStateModal';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/elements/Header';
+import ProbabilityGauge from './probabilityGauge';
 
 const PlayPage = () => {
   const client = useAppSelector((state) => state.game.client);
@@ -42,6 +43,8 @@ const PlayPage = () => {
   const [modalOpen, setModalOpen] = useState(true);
   const [when, setWhen] = useState<'START' | 'ROUND' | 'END'>('START');
   const router = useRouter();
+  const [smileProbability, setSmileProbability] = useState<number>(0);
+  const [recognition, setRecognition] = useState<boolean>(false);
 
   let intervalId: any;
   // 1라운드 관련 구독
@@ -52,7 +55,10 @@ const PlayPage = () => {
         console.log('1라운드 시작');
         setWhen('ROUND');
         client?.subscribe(STATUS_URI, (message) => {
-          console.log('표정인식 결과: ', message.body);
+          const imageResult: IImageResult = JSON.parse(message.body);
+          console.log('표정인식 결과: ', imageResult);
+          setRecognition(imageResult.success);
+          setSmileProbability(imageResult.smileProbability);
         });
         if (turn === 'SECOND') {
           // 표정 분석 결과
@@ -217,7 +223,6 @@ const PlayPage = () => {
     // console.log(5);
     // console.log(ws);
     if (ws && ws.readyState === WebSocket.OPEN) {
-      console.log(round)
       const message = {
         image: imageData,
         header: {
@@ -249,12 +254,14 @@ const PlayPage = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen max-w-[500px] min-h-[565px] bg-black">
-      <Header headerType="GAME" />
+    <div className='w-screen h-screen max-w-[500px] min-h-[565px] bg-black'>
+      <Header headerType='GAME' />
       {modalOpen && <GameStateModal when={when} gameState={turn} />}
       <UserVideoComponent ref={childRef} streamManager={publisher} />
+      <ProbabilityGauge probability={smileProbability} />
       <UserVideoComponent streamManager={subscriber} />
-      <canvas ref={canvasRef} width="640" height="480" style={{ display: 'none' }} />
+      <div className={recognition ? 'bg-green-500' : 'bg-red-600'}>color</div>
+      <canvas ref={canvasRef} width='640' height='480' style={{ display: 'none' }} />
     </div>
   );
 };

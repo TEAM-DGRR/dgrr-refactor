@@ -90,7 +90,7 @@ export interface IMemberInfo {
 
 // 이미지 분석 결과
 export interface IImageResult {
-  success: string;
+  success: boolean;
   emotion: string;
   probability: number;
   smileProbability: number;
