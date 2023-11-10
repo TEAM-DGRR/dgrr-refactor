@@ -1,8 +1,11 @@
 'use client';
 import { KAKAO_AUTH_URL } from '../metadata/OAuth';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 
 export default function Home() {
+  const playsound = ButtonClickAudio();
   const handleLogin = () => {
+    playsound();
     window.location.href = KAKAO_AUTH_URL;
   };
 

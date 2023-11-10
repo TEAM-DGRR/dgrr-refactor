@@ -16,6 +16,7 @@ import { useAppSelector } from '@/store/hooks';
 import { publishMessage } from '../Game/stomp';
 import { stompConfig } from '@/types/game';
 import WarningAlert from './WarningAlert';
+import ButtonClickAudio from '../audio/ButtonClickAudio';
 
 export type headerType = 'MAIN' | 'GAMESTART' | 'PROFILE' | 'WAITING' | 'GAME' | 'OTHER';
 
@@ -35,15 +36,18 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const ws = useAppSelector((state) => state.game.websocket)
   const { DESTINATION_URI } = stompConfig;
   const { EXIT_URI } = DESTINATION_URI;
+  const playsound = ButtonClickAudio();
 
   // 뒤로 가기
   const handleMoveBack = () => {
+    playsound();
     router.back();
     history.pushState({}, '', pathname);
     console.log('Go Back');
   };
 
   const exitGame = async () => {
+    playsound();
     const askExit = await WarningAlert();
 
     if (askExit) {
@@ -66,6 +70,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
 
   // 코드 복사
   const handleCopyCode = async (roomCode: number | undefined) => {
+    playsound();
     if (roomCode !== undefined) {
       try {
         // 숫자를 문자열로 변환 후 클립보드에 복사
@@ -88,12 +93,12 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       {headerType === 'MAIN' ? (
         <div className='bg-main-blue h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex ms-4 hover:text-white'>
-            <Link href='/ranking' className='cursor-hover'>
+            <Link href='/ranking' className='cursor-hover' onClick={playsound}>
               <IoTrophyOutline fontSize={'27px'} />
             </Link>
           </div>
           <div className='me-4 hover:text-white'>
-            <Link href='/myprofile' className='cursor-hover'>
+            <Link href='/myprofile' className='cursor-hover' onClick={playsound}>
               <IoPersonOutline fontSize={'27px'} />
             </Link>
           </div>
@@ -110,13 +115,13 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
         <div className='h-[60px] top-0 right-0 flex justify-between items-center'>
           <div className='flex gap-2 ms-2'>
             <div className='cursor-hover hover:text-main-blue'>
-              <Link href='/main' className='cursor-hover'>
+              <Link href='/main' className='cursor-hover' onClick={playsound}>
                 <IoChevronBackOutline fontSize={'27px'} />
               </Link>
             </div>
             <div className='inline-block text-lg font-semibold '>마이 프로필</div>
           </div>
-          <Link href='/myprofile/edit' className='cursor-hover'>
+          <Link href='/myprofile/edit' className='cursor-hover' onClick={playsound}>
             <div className='me-4 hover:text-main-blue'>
               <IoPencilSharp fontSize={'25px'} />
             </div>
@@ -130,7 +135,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
           >
             <IoCopyOutline fontSize={'27px'} />
           </div>
-          <div className='cursor-hover text-white hover:text-main-blue'>
+          <div className='cursor-hover text-white hover:text-main-blue' onClick={playsound}>
             <IoExitOutline fontSize={'30px'} />
           </div>
         </div>

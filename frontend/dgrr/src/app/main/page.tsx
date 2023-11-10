@@ -7,10 +7,13 @@ import { FuncButton } from '@/components/FuncButton';
 import Header from '@/components/elements/Header';
 import { ExplainModal } from '@/components/elements/ExplainModal';
 import { useEffect, useState } from 'react';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 
 const MainPage = () => {
   const [openModal, setOpenModal] = useState(false);
+  const playSound  = ButtonClickAudio();
   const handleModal = () => {
+    playSound();
     setOpenModal(!openModal);
   };
 
@@ -50,7 +53,7 @@ const MainPage = () => {
           {/* 게임 시작 버튼 */}
           <div className="flex justify-center">
             <div className="w-4/5 2sm:w-[320px]">
-              <LinkButton value="게임 시작" moveLink="/game/list" />
+              <LinkButton value="게임 시작" moveLink="/game/list" clickEvent={playSound} />
             </div>
           </div>
         </div>
