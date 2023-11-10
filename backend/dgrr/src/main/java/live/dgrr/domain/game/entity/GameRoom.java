@@ -18,10 +18,8 @@ public class GameRoom {
     private GameMember memberOne;
     private GameMember memberTwo;
     private GameStatus gameStatus;
-    private int firstRoundPrepareCounter;
     private LocalDateTime firstRoundStartTime;
     private LocalDateTime firstRoundEndTime;
-    private int secondRoundPrepareCounter;
     private LocalDateTime secondRoundStartTime;
     private LocalDateTime secondRoundEndTime;
     private RoundResult firstRoundResult;
@@ -35,10 +33,6 @@ public class GameRoom {
         this.gameType = gameType;
     }
 
-    public int firstRoundPrepare() {
-        this.firstRoundPrepareCounter++;
-        return this.firstRoundPrepareCounter;
-    }
 
     public void startFirstRound(LocalDateTime now) {
         this.firstRoundStartTime = now;
@@ -49,11 +43,6 @@ public class GameRoom {
         this.firstRoundResult = roundResult;
         this.firstRoundEndTime = LocalDateTime.now();
         this.gameStatus = GameStatus.SECOND_ROUND;
-    }
-
-    public int secondRoundPrepare() {
-        this.secondRoundPrepareCounter++;
-        return this.secondRoundPrepareCounter;
     }
 
     public void startSecondRound(LocalDateTime now) {
@@ -134,5 +123,20 @@ public class GameRoom {
             return Duration.between(secondRoundStartTime, secondRoundEndTime).toMillis();
         }
         return Duration.between(firstRoundStartTime, firstRoundEndTime).toMillis();
+    }
+
+    public Integer judgeWinningRound() {
+        if(firstRoundResult.equals(RoundResult.NO_LAUGH) && secondRoundResult.equals(RoundResult.NO_LAUGH)) {
+            return null;
+        }
+        long firstRoundDuration = Duration.between(firstRoundStartTime, firstRoundEndTime).toNanos();
+        long secondRoundDuration = Duration.between(secondRoundStartTime, secondRoundEndTime).toNanos();
+
+        // 1라운드가 더 빨리 웃엇을 경우
+        if(firstRoundDuration < secondRoundDuration) {
+            return 1;
+        }
+        // 2라운드가 더 빨리 웃엇을 경우
+        return 2;
     }
 }

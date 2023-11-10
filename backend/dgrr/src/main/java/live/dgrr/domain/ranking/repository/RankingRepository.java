@@ -37,7 +37,7 @@ public class RankingRepository {
     public List<RankingResponse> getRankingMember(Member member, Season season) {
         List<RankingResponse> rankings = new ArrayList<>();
         String seasonKey = season == Season.CURRENT? key : lastKey;
-        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().rangeWithScores(seasonKey, 0, -1);
+        Set<ZSetOperations.TypedTuple<Long>> results = redisTemplate.opsForZSet().reverseRangeWithScores (seasonKey, 0, 9);
         if (results != null) {
             for (ZSetOperations.TypedTuple<Long> result : results) {
                 String value = String.valueOf(result.getValue());
@@ -66,9 +66,30 @@ public class RankingRepository {
         return rating;
     }
 
+    public Double getRatingByMemberIdAndSeason(Long memberId, Season season) {
+        // 멤버 스코어 조회
+        String seasonKey = season == Season.CURRENT? key : lastKey;
+        Double rating = redisTemplate.opsForZSet().score(seasonKey, memberId);
+        if (rating == null) {
+            return null;
+        }
+        return rating;
+    }
+
     public Long getRankByMemberId(Long memberId) {
         // 멤버 랭킹 조회 (0부터 시작하므로 1을 더해줌)
         Long rank = redisTemplate.opsForZSet().reverseRank(key, memberId);
+        if (rank == null) {
+            return null;
+        }
+        rank += 1;
+        return rank;
+    }
+
+    public Long getRankByMemberIdAndSeason(Long memberId, Season season) {
+        // 멤버 랭킹 조회 (0부터 시작하므로 1을 더해줌)
+        String seasonKey = season == Season.CURRENT? key : lastKey;
+        Long rank = redisTemplate.opsForZSet().reverseRank(seasonKey, memberId);
         if (rank == null) {
             return null;
         }

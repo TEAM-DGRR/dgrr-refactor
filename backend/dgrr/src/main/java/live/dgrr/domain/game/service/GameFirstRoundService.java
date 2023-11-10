@@ -9,6 +9,7 @@ import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundPreparedEvent;
 import live.dgrr.domain.game.entity.event.FirstRoundOverEvent;
 import live.dgrr.domain.game.entity.event.GameType;
+import live.dgrr.domain.game.repository.GamePrepareRepository;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
@@ -21,6 +22,7 @@ import live.dgrr.global.util.TierCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,7 @@ public class GameFirstRoundService {
     private final TaskScheduler taskScheduler;
     private final MemberRepository memberRepository;
     private final RankingRepository rankingRepository;
+    private final GamePrepareRepository gamePrepareRepository;
 
     private static final long ROUND_TIME = 30L;
 
@@ -77,14 +80,13 @@ public class GameFirstRoundService {
      * @param gameRoomId 게임 룸 아이디
      */
     public void prepareFirstRoundStart(String gameRoomId) {
-        GameRoom gameRoom = gameRoomRepository.findById(gameRoomId)
-                .orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
-        int prepareCounter = gameRoom.firstRoundPrepare();
-        gameRoomRepository.save(gameRoom);
+        Long prepareCounter = gamePrepareRepository.prepareRoundOne(gameRoomId);
 
-        //todo: 동시성 이슈 처리 필요
         //둘 모두 준비되었을때만 시작
         if(prepareCounter == 2) {
+            GameRoom gameRoom = gameRoomRepository.findById(gameRoomId)
+                    .orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
+            gamePrepareRepository.deletePrepareRoundOne(gameRoomId);
             firstRoundStart(gameRoomId, gameRoom);
         }
     }

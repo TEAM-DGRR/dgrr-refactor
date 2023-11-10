@@ -1,5 +1,10 @@
 package live.dgrr.domain.member.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import live.dgrr.domain.gamehistory.entity.GameHistory;
 import live.dgrr.domain.gamehistory.repository.GameHistoryRepository;
 import live.dgrr.domain.gamehistory.dto.response.GameHistoryWithOpponentInfoResponse;
@@ -10,23 +15,29 @@ import live.dgrr.domain.ranking.dto.response.MemberRankingInfoResponse;
 import live.dgrr.domain.member.dto.response.MemberResponse;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
+import live.dgrr.global.config.jwt.JwtConfig;
 import live.dgrr.global.util.TierCalculator;
 import live.dgrr.domain.ranking.repository.RankingRepository;
 import live.dgrr.global.exception.ErrorCode;
 import live.dgrr.global.exception.GeneralException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Key;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final RankingRepository rankingRepository;
     private final GameHistoryRepository gameHistoryRepository;
+
+    public MemberService(MemberRepository memberRepository, RankingRepository rankingRepository, GameHistoryRepository gameHistoryRepository) {
+        this.memberRepository = memberRepository;
+        this.rankingRepository = rankingRepository;
+        this.gameHistoryRepository = gameHistoryRepository;
+    }
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new GeneralException(ErrorCode.MEMBER_NOT_FOUND));
@@ -81,7 +92,7 @@ public class MemberService {
     }
 
 
-    private void checkNickname(String nickname) {
+    public void checkNickname(String nickname) {
         if (isDuplicateNickname(nickname)) {
             throw new GeneralException(ErrorCode.NICKNAME_ALREADY_EXIST);
         }
@@ -99,4 +110,6 @@ public class MemberService {
         MemberResponse memberResponse = MemberResponse.of(member);
         return memberResponse;
     }
+
+
 }

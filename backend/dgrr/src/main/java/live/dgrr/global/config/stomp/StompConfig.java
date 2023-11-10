@@ -16,7 +16,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     //todo:추후 CustomHandshakeHandler 를 제거 후 Authentication 추가
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/connect").setAllowedOrigins("*");
+        registry.addEndpoint("/api/connect").setAllowedOrigins("*");
     }
 
     @Override

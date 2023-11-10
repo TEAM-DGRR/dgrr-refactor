@@ -10,6 +10,7 @@ import live.dgrr.domain.game.service.GameFirstRoundService;
 import live.dgrr.domain.game.service.GameSecondRoundService;
 import live.dgrr.domain.waitingroom.entity.GameStartEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Profile("!test")
 public class GameController {
 
     private final GameFirstRoundService gameFirstRoundService;

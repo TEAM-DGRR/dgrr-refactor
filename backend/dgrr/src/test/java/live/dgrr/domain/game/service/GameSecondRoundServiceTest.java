@@ -1,11 +1,13 @@
 package live.dgrr.domain.game.service;
 
 
+import live.dgrr.domain.capture.service.IHighlightService;
 import live.dgrr.domain.game.dto.GameResultResponse;
 import live.dgrr.domain.game.entity.*;
 import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.gamehistory.service.GameHistoryService;
+import live.dgrr.domain.waitingroom.service.WaitingRoomService;
 import live.dgrr.global.entity.Tier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +27,10 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class GameSecondRoundServiceTest {
 
+    @Mock
+    IHighlightService iHighlightService;
+    @Mock
+    WaitingRoomService waitingRoomService;
     @Mock
     GameHistoryService gameHistoryService;
     @Spy
@@ -180,7 +187,9 @@ class GameSecondRoundServiceTest {
 
     private void mockGameRoom(RoundResult firstRoundResult, RoundResult secondRoundResult) {
         doAnswer(invocation -> {
+            gameRoom.startFirstRound(LocalDateTime.now());
             gameRoom.finishFirstRound(firstRoundResult);
+            gameRoom.startSecondRound(LocalDateTime.now());
             gameRoom.finishSecondRound(secondRoundResult);
             return Optional.of(gameRoom);
         }).when(gameRoomRepository).findById(gameRoomId);

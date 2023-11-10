@@ -1,7 +1,8 @@
 package live.dgrr.domain.capture.service;
 
-import live.dgrr.domain.capture.entity.CaptureResult;
-import live.dgrr.domain.capture.entity.event.CaptureResultEvent;
+import live.dgrr.domain.capture.dto.CaptureResult;
+import live.dgrr.domain.capture.dto.event.CaptureResultResponseEvent;
+import live.dgrr.domain.capture.dto.response.CaptureResultResponse;
 import live.dgrr.domain.game.entity.GameMember;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameStatus;
@@ -11,6 +12,7 @@ import live.dgrr.domain.game.entity.event.GameType;
 import live.dgrr.domain.game.entity.event.SecondRoundOverEvent;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.global.entity.Tier;
+import org.apache.catalina.LifecycleState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.HashMap;
 import java.util.Optional;
 import org.mockito.quality.Strictness;
+import org.springframework.data.util.Pair;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,7 +56,11 @@ class CaptureServiceTest {
     private ArgumentCaptor<SecondRoundOverEvent> secondRoundOverEventCaptor;
 
     @Captor
-    private ArgumentCaptor<CaptureResultEvent> captureResultEventCaptor;
+    private ArgumentCaptor<CaptureResult> captureResultCaptor;
+    @Captor
+    private ArgumentCaptor<CaptureResultResponse> captureResultResponseCaptor;
+    @Captor
+    private ArgumentCaptor<CaptureResultResponseEvent> captureResultResponseEventCaptor;
 
     private String gameRoomId;
     private GameRoom gameRoom;
@@ -69,30 +79,35 @@ class CaptureServiceTest {
         when(gameRoomRepository.findById(gameRoomId)).thenReturn(Optional.of(gameRoom));
     }
 
-    private CaptureResult processCaptureResult(String captureJson, int expectedRound, boolean expectImage) {
-        CaptureResult captureResult = captureService.deSerializationCapture(captureJson);
+    private void verifyCaptureResult(CaptureResult captureResult, CaptureResultResponse captureResultResponse, boolean success,
+                                     String emotion, double probability, double smileProbability, int round, String gameRoomId) {
 
-        assertNotNull(captureResult);
-        assertTrue(captureResult.isSuccess());
-        assertNotNull(captureResult.getHeader());
-        assertEquals(expectedRound, captureResult.getHeader().getRound());
-        assertEquals(gameRoomId, captureResult.getHeader().getGameSessionId());
 
-        if (expectImage) {
-            assertEquals("AABS@9XX1234", captureResult.getEncodedImage());
-        } else {
-            assertNull(captureResult.getEncodedImage());
-        }
+        // captureResult 확인
+        assertThat(captureResult.isSuccess()).isEqualTo(success);
+        assertThat(captureResult.getEmotion()).isEqualTo(emotion);
+        assertThat(captureResult.getProbability()).isEqualTo(probability);
+        assertThat(captureResult.getSmileProbability()).isEqualTo(smileProbability);
+        assertThat(captureResult.getHeader().getRound()).isEqualTo(round);
+        assertThat(captureResult.getHeader().getGameSessionId()).isEqualTo(gameRoomId);
 
-        return captureResult;
+
+        // captureResultResponse 확인
+        assertThat(captureResultResponse.isSuccess()).isEqualTo(success);
+        assertThat(captureResultResponse.getEmotion()).isEqualTo(emotion);
+        assertThat(captureResultResponse.getProbability()).isEqualTo(probability);
+        assertThat(captureResultResponse.getSmileProbability()).isEqualTo(smileProbability);
+
+        // captureResultResponseEvent 확인
+        verifyCaptureResultResponseEventPublished(captureResultResponse);
     }
 
-    private void verifyCaptureResultEventPublished(CaptureResult captureResult) {
-        verify(publisher).publishEvent(captureResultEventCaptor.capture());
-        CaptureResultEvent publishedEvent = captureResultEventCaptor.getValue();
+    private void verifyCaptureResultResponseEventPublished(CaptureResultResponse captureResultResponse) {
+        verify(publisher).publishEvent(captureResultResponseEventCaptor.capture());
+        CaptureResultResponseEvent publishedEvent = captureResultResponseEventCaptor.getValue();
         assertThat(publishedEvent.memberOneId()).isEqualTo(memberOneId);
         assertThat(publishedEvent.memberTwoId()).isEqualTo(memberTwoId);
-        assertThat(publishedEvent.captureResult()).isEqualTo(captureResult);
+        assertThat(publishedEvent.captureResultResponse()).isEqualTo(captureResultResponse);
     }
 
     @DisplayName("1라운드 - 웃었을 때")
@@ -100,13 +115,14 @@ class CaptureServiceTest {
     void deSerializationCaptureTest_1Round_LAUGH() {
         String captureJson = createCaptureJson(1, gameRoomId, true, "Smile", 0.95, 0.95);
 
-        CaptureResult captureResult = processCaptureResult(captureJson, 1, true);
-        assertEquals("Smile", captureResult.getEmotion());
-        assertEquals(0.95, captureResult.getProbability());
-        assertEquals(0.95, captureResult.getSmileProbability());
+        Pair<CaptureResult, CaptureResultResponse> pair = captureService.deSerializationCapture(captureJson);
+        CaptureResult captureResult = pair.getFirst();
+        CaptureResultResponse captureResultResponse = pair.getSecond();
 
-        verifyCaptureResultEventPublished(captureResult);
+        // captureResult, captureResultResponse 확인
+        verifyCaptureResult(captureResult, captureResultResponse, true, "Smile", 0.95,0.95, 1, gameRoomId);
 
+        // firstRoundOverEvent 확인
         verify(publisher).publishEvent(firstRoundOverEventCaptor.capture());
         verify(publisher, never()).publishEvent(secondRoundOverEventCaptor.capture());
         FirstRoundOverEvent firstRoundOverEvent = firstRoundOverEventCaptor.getValue();
@@ -117,14 +133,13 @@ class CaptureServiceTest {
     @DisplayName("1라운드 - 안 웃었을 때")
     @Test
     void deSerializationCaptureTest_1Round_NO_LAUGH() {
-        String captureJson = createCaptureJson(1, gameRoomId, true, "Neutral", 0.10, 0.10);
+        String captureJson = createCaptureJson(1, gameRoomId, true, "Angry", 0.95, 0.3);
 
-        CaptureResult captureResult = processCaptureResult(captureJson, 1, false);
-        assertEquals("Neutral", captureResult.getEmotion());
-        assertEquals(0.10, captureResult.getProbability());
-        assertEquals(0.10, captureResult.getSmileProbability());
+        Pair<CaptureResult, CaptureResultResponse> pair = captureService.deSerializationCapture(captureJson);
+        CaptureResult captureResult = pair.getFirst();
+        CaptureResultResponse captureResultResponse = pair.getSecond();
 
-        verifyCaptureResultEventPublished(captureResult);
+        verifyCaptureResult(captureResult, captureResultResponse, true, "Angry", 0.95,0.3, 1, gameRoomId);
 
         verify(publisher, never()).publishEvent(firstRoundOverEventCaptor.capture());
         verify(publisher, never()).publishEvent(secondRoundOverEventCaptor.capture());
@@ -135,12 +150,11 @@ class CaptureServiceTest {
     void deSerializationCaptureTest_2Round_LAUGH() {
         String captureJson = createCaptureJson(2, gameRoomId, true, "Smile", 0.95, 0.95);
 
-        CaptureResult captureResult = processCaptureResult(captureJson, 2, true);
-        assertEquals("Smile", captureResult.getEmotion());
-        assertEquals(0.95, captureResult.getProbability());
-        assertEquals(0.95, captureResult.getSmileProbability());
+        Pair<CaptureResult, CaptureResultResponse> pair = captureService.deSerializationCapture(captureJson);
+        CaptureResult captureResult = pair.getFirst();
+        CaptureResultResponse captureResultResponse = pair.getSecond();
 
-        verifyCaptureResultEventPublished(captureResult);
+        verifyCaptureResult(captureResult, captureResultResponse, true, "Smile", 0.95,0.95, 2, gameRoomId);
 
         verify(publisher, never()).publishEvent(firstRoundOverEventCaptor.capture());
         verify(publisher).publishEvent(secondRoundOverEventCaptor.capture());
@@ -152,14 +166,13 @@ class CaptureServiceTest {
     @DisplayName("2라운드 - 안 웃었을 때")
     @Test
     void deSerializationCaptureTest_2Round_NO_LAUGH() {
-        String captureJson = createCaptureJson(2, gameRoomId, true, "Neutral", 0.10, 0.10);
+        String captureJson = createCaptureJson(2, gameRoomId, true, "Neutral", 0.7, 0.2);
 
-        CaptureResult captureResult = processCaptureResult(captureJson, 2, false);
-        assertEquals("Neutral", captureResult.getEmotion());
-        assertEquals(0.10, captureResult.getProbability());
-        assertEquals(0.10, captureResult.getSmileProbability());
+        Pair<CaptureResult, CaptureResultResponse> pair = captureService.deSerializationCapture(captureJson);
+        CaptureResult captureResult = pair.getFirst();
+        CaptureResultResponse captureResultResponse = pair.getSecond();
 
-        verifyCaptureResultEventPublished(captureResult);
+        verifyCaptureResult(captureResult, captureResultResponse, true, "Neutral", 0.7,0.2, 2, gameRoomId);
 
         verify(publisher, never()).publishEvent(firstRoundOverEventCaptor.capture());
         verify(publisher, never()).publishEvent(secondRoundOverEventCaptor.capture());

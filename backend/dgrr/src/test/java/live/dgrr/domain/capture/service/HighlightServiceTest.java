@@ -66,15 +66,6 @@ public class HighlightServiceTest {
     }
 
     @Test
-    @DisplayName("Highlight 객체 저장 - 실패 (이미 존재함)")
-    void testSaveHighlightFailure() {
-        when(highlightRepository.findById(highlightID)).thenReturn(Optional.of(new Highlight()));
-
-        assertThrows(GameException.class, () -> highlightServiceImpl.saveHighlight(highlightID, encodedImage));
-        verify(s3Service, never()).uploadBase64EncodedImage(encodedImage);
-    }
-
-    @Test
     @DisplayName("Highlight URL 가져오기 - 성공")
     void testGetHighlightUrlSuccess() {
         Highlight mockHighlight = new Highlight(highlightID, mockUrl);

@@ -4,17 +4,14 @@ import live.dgrr.domain.waitingroom.entity.GameStartEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 @Component
 public class TestEventListener {
     private GameStartEvent lastEvent;
-    private ConcurrentLinkedQueue<GameStartEvent> events = new ConcurrentLinkedQueue<>();
-
+    private int eventCount;
     @EventListener
     public void handleGameStartEvent(GameStartEvent event) {
         lastEvent = event;
-        events.add(event);
+        eventCount++;
     }
 
     public GameStartEvent getLastEvent() {
@@ -26,11 +23,11 @@ public class TestEventListener {
     }
 
     public int getEventsCount() {
-        return events.size();
+        return this.eventCount;
     }
 
     public void clearEvents() {
-        events.clear();
+        this.eventCount = 0;
     }
 
 
