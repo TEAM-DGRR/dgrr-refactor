@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,7 @@ public class WaitingRoomService {
         return waitingRoomRepository.existsById(waitingRoomId);
     }
 
-    public WaitingMemberInfoResponseDto enterWaitingRoom(int roomId, Member member) {
+    public List<WaitingMemberInfoResponseDto> enterWaitingRoom(int roomId, Member member) {
         //방이 존재 하는지 확인
         WaitingRoom waitingRoom = findWaitingRoomById(roomId);
 
@@ -61,12 +62,17 @@ public class WaitingRoomService {
         checkWaitingRoomDuplicate(waitingRoom, String.valueOf(member.getMemberId()));
 
         //사용자 생성
-        WaitingMember waitingMember = WaitingMember.of(String.valueOf(member.getMemberId()), member.getNickname(), member.getProfileImage(), false);
+        WaitingMember newWaitingMember = WaitingMember.of(String.valueOf(member.getMemberId()), member.getNickname(), member.getProfileImage(), false);
 
         //방 참여
-        saveToWaitingRoom(waitingRoom, waitingMember);
+        saveToWaitingRoom(waitingRoom, newWaitingMember);
 
-        return WaitingMemberInfoResponseDto.of(roomId, waitingMember);
+        //방 안에 있는 모든 참가자들 리스트로 반환
+        List<WaitingMemberInfoResponseDto> waitingMembersInfoList = waitingRoom.getWaitingMemberList().stream()
+                .map(waitingMember -> WaitingMemberInfoResponseDto.of(roomId, waitingMember))
+                .collect(Collectors.toList());
+
+        return waitingMembersInfoList;
 
     }
 

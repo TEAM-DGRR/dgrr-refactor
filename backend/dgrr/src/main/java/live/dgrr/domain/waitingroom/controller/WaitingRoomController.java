@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -46,13 +47,13 @@ public class WaitingRoomController {
         log.info("WaitingRoomController - enterWaitingRoom by : {}, roomId : {}", principal.getName(), roomId);
 
         Member member = memberService.findMemberById(Long.parseLong(principal.getName()));
-        WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.enterWaitingRoom(roomId, member);
+        List<WaitingMemberInfoResponseDto> waitingMemberInfoDtoList = waitingRoomService.enterWaitingRoom(roomId, member);
 
         waitingRoomService.findWaitingRoomById(roomId)
                 .getWaitingMemberList()
                 .stream()
                 .map(WaitingMember::getWaitingMemberId)
-                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, WAITING_ROOM_ENTER, waitingMemberInfoDto));
+                .forEach(userId -> simpMessagingTemplate.convertAndSendToUser(userId, WAITING_ROOM_ENTER, waitingMemberInfoDtoList));
     }
 
     @MessageMapping("/room-exit")
