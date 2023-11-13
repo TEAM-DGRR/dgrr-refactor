@@ -13,6 +13,7 @@ import {
 } from '@/apis/myProfileApi';
 import { setUrl } from '@/utils/setUrl';
 import axios from 'axios';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 
 type UploadImg = {
   file: File | { buffer: Buffer; size: number; type: string };
@@ -21,6 +22,7 @@ type UploadImg = {
 };
 
 const Edit = () => {
+  const playsound = ButtonClickAudio();
   // 수정하기 전, 원래 닉네임
   const [myNickName, setMyNickname] = useState('');
   // 수정한 닉네임
@@ -133,6 +135,7 @@ const Edit = () => {
 
   // 저장 버튼
   const handleSaveButton = async () => {
+    playsound();
     const data: UpdateMyInfoProps = {
       nickname: nowNickname,
       profileImage: nowProfileImage?.thumbnail,

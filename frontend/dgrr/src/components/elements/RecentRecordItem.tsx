@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import { IoImageOutline } from 'react-icons/io5';
 import useTimeStamp from '@/hooks/useTimeStamp';
 
@@ -31,6 +31,13 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
       : item.gameResult === 'LOSE'
       ? 'border-[#E83F57]'
       : 'border-[#868E96]';
+  const backgroundColor =
+    item.gameResult === 'WIN'
+      ? 'bg-[#5383E8]'
+      : item.gameResult === 'LOSE'
+      ? 'bg-[#E83F57]'
+      : 'bg-[#868E96]';
+  const itemText = item.gameResult === 'WIN' ? '승' : item.gameResult === 'LOSE' ? '패' : '무';
   const textColor =
     item.ratingChange > 0
       ? 'text-[#5383E8]'
@@ -41,24 +48,20 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
 
   return (
     <div>
-      <div className={`flex ${itemHeight} min-w-[305px] mb-3 justify-between rounded-lg border-2 ${borderColor}`}>
+      <div
+        className={`flex ${itemHeight} min-w-[305px] mb-3 justify-between rounded-lg border-2 ${borderColor}`}
+      >
         <div className='gap-x-[12px] flex items-center ms-2'>
-          {item.gameResult === 'WIN' ? (
-            <div className='bg-[#5383E8] w-[24px] h-[24px] text-white text-center rounded-full font-semibold'>
-              승
-            </div>
-          ) : item.gameResult === 'DRAW' ? (
-            <div className='bg-[#868E96] w-[24px] h-[24px] text-white text-center rounded-full font-semibold'>
-              무
-            </div>
-          ) : (
-            <div className='bg-[#E83F57] w-[24px] h-[24px] text-white text-center rounded-full font-semibold'>
-              패
-            </div>
-          )}
-          <img
+          <div
+            className={`${backgroundColor} w-[24px] h-[24px] text-white text-center rounded-full font-semibold`}
+          >
+            {itemText}
+          </div>
+          <Image
             src={item.opponentProfileImage}
-            alt='opponentProileImage'
+            alt='상대방 프로필 이미지'
+            width={500}
+            height={500}
             className='w-[24px] h-[24px] rounded-full inline-block'
           />
           <div className='text-sm ms-1 inline-block'>

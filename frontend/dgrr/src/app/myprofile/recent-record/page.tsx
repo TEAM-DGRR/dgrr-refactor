@@ -5,20 +5,21 @@ import ModalWithX from '@/components/elements/ModalWithX';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
 import { useEffect, useState } from 'react';
 import { getMyInfoApi } from '@/apis/myProfileApi';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 
 const RecentRecord = () => {
   const [modalStatus, setModalStatus] = useState(false);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+  const playsound = ButtonClickAudio();
 
   const openModal = (index: any) => {
+    playsound();
     setSelectedItemIndex(index);
     setModalStatus(true);
-    console.log('Open Modal');
   };
   const closeModal = () => {
     setModalStatus(false);
     setSelectedItemIndex(0);
-    console.log('Close Modal');
   };
 
   // Back에서 정보를 이 형태로 보내줌
@@ -58,16 +59,15 @@ const RecentRecord = () => {
       try {
         const response = await getMyInfoApi();
         console.log('데이터 가져오기 성공:', response);
-        await setMyInfo(response)
-  
+        await setMyInfo(response);
+
         // response의 PromiseResult를 추출
         const { gameHistoryList, member, ranking } = response;
-  
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
       }
     };
-  
+
     fetchData();
   }, []);
 

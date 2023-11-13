@@ -1,9 +1,8 @@
 'use client';
-
 import { IoCamera } from 'react-icons/io5';
 
 interface ImageInputProps {
-  myProfileImage: string|undefined;
+  myProfileImage: string | any;
   profileImageUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -12,9 +11,9 @@ const ImageInput = ({ myProfileImage, profileImageUpdate }: ImageInputProps) => 
     <div className='px-6 py-8'>
       <div className='w-[121px] relative'>
         <img
-          className='w-[121px] aspect-square rounded-full'
           src={myProfileImage}
           alt='기본 사진'
+          className='w-[121px] aspect-square rounded-full'
         />
         <label
           htmlFor='fileInput'
@@ -27,7 +26,7 @@ const ImageInput = ({ myProfileImage, profileImageUpdate }: ImageInputProps) => 
           type='file'
           id='fileInput'
           style={{ display: 'none' }}
-          accept='img/*'
+          accept='image/*'
           onChange={profileImageUpdate}
         />
       </div>

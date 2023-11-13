@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 const useTimeStamp = (timestamp: string | number) => {
-  const recordMonth = new Date(timestamp).getMonth() + 1
+  const recordMonth = new Date(timestamp).getMonth() + 1;
   const [timeAgo, setTimeAgo] = useState('');
 
   const updateTimeStamp = () => {
@@ -33,10 +33,10 @@ const useTimeStamp = (timestamp: string | number) => {
       // 세달 전까진 몇 달 전으로
       if (recordMonth === 1 || 2 || 3 || 5 || 7 || 8 || 10 || 12) {
         const days = Math.floor(timeOut / (60 * 60 * 24 * 30));
-        setTimeAgo(`${days}달 전`); 
+        setTimeAgo(`${days}달 전`);
       } else {
         const days = Math.floor(timeOut / (60 * 60 * 24 * 31));
-        setTimeAgo(`${days}달 전`); 
+        setTimeAgo(`${days}달 전`);
       }
     } else {
       // 세달 이상 지난 전적에 대해서는 오래전으로 표기
@@ -48,7 +48,7 @@ const useTimeStamp = (timestamp: string | number) => {
   useEffect(() => {
     updateTimeStamp();
   }, [timestamp]);
-  
+
   return timeAgo;
 };
 

@@ -50,7 +50,6 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
     playsound();
     router.back();
     history.pushState({}, '', pathname);
-    console.log('Go Back');
   };
 
   const exitGame = async () => {
@@ -125,8 +124,10 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'GAMESTART' ? (
         <div className='h-[60px] top-0 right-0 flex items-center'>
           <div className='flex gap-2 ms-2'>
-            <div onClick={handleMoveBack} className='cursor-hover hover:text-white'>
-              <IoChevronBackOutline fontSize={'27px'} />
+            <div onClick={playsound} className='cursor-hover hover:text-white'>
+              <Link href='/main'>
+                <IoChevronBackOutline fontSize={'27px'} />
+              </Link>
             </div>
           </div>
         </div>

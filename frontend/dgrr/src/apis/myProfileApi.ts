@@ -32,7 +32,7 @@ export interface GetMyInfoProps {
     rating: number;
     rank: number;
     tier: string;
-    score: number, // score 속성 추가
+    score: number; // score 속성 추가
   };
   gameHistoryList: GameHistoryProps[];
 }
@@ -56,4 +56,4 @@ export const updateMyInfoApi = async (props: UpdateMyInfoProps) => {
 export const checkNicknameApi = async (nickname: string) => {
   const res = await axios.get(`${apiUrl}/nickname-check/${nickname}`);
   return res.data;
-}
+};

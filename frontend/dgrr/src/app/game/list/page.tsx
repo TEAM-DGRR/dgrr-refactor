@@ -24,7 +24,7 @@ const ListPage = () => {
   };
   const [isModal, setIsModal] = useState(false);
   const dispatch = useDispatch();
-  const [memberId, setMemberId] = useState('')
+  const [memberId, setMemberId] = useState('');
 
   const connectStomp = (headers: StompHeaders) => {
     const client = new Client({
@@ -49,23 +49,23 @@ const ListPage = () => {
   };
 
   useEffect(() => {
-    const memberId = localStorage.getItem('memberId')
+    const memberId = localStorage.getItem('memberId');
     if (memberId) {
-      setMemberId(memberId)
+      setMemberId(memberId);
     }
-  }, [])
+  }, []);
 
   return (
-    <div className="bg-main-blue w-screen h-screen max-w-[500px] min-h-[565px]">
-      <Header headerType="GAMESTART" />
+    <div className='bg-main-blue w-screen h-screen max-w-[500px] min-h-[565px]'>
+      <Header headerType='GAMESTART' />
       {isModal && <FindRoomModal handleModal={handleModal} />}
 
-      <div className="pt-6 space-y-6">
+      <div className='pt-6 space-y-6'>
         {gameList.map((item, index) =>
           index === 1 ? (
             <div className={`${commonClass} cursor-hover`} key={index} onClick={handleModal}>
-              <Image src={item.imgLink} alt="이미지예시" className="w-20 h-20" />
-              <p className="font-bold text-base">{item.value}</p>
+              <Image src={item.imgLink} alt='이미지예시' className='w-20 h-20' />
+              <p className='font-bold text-base'>{item.value}</p>
             </div>
           ) : (
             <button
@@ -73,9 +73,9 @@ const ListPage = () => {
               onClick={() => connectStomp({ Authorization: memberId })}
               className={commonClass}
             >
-              <Link href={item.navLink} className="w-full h-full flex flex-col items-center">
-                <Image src={item.imgLink} alt="이미지예시" className="w-20 h-20" />
-                <p className="font-bold text-base">{item.value}</p>
+              <Link href={item.navLink} className='w-full h-full flex flex-col items-center'>
+                <Image src={item.imgLink} alt='이미지예시' className='w-20 h-20' />
+                <p className='font-bold text-base'>{item.value}</p>
               </Link>
             </button>
           )

@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/elements/Header';
 import Link from 'next/link';
@@ -8,6 +7,7 @@ import { IoChevronForwardOutline } from 'react-icons/io5';
 import RecentRecordItem from '@/components/elements/RecentRecordItem';
 import { getMyInfoApi } from '@/apis/myProfileApi';
 import { KAKAO_LOGOUT_REDIRECT_URL } from '../../metadata/OAuth';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 
 const MyProfile = () => {
   const [myInfo, setMyInfo] = useState({
@@ -41,10 +41,16 @@ const MyProfile = () => {
       score: 0, // score 속성 추가
     },
   });
+  const myProfileImage =
+    myInfo.member.profileImage !== ''
+      ? myInfo.member.profileImage
+      : '/images/default_profile_image.png';
+
+  const playsound = ButtonClickAudio();
 
   const handleLogin = () => {
+    playsound();
     window.location.href = KAKAO_LOGOUT_REDIRECT_URL;
-    console.log('Logout');
   };
 
   useEffect(() => {
@@ -52,16 +58,15 @@ const MyProfile = () => {
       try {
         const response = await getMyInfoApi();
         console.log('데이터 가져오기 성공:', response);
-        await setMyInfo(response)
-  
+        await setMyInfo(response);
+
         // response의 PromiseResult를 추출
         const { gameHistoryList, member, ranking } = response;
-  
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -72,19 +77,7 @@ const MyProfile = () => {
         <div>
           {/* 프로필 사진 */}
           <div className='flex justify-center'>
-            {myInfo.member.profileImage !== '' ? (
-              <img
-                src={myInfo.member.profileImage}
-                alt='profileImage'
-                className='w-[80px] aspect-square rounded-full'
-              />
-            ) : (
-              <img
-                src='/images/default_profile_image.png'
-                alt='profileImage'
-                className='w-[80px] aspect-square rounded-full'
-              />
-            )}
+            <img src={myProfileImage} alt='내 프로필 이미지' className='w-[80px] aspect-square rounded-full' />
           </div>
           {/* 닉네임 */}
           <div className='text-center mt-6 mb-3 text-lg font-semibold'>
@@ -102,10 +95,10 @@ const MyProfile = () => {
           <div className='text-lg font-semibold'>최근 전적</div>
           {/* 전적이 아직 하나도 없다면 더 보기 버튼 생기지 않음 */}
           {myInfo.gameHistoryList.length !== 0 ? (
-            <Link href="/myprofile/recent-record">
-              <div className="flex cursor-hover gap-x-[3px] hover:text-main-blue">
-                <div className="text-sm font-bold inline-block">더 보기</div>
-                <div className="inline-block">
+            <Link href='/myprofile/recent-record'>
+              <div className='flex cursor-hover gap-x-[3px] hover:text-main-blue' onClick={playsound}>
+                <div className='text-sm font-bold inline-block'>더 보기</div>
+                <div className='inline-block'>
                   <IoChevronForwardOutline fontSize={'18px'} />
                 </div>
               </div>
@@ -137,7 +130,7 @@ const MyProfile = () => {
       </div>
       <div
         onClick={handleLogin}
-        className="flex justify-center mt-[53px] mb-2 text-sm font-bold cursor-hover hover:text-[#E83F57]"
+        className='flex justify-center mt-[53px] mb-2 text-sm font-bold cursor-hover hover:text-[#E83F57]'
       >
         로그아웃
       </div>

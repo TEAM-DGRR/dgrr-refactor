@@ -103,22 +103,22 @@ const SignUp = () => {
   };
 
   return (
-    <div className="w-screen max-w-[500px]">
-      <div className="mt-12 ms-6 text-xl font-bold">데구르르에 오신 것을 환영해요!</div>
-      <div className="flex justify-center">
+    <div className='w-screen max-w-[500px]'>
+      <div className='mt-12 ms-6 text-xl font-bold'>데구르르에 오신 것을 환영해요!</div>
+      <div className='flex justify-center'>
         <ImageInput myProfileImage={profileImage} profileImageUpdate={addProfileImage} />
       </div>
-      <div className="mt-1 mb-11">
+      <div className='mt-1 mb-11'>
         <DataInput
-          inputType="NICKNAME"
-          pageType="SIGNUP"
+          inputType='NICKNAME'
+          pageType='SIGNUP'
           nicknameExists={nicknameExists}
           onChange={handleAddNickname}
         />
-        <DataInput inputType="DESCRIPTION" pageType="SIGNUP" onChange={handleAddDescirpt} />
+        <DataInput inputType='DESCRIPTION' pageType='SIGNUP' onChange={handleAddDescirpt} />
       </div>
-      <div className="flex justify-center h-14">
-        <FuncButton isBlue clickEvent={handleSignUpButton} value="시작하기" />
+      <div className='flex justify-center h-14'>
+        <FuncButton isBlue clickEvent={handleSignUpButton} value='시작하기' />
       </div>
     </div>
   );
