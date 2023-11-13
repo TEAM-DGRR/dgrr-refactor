@@ -10,9 +10,13 @@ import { Client, StompHeaders } from '@stomp/stompjs';
 import { createClient } from '@/store/gameSlice';
 import { useRouter } from 'next/navigation';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
+import { reset } from '@/store/gameSlice';
+import { disconnectSession } from '@/components/Game/openVidu';
 
 const Result = () => {
   const [modalStatus, setModalStatus] = useState(false);
+  const session = useAppSelector((state) => state.game.OVsession);
+  const publisher = useAppSelector((state) => state.game.publisher);
   const [memberId, setMemberId] = useState('');
   const gameResult = useAppSelector((state) => state.game.gameResult);
   const playsound = ButtonClickAudio();
@@ -27,11 +31,13 @@ const Result = () => {
   };
 
   const clickOneMore = () => {
+    dispatch(reset());
     playsound();
     connectStomp({ Authorization: memberId });
   };
 
   const clickGoToMain = () => {
+    dispatch(reset());
     playsound();
     const newPathname = '/main';
     window.location.href = newPathname;
@@ -44,7 +50,10 @@ const Result = () => {
     if (memberId) {
       setMemberId(memberId);
     }
-  }, []);
+    if (session) {
+      disconnectSession(session, publisher);
+    }
+  }, [session]);
   const connectStomp = (headers: StompHeaders) => {
     const client = new Client({
       brokerURL: process.env.NEXT_PUBLIC_BROKER_URL,

@@ -17,6 +17,12 @@ import { publishMessage } from '../Game/stomp';
 import { stompConfig } from '@/types/game';
 import WarningAlert from './WarningAlert';
 import ButtonClickAudio from '../audio/ButtonClickAudio';
+import { useDispatch } from 'react-redux';
+import { reset } from '@/store/gameSlice';
+import { roomStompConfig } from '@/types/room';
+import { roomReset } from '@/store/roomSlice';
+import { disconnectSession } from '../Game/openVidu';
+import { Timer } from './Timer';
 
 export type headerType =
   | 'MAIN'
@@ -30,7 +36,7 @@ export type headerType =
 interface HeaderProps {
   headerType: headerType;
   // WAITING에서만 roomCode 필요(roomCode 형식은 number)
-  roomCode?: number;
+  roomCode?: string;
   // OTHER에서만 페이지 제목에 해당하는 children 필요
   children?: React.ReactNode;
 }
@@ -42,8 +48,14 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const gameRoomId = useAppSelector((state) => state.game.gameInfo.gameRoomId);
   const ws = useAppSelector((state) => state.game.websocket);
   const { DESTINATION_URI } = stompConfig;
+  const { ROOM_DESTINATION_URI } = roomStompConfig;
   const { EXIT_URI, EXIT_MATCHING } = DESTINATION_URI;
+  const { EXIT_SEND_URI } = ROOM_DESTINATION_URI;
+  const dispatch = useDispatch();
+  const session = useAppSelector((state) => state.game.OVsession);
+  const publisher = useAppSelector((state) => state.game.publisher);
   const playsound = ButtonClickAudio();
+  const round = useAppSelector((state) => state.game.round);
 
   // 뒤로 가기
   const handleMoveBack = () => {
@@ -61,19 +73,40 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
         publishMessage(client, EXIT_URI, gameRoomId);
         client.deactivate();
         disconnectWs();
+        dispatch(reset());
         router.push('/main');
+      }
+      if (session) {
+        disconnectSession(session, publisher);
       }
     }
   };
-  
+
   const exitMatching = async () => {
     playsound();
     if (client) {
       //여기 밑에 수정
-      publishMessage(client, EXIT_MATCHING, "");
+      publishMessage(client, EXIT_MATCHING, '');
       client.deactivate();
       disconnectWs();
+      dispatch(reset());
       router.push('/game/list');
+    }
+  };
+
+  const exitRoom = async () => {
+    const askExit = await WarningAlert();
+
+    if (askExit) {
+      if (client) {
+        publishMessage(client, EXIT_SEND_URI, '');
+        client.deactivate();
+        dispatch(roomReset());
+        router.push('/main');
+      }
+      if (session) {
+        disconnectSession(session, publisher);
+      }
     }
   };
 
@@ -86,12 +119,11 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   };
 
   // 코드 복사
-  const handleCopyCode = async (roomCode: number | undefined) => {
+  const handleCopyCode = async (roomCode: string | undefined) => {
     playsound();
     if (roomCode !== undefined) {
       try {
-        // 숫자를 문자열로 변환 후 클립보드에 복사
-        await navigator.clipboard.writeText(roomCode.toString());
+        await navigator.clipboard.writeText(roomCode);
         console.log(`${roomCode} 복사 성공`);
       } catch (error) {
         console.log('복사 실패😥');
@@ -155,13 +187,14 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
           >
             <IoCopyOutline fontSize={'27px'} />
           </div>
-          <div className='cursor-hover text-white hover:text-main-blue' onClick={playsound}>
+          <div className='cursor-hover text-white hover:text-main-blue' onClick={exitRoom}>
             <IoExitOutline fontSize={'30px'} />
           </div>
         </div>
       ) : headerType === 'GAME' ? (
-        <div className='bg-black h-[60px] top-0 right-0 gap-[107px] pe-4 flex justify-end items-center'>
-          <div className='text-white text-3xl font-semibold'>0:11</div>
+        <div className='bg-black h-[60px] top-0 right-0 gap-[107px] px-3 flex justify-between items-center'>
+          <div className='w-[30px] h-full'></div>
+          <Timer round={round} />
           <div className='cursor-hover text-white hover:text-main-blue' onClick={exitGame}>
             <IoExitOutline fontSize={'30px'} />
           </div>

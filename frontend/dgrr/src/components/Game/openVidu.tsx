@@ -1,7 +1,7 @@
 // openVidu.ts
 
 import axios from 'axios';
-import { OpenVidu, Session } from 'openvidu-browser';
+import { OpenVidu, Publisher, Session } from 'openvidu-browser';
 import { openViduConfig } from '@/types/game';
 
 const { APPLICATION_SERVER_URL, PUBLISHER_PROPERTIES } = openViduConfig;
@@ -69,4 +69,15 @@ export const joinSession = async (
   );
 
   return { publisher, currentVideoDevice };
+};
+
+export const disconnectSession = async (session: Session, publisher: Publisher | undefined) => {
+  if (publisher) {
+    publisher.stream.disposeWebRtcPeer();
+    publisher.stream.disposeMediaStream();
+  }
+
+  if (session.connection) {
+    await session.disconnect();
+  }
 };
