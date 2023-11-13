@@ -37,6 +37,8 @@ export const stompConfig = {
     END_URI: '/send/game-end',
     // 게임 탈주 전송
     EXIT_URI: '/send/game-leave',
+    // 게임 매칭 취소
+    EXIT_MATCHING: '/send/matching-cancel',
 
     // 게임 시작 정보
     GAME_URI: '/user/recv/game-start',

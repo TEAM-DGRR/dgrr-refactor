@@ -30,6 +30,21 @@ const config: Config = {
       cursor: {
         'default': `url(/images/cursor_default.cur), auto;`,
         'hover': `url(/images/cursor_hover.cur), auto;`,
+      },
+      keyframes: {
+        blink: {
+          from: {
+            display: 'none',
+          },
+          to: {
+            display: 'flow'
+          },
+        }
+      },
+      animation: {
+        blink: 'blink 3s ease-in-out infinite',
+        blink2: 'blink 1s ease-in-out infinite',
+        blink3: 'blink 2s ease-in-out infinite',
       }
     },
   },
