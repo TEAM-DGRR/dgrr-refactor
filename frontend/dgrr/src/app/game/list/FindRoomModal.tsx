@@ -41,7 +41,7 @@ export const FindRoomModal = ({ handleModal }: FindModalProps) => {
         <div className='flex justify-between mb-3'>
           <div className='w-6'></div>
           <span className='font-bold text-base'>방 찾기</span>
-          <button onClick={handleModal}>
+          <button onClick={handleModal} className='cursor-hover'>
             <IoCloseOutline size='24' />
           </button>
         </div>
@@ -54,7 +54,7 @@ export const FindRoomModal = ({ handleModal }: FindModalProps) => {
             />
           </label>
           <div className='grid place-items-center'>
-            <button className='bg-main-blue text-white rounded-lg py-2 px-4 w-fit'>확인</button>
+            <button className='bg-main-blue text-white rounded-lg py-2 px-4 w-fit cursor-hover'>확인</button>
           </div>
         </form>
       </div>

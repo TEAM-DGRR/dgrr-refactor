@@ -122,9 +122,9 @@ const ListPage = () => {
                   ? () => makeRoom({ Authorization: memberId })
                   : () => connectStomp({ Authorization: memberId })
               }
-              className={commonClass}
+              className={`${commonClass} cursor-hover`}
             >
-              <Link href={item.navLink} className='w-full h-full flex flex-col items-center'>
+              <Link href={item.navLink} className='w-full h-full flex flex-col items-center cursor-hover'>
                 <Image src={item.imgLink} alt='이미지예시' className='w-20 h-20' />
                 <p className='font-bold text-base'>{item.value}</p>
               </Link>

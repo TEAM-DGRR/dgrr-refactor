@@ -17,7 +17,7 @@ export const ExplainModal = ({ onClose }: { onClose: () => void }) => {
         <div className='flex justify-between sticky top-0 bg-white pt-4'>
           <p className='w-8'></p>
           <p className='font-bold text-2xl'>게임 설명</p>
-          <button className='cursor-xhover'>
+          <button className='cursor-hover'>
             <IoCloseOutline onClick={onClose} fontSize={'32px'} />
           </button>
         </div>
