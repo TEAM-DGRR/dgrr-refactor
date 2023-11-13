@@ -83,7 +83,7 @@ const MatchPage = () => {
           // console.log('OpenVidu 연결 완료');
           setTimeout(() => {
             router.push('/game/play');
-          }, 400000);
+          }, 4000);
         })
         .catch((error) => {
           console.log('OpenVidu 연결 실패', error.code, error.message);
