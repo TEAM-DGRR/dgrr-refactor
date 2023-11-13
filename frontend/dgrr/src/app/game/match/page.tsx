@@ -39,6 +39,33 @@ const MatchPage = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // 카메라 및 마이크 권한 체크
+    const checkMediaPermissions = async () => {
+      try {
+        const cameraPermissionStatus = await navigator.permissions.query({
+          name: 'camera' as PermissionName,
+        });
+        const microphonePermissionStatus = await navigator.permissions.query({
+          name: 'microphone' as PermissionName,
+        });
+
+        if (
+          cameraPermissionStatus.state !== 'granted' ||
+          microphonePermissionStatus.state !== 'granted'
+        ) {
+          console.log('미디어 접근 권한을 요청합니다.');
+          await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          // 요청 후 스트림 사용하지 않으므로 바로 닫음
+        }
+      } catch (error) {
+        console.error('미디어 권한 상태 확인 중 오류 발생:', error);
+      }
+    };
+
+    checkMediaPermissions();
+  }, []);
+
+  useEffect(() => {
     audioRef.current = new Audio('/audio/game-match.mp3');
     audioRef.current.play();
     const interval = setInterval(() => {
@@ -135,7 +162,7 @@ const MatchPage = () => {
               <div className='absolute text-[10px] text-[#9cd4ab] mt-3 ml-[80%] mb-[50px]'>
                 상태메시지
               </div>
-              <div className='ml-[170px] px-2 min-w-[150px] text-right max-w-[220px] text-[14px] text-[#f2f2f2] mt-6 ml-4 rounded-lg border-b-2 '>
+              <div className='ml-[170px] px-2 min-w-[150px] text-right max-w-[220px] text-[14px] text-[#f2f2f2] mt-6rounded-lg border-b-2 '>
                 <p>{gameInfo.enemyInfo.description}</p>
               </div>
             </div>

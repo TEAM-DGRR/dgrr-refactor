@@ -1,21 +1,37 @@
 'use client';
 import character from '@/../public/images/logo_character.png';
 import title from '@/../public/images/logo_title.png';
-import Image from 'next/image';
-import { LinkButton } from '@/components/LinkButton';
 import { FuncButton } from '@/components/FuncButton';
-import Header from '@/components/elements/Header';
-import { ExplainModal } from '@/components/elements/ExplainModal';
-import { useEffect, useState } from 'react';
+import { LinkButton } from '@/components/LinkButton';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
+import { ExplainModal } from '@/components/elements/ExplainModal';
+import Header from '@/components/elements/Header';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const MainPage = () => {
   const [openModal, setOpenModal] = useState(false);
+
   const playSound = ButtonClickAudio();
   const handleModal = () => {
     playSound();
     setOpenModal(!openModal);
   };
+
+  useEffect(() => {
+    // 카메라 권한 요청
+    const requestCameraPermission = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        // 사용 후 스트림을 닫음
+        stream.getTracks().forEach((track) => track.stop());
+      } catch (error) {
+        console.error('카메라 접근 권한 요청 실패:', error);
+      }
+    };
+
+    requestCameraPermission();
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
