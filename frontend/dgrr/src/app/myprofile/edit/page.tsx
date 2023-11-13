@@ -31,6 +31,7 @@ const Edit = () => {
   const [nicknameExists, setNicknameExists] = useState(false);
   const [nowDescription, setNowDescription] = useState('');
   // const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isNicknameChanged, setIsNicknameChanged] = useState(false);
   const [nowProfileImage, setNowProfileImage] = useState<UploadImg | null>({
     file: {
       buffer: Buffer.from([]),
@@ -45,6 +46,7 @@ const Edit = () => {
     const fetchData = async () => {
       try {
         const response = await getMyInfoApi();
+        axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
         setMyNickname(response.member.nickname);
         setNowNickName(response.member.nickname);
         setNowDescription(response.member.description);
@@ -63,27 +65,31 @@ const Edit = () => {
     fetchData();
   }, []);
 
-  const checkNickname = async () => {
-    try {
-      const response = await checkNicknameApi(nowNickname);
-      // 여기서 response를 처리할 추가적인 로직을 작성할 수 있습니다.
-    } catch (error: any) {
-      // 400 에러가 발생한 경우에 대한 처리
-      if (myNickName !== nowNickname && error.response && error.response.status === 400) {
-        setNicknameExists(true);
+  const checkNickname = () => {
+    if(nowNickname===myNickName) {
+      didNotChangeModal();
+    }else {
+      if(nowNickname.length===0) {
+        requestNewNicknameModal();
+      } else{
+        axios.get(`${setUrl}/member/nickname-check/${nowNickname}`)
+        .then((res:any) => {
+          console.log(JSON.stringify(res));
+          youCanUseThisNicknameModal();
+          setIsNicknameChanged(false);
+        })
+        .catch((err:any) => {
+          requestNewNicknameModal();
+        });
       }
     }
+    
   };
-
-  // 닉네임 중복 확인
-  useEffect(() => {
-    setNicknameExists(false);
-    checkNickname();
-  }, [nowNickname]);
 
   // 닉네임 입력값 반영
   const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNowNickName(event.target.value);
+    setIsNicknameChanged(true);
   };
 
   // 상태 메시지 입력값 반영
@@ -132,24 +138,69 @@ const Edit = () => {
       },
     });
   };
+  // 닉네임 체크 안 하면 모달 뜸
+  const requestNicknameCheckWarningModal = () => {
+    Swal.fire({
+      width: 400,
+      title: `닉네임 중복 확인 후 눌러주세요.`,
+      icon: 'error',
+      confirmButtonColor: '#469FF6',
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
+  };
+  // 닉네임 사용 가능
+  const youCanUseThisNicknameModal = () => {
+    Swal.fire({
+      width: 400,
+      title: `사용 가능한 닉네임입니다.`,
+      icon: 'success',
+      confirmButtonColor: '#469FF6',
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
+  };
+  // 닉네임이 바뀌지 않음
+  const didNotChangeModal = () => {
+    Swal.fire({
+      width: 400,
+      title: `이전에 사용하던 닉네임입니다.`,
+      icon: 'question',
+      confirmButtonColor: '#469FF6',
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
+  }
 
   // 저장 버튼
   const handleSaveButton = async () => {
+
     playsound();
-    const data: UpdateMyInfoProps = {
-      nickname: nowNickname,
-      profileImage: nowProfileImage?.thumbnail,
-      description: nowDescription,
-    };
-    try {
-      await updateMyInfoApi(data);
-      // 여기서 정상적인 처리를 수행
-      const newPathname = '/myprofile';
-      window.location.href = newPathname;
-    } catch (error) {
-      // 에러가 발생한 경우
-      requestNewNicknameModal();
+    if(isNicknameChanged) {
+      requestNicknameCheckWarningModal();
+    }else {
+      const data: UpdateMyInfoProps = {
+        nickname: nowNickname,
+        profileImage: nowProfileImage?.thumbnail,
+        description: nowDescription,
+      };
+      try {
+        await updateMyInfoApi(data);
+        // 여기서 정상적인 처리를 수행
+        const newPathname = '/myprofile';
+        window.location.href = newPathname;
+      } catch (error) {
+        // 에러가 발생한 경우
+        requestNewNicknameModal();
+      }
     }
+    
   };
 
   // 회원탈퇴 확인 모달
@@ -185,13 +236,44 @@ const Edit = () => {
       <Header headerType='OTHER'>프로필 수정</Header>
       <div>
         <ImageInput myProfileImage={nowProfileImage?.thumbnail} profileImageUpdate={uploadImg} />
-        <DataInput
-          inputType='NICKNAME'
-          pageType='PROFILE_EDIT'
-          onChange={handleNicknameChange}
-          value={nowNickname}
-          nicknameExists={nicknameExists}
-        />
+        <div className='px-6 mb-7 '>
+          <div className='mb-2 font-semibold'>닉네임</div>
+          
+            <div>
+              <div className='text-xs text-[#767676] mb-[10px]'>
+            한글/영어/숫자 최소 2자~최대 12자 가능
+          </div>
+          <div className='flex'>
+              <input
+                type='text'
+                value={nowNickname}
+                onChange={handleNicknameChange}
+                minLength={2}
+                maxLength={12}
+                className='bg-[#F4F4F6] w-full text-xs p-4 rounded-lg focus:outline-none focus:ring focus:ring-main-blue'
+              />
+              {/* <FuncButton value='중복 확인' clickEvent={checkNickname}></FuncButton>
+               */}
+               {/* <div className='m-10'> */}
+        <span
+          onClick={checkNickname}
+          className='bg-gray-300 rounded-lg hover:brightness-110'
+        >
+          <div className='text-black text-center text-base font-bold'>
+            중복 확인
+          </div>
+        </span>
+      {/* </div> */}
+              </div>
+            </div>
+          
+          {/* 닉네임이 중복되면 경고 문구 뜸 */}
+          {nicknameExists === true ? (
+            <div className='text-xs h-4 pt-2 ms-1 text-red-500'>이미 존재하는 닉네임입니다</div>
+          ) : (
+            <div className='text-xs h-4 pt-2'></div>
+          )}
+        </div>
         <DataInput
           inputType='DESCRIPTION'
           pageType='PROFILE_EDIT'

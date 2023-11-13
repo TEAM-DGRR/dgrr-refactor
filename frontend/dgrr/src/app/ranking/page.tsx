@@ -44,6 +44,7 @@ const Ranking = () => {
   };
 
   useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
     fetchRankingData();
   }, [currentSeason]);
 
