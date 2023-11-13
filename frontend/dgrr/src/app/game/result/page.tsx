@@ -19,6 +19,21 @@ const Result = () => {
   const publisher = useAppSelector((state) => state.game.publisher);
   const [memberId, setMemberId] = useState('');
   const gameResult = useAppSelector((state) => state.game.gameResult);
+  const ratingProperty =
+    gameResult.afterRating > gameResult.myInfo.rating
+      ? {
+          text: `${gameResult.afterRating}(+${gameResult.afterRating - gameResult.myInfo.rating})`,
+          color: 'text-[#E83F57]',
+        }
+      : gameResult.afterRating < gameResult.myInfo.rating
+      ? {
+          text: `${gameResult.afterRating}(-${gameResult.myInfo.rating - gameResult.afterRating})`,
+          color: 'text-[#5383E8]',
+        }
+      : {
+          text: `${gameResult.afterRating}`,
+          color: 'text-[#868E96]',
+        };
   const playsound = ButtonClickAudio();
 
   const openModal = () => {
@@ -78,7 +93,7 @@ const Result = () => {
 
   return (
     <div className='flex justify-center items-center bg-main-blue w-screen h-screen max-w-[500px]'>
-      <div className='bg-white w-11/12 h-[522px] rounded-[12px] py-5 px-3'>
+      <div className='bg-white w-11/12 min-w-[264px] h-[575px] rounded-[12px] py-5 px-3'>
         <div className='text-[40px] font-bold text-center flex justify-between'>
           <div className='inline-block w-1/6'></div>
           {gameResult.gameResult === 'LOSE' ? <div>LOSS</div> : <div>{gameResult.gameResult}</div>}
@@ -95,6 +110,7 @@ const Result = () => {
           )}
         </div>
         <div className='mt-7'>
+          <div className={`flex justify-center mb-3 text-2xl font-bold ${ratingProperty.color}`}>{ratingProperty.text}</div>
           <Rank pageType='GAMERESULT' rating={gameResult.afterRating} tier={gameResult.afterTier} />
         </div>
         <div>

@@ -1,16 +1,11 @@
 'use client';
 
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Header from '@/components/elements/Header';
 import ImageInput from '@/components/elements/ImageInput';
 import DataInput from '@/components/elements/DataInput';
 import Swal from 'sweetalert2';
-import {
-  UpdateMyInfoProps,
-  checkNicknameApi,
-  getMyInfoApi,
-  updateMyInfoApi,
-} from '@/apis/myProfileApi';
+import { UpdateMyInfoProps, getMyInfoApi, updateMyInfoApi } from '@/apis/myProfileApi';
 import { setUrl } from '@/utils/setUrl';
 import axios from 'axios';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
@@ -30,7 +25,6 @@ const Edit = () => {
   // 닉네임 존재 여부 확인
   const [nicknameExists, setNicknameExists] = useState(false);
   const [nowDescription, setNowDescription] = useState('');
-  // const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
   const [nowProfileImage, setNowProfileImage] = useState<UploadImg | null>({
     file: {
@@ -66,24 +60,24 @@ const Edit = () => {
   }, []);
 
   const checkNickname = () => {
-    if(nowNickname===myNickName) {
+    if (nowNickname === myNickName) {
       didNotChangeModal();
-    }else {
-      if(nowNickname.length===0) {
+    } else {
+      if (nowNickname.length === 0) {
         requestNewNicknameModal();
-      } else{
-        axios.get(`${setUrl}/member/nickname-check/${nowNickname}`)
-        .then((res:any) => {
-          console.log(JSON.stringify(res));
-          youCanUseThisNicknameModal();
-          setIsNicknameChanged(false);
-        })
-        .catch((err:any) => {
-          requestNewNicknameModal();
-        });
+      } else {
+        axios
+          .get(`${setUrl}/member/nickname-check/${nowNickname}`)
+          .then((res: any) => {
+            console.log(JSON.stringify(res));
+            youCanUseThisNicknameModal();
+            setIsNicknameChanged(false);
+          })
+          .catch((err: any) => {
+            requestNewNicknameModal();
+          });
       }
     }
-    
   };
 
   // 닉네임 입력값 반영
@@ -138,6 +132,7 @@ const Edit = () => {
       },
     });
   };
+
   // 닉네임 체크 안 하면 모달 뜸
   const requestNicknameCheckWarningModal = () => {
     Swal.fire({
@@ -151,6 +146,7 @@ const Edit = () => {
       },
     });
   };
+
   // 닉네임 사용 가능
   const youCanUseThisNicknameModal = () => {
     Swal.fire({
@@ -164,6 +160,7 @@ const Edit = () => {
       },
     });
   };
+
   // 닉네임이 바뀌지 않음
   const didNotChangeModal = () => {
     Swal.fire({
@@ -176,15 +173,14 @@ const Edit = () => {
         confirmButton: 'custom-confirm-button',
       },
     });
-  }
+  };
 
   // 저장 버튼
   const handleSaveButton = async () => {
-
     playsound();
-    if(isNicknameChanged) {
+    if (isNicknameChanged) {
       requestNicknameCheckWarningModal();
-    }else {
+    } else {
       const data: UpdateMyInfoProps = {
         nickname: nowNickname,
         profileImage: nowProfileImage?.thumbnail,
@@ -200,7 +196,6 @@ const Edit = () => {
         requestNewNicknameModal();
       }
     }
-    
   };
 
   // 회원탈퇴 확인 모달
@@ -238,12 +233,12 @@ const Edit = () => {
         <ImageInput myProfileImage={nowProfileImage?.thumbnail} profileImageUpdate={uploadImg} />
         <div className='px-6 mb-7 '>
           <div className='mb-2 font-semibold'>닉네임</div>
-          
-            <div>
-              <div className='text-xs text-[#767676] mb-[10px]'>
-            한글/영어/숫자 최소 2자~최대 12자 가능
-          </div>
-          <div className='flex'>
+
+          <div>
+            <div className='text-xs text-[#767676] mb-[10px]'>
+              한글/영어/숫자 최소 2자~최대 12자 가능
+            </div>
+            <div className='flex'>
               <input
                 type='text'
                 value={nowNickname}
@@ -252,21 +247,12 @@ const Edit = () => {
                 maxLength={12}
                 className='bg-[#F4F4F6] w-full text-xs p-4 rounded-lg focus:outline-none focus:ring focus:ring-main-blue'
               />
-              {/* <FuncButton value='중복 확인' clickEvent={checkNickname}></FuncButton>
-               */}
-               {/* <div className='m-10'> */}
-        <span
-          onClick={checkNickname}
-          className='bg-gray-300 rounded-lg hover:brightness-110'
-        >
-          <div className='text-black text-center text-base font-bold'>
-            중복 확인
-          </div>
-        </span>
-      {/* </div> */}
-              </div>
+              <span onClick={checkNickname} className='min-w-fit ml-3 pl-2 pr-2 cursor-hover flex items-center bg-gray-300 rounded-lg hover:brightness-110'>
+                <div className='text-black text-center text-sm font-bold'>중복 확인</div>
+              </span>
             </div>
-          
+          </div>
+
           {/* 닉네임이 중복되면 경고 문구 뜸 */}
           {nicknameExists === true ? (
             <div className='text-xs h-4 pt-2 ms-1 text-red-500'>이미 존재하는 닉네임입니다</div>

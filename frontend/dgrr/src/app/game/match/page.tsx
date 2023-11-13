@@ -133,7 +133,7 @@ const MatchPage = () => {
   }, []);
 
   return (
-    <div className='Container relative w-screen h-screen h-screen min-w-[500px] max-w-[500px] min-h-[565px] z-0 truncate'>
+    <div className='Container relative w-screen h-screen min-w-[500px] max-w-[500px] min-h-[565px] z-0 truncate'>
       <div className='Turn flex absolute items-center justify-center bg-match-versus mt-10 mx-3 m-2 rounded-lg'>
         <img
           className='MatchedPersonProfile w-[20%] rounded-full'

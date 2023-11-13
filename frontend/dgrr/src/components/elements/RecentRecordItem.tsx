@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import { IoImageOutline } from 'react-icons/io5';
 import useTimeStamp from '@/hooks/useTimeStamp';
 
@@ -57,11 +56,9 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
           >
             {itemText}
           </div>
-          <Image
+          <img
             src={item.opponentProfileImage}
             alt='상대방 프로필 이미지'
-            width={500}
-            height={500}
             className='w-[24px] h-[24px] rounded-full inline-block'
           />
           <div className='text-sm ms-1 inline-block'>
@@ -76,7 +73,9 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
         <div className='flex items-center me-2'>
           {item.gameResult !== 'DRAW' ? (
             <div>
-              <IoImageOutline fontSize={'24px'} />
+              {pageType === 'RECENT-RECORD' ? (
+                <IoImageOutline fontSize={'24px'} />
+              ) : null}
             </div>
           ) : null}
           <div className='text-sm inline-block w-[69px] text-right'>

@@ -33,7 +33,7 @@ const ModalWithX = ({ modalStatus, closeModal, item, children }: ModalWithXProps
               </button>
             </div>
             {item !== undefined ? (
-              <Image src={item.highlightImage} alt='하이라이트 사진' width={500} height={500} className='max-w-[290px]' />
+              <img src={item.highlightImage} alt='하이라이트 사진' className='max-w-[290px]' />
             ) : (
               <div>{children}</div>
             )}
