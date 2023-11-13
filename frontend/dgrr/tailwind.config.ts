@@ -16,6 +16,8 @@ const config: Config = {
         'start-yellow': '#FFF401',
         'end-yellow': '#FFD873',
         'main-blue': '#469FF6',
+        // 'match-white': '#ffffff',
+        // 'match-versus': '#aab4c8',
       },
       screens: {
         '4sm': '280px',
@@ -31,21 +33,6 @@ const config: Config = {
         'default': `url(/images/cursor_default.cur), auto;`,
         'hover': `url(/images/cursor_hover.cur), auto;`,
       },
-      keyframes: {
-        blink: {
-          from: {
-            display: 'none',
-          },
-          to: {
-            display: 'flow'
-          },
-        }
-      },
-      animation: {
-        blink: 'blink 3s ease-in-out infinite',
-        blink2: 'blink 1s ease-in-out infinite',
-        blink3: 'blink 2s ease-in-out infinite',
-      }
     },
   },
   plugins: [],
