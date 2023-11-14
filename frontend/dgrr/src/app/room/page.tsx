@@ -35,20 +35,23 @@ const RoomPage = () => {
   const subscribeRoom = () => {
     client?.subscribe(READY_SUB_URI, (message) => {
       const content = JSON.parse(message.body);
-      console.log('준비상황: ', content);
+      // console.log('준비상황: ', content);
       dispatch(setReady(content.waitingMember.ready));
     });
     client?.subscribe(EXIT_SUB_URI, (message) => {
-      console.log('나갔음: ', message.body);
-      if (owner.waitingMemberId !== memberId) {
+      // console.log('나갔음: ', message.body);
+      const content = JSON.parse(message.body);
+      if (owner.waitingMemberId == content.waitingMember.waitingMemberId) {
         Toast.fire({
           html: '방장이 방을 나가<br>권한이 위임되었습니다.',
         });
+      } else {
+        Toast.fire('상대가 방을 나갔습니다');
       }
-      dispatch(deleteMember(JSON.parse(message.body)));
+      dispatch(deleteMember(content));
     });
     client?.subscribe(GAME_URI, (message) => {
-      console.log('게임정보 받는 메세지: ', message.body);
+      // console.log('게임정보 받는 메세지: ', message.body);
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
@@ -119,9 +122,7 @@ const RoomPage = () => {
             <img
               src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
               alt='상대프로필'
-              width={160}
-              height={160}
-              className='rounded-full border border-black'
+              className='w-40 h-40 rounded-full border border-black'
             />
             <p className='font-bold text-2xl mt-6'>
               {owner.waitingMemberId === memberId ? enemy.nickname : owner.nickname}

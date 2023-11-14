@@ -25,32 +25,32 @@ const roomSlice = createSlice({
       return initialState;
     },
     saveRoomInfo: (state, action) => {
-      console.log('방 정보 저장: ', action.payload);
+      // console.log('방 정보 저장: ', action.payload);
       state.roomInfo = action.payload;
     },
     saveRoomCode: (state, action) => {
-      console.log('룸 코드: ', action.payload);
+      // console.log('룸 코드: ', action.payload);
       state.roomCode = action.payload;
     },
     setReady: (state, action) => {
-      console.log('준비 상태: ', action.payload);
+      // console.log('준비 상태: ', action.payload);
       state.roomReady = action.payload;
     },
     deleteMember: (state, action) => {
-      console.log(action.payload);
-      console.log('확인작업 중', action.payload.waitingMember);
-      console.log('멤버 제거');
+      // console.log(action.payload);
+      // console.log('확인작업 중', action.payload.waitingMember);
+      // console.log('멤버 제거');
       const findId = action.payload.waitingMember.waitingMemberId;
-      console.log(findId);
+      // console.log(findId);
       const indexToRemove = state.roomInfo.findIndex(
         (member) => member.waitingMember.waitingMemberId === findId
       );
-      console.log(indexToRemove);
+      // console.log(indexToRemove);
 
       if (indexToRemove !== -1) {
-        console.log('지운다');
+        // console.log('지운다');
         state.roomInfo.splice(indexToRemove, 1);
-        console.log(state.roomInfo[0]);
+        // console.log(state.roomInfo[0]);
       }
     },
   },

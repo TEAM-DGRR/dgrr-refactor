@@ -86,7 +86,6 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const exitMatching = async () => {
     playsound();
     if (client) {
-      //여기 밑에 수정
       publishMessage(client, EXIT_MATCHING, '');
       client.deactivate();
       disconnectWs();
@@ -116,7 +115,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
   const disconnectWs = () => {
     if (ws) {
       ws.close();
-      console.log('연결 해제');
+      // console.log('연결 해제');
     }
   };
 
@@ -126,7 +125,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
     if (roomCode !== undefined) {
       try {
         await navigator.clipboard.writeText(roomCode);
-        console.log(`${roomCode} 복사 성공`);
+        // console.log(`${roomCode} 복사 성공`);
         Toast.fire('코드가 복사되었습니다', '', 'success');
       } catch (error) {
         console.log('복사 실패😥');

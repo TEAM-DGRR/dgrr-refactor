@@ -8,7 +8,7 @@ import { ExplainModal } from '@/components/elements/ExplainModal';
 import { useAppSelector } from '@/store/hooks';
 import { stompConfig } from '@/types/game';
 import { useDispatch } from 'react-redux';
-import { saveGameInfo } from '@/store/gameSlice';
+import { saveGameInfo, saveOrigin } from '@/store/gameSlice';
 import { publishMessage } from '@/components/Game/stomp';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +35,7 @@ const GameLoading = () => {
 
   const subscribeGame = () => {
     client?.subscribe(GAME_URI, (message) => {
-      console.log('게임정보 받는 메세지: ', message.body);
+      // console.log('게임정보 받는 메세지: ', message.body);
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
@@ -51,11 +51,12 @@ const GameLoading = () => {
     }, 1000);
     subscribeGame();
     gameMatch();
-    return () => { 
+    dispatch(saveOrigin('random'));
+    return () => {
       // 페이지를 벗어날 때 오디오 정지
       audioRef.current?.pause();
       clearInterval(interval);
-    }
+    };
   }, [client]);
 
   return (
@@ -67,13 +68,15 @@ const GameLoading = () => {
           <Image alt='캐릭터' src={character} />
         </div>
         <div className='flex justify-center font-bold'>
-          <h1>게임 찾는 중</h1><span className='animate-blink'>.</span><span className='animate-blink2'>.</span>.<span className='animate-blink3'>.</span>
+          <h1>게임 찾는 중</h1>
+          <span className='animate-blink'>.</span>
+          <span className='animate-blink2'>.</span>.<span className='animate-blink3'>.</span>
         </div>
         <div className='flex justify-center font-bold mt-10'>
           <div className='Timer'>{seconds}s</div>
         </div>
         <div className='flex justify-center mt-40'>
-          <FuncButton value='게임 설명' clickEvent={handleModal}  />
+          <FuncButton value='게임 설명' clickEvent={handleModal} />
         </div>
       </div>
     </div>

@@ -59,7 +59,7 @@ const RecentRecord = () => {
     const fetchData = async () => {
       try {
         const response = await getMyInfoApi();
-        console.log('데이터 가져오기 성공:', response);
+        // console.log('데이터 가져오기 성공:', response);
         await setMyInfo(response);
 
         // response의 PromiseResult를 추출

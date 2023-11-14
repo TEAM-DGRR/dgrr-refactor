@@ -19,6 +19,8 @@ const Result = () => {
   const publisher = useAppSelector((state) => state.game.publisher);
   const [memberId, setMemberId] = useState('');
   const gameResult = useAppSelector((state) => state.game.gameResult);
+  const origin = useAppSelector((state) => state.game.origin);
+
   const ratingProperty =
     gameResult.afterRating > gameResult.myInfo.rating
       ? {
@@ -75,16 +77,16 @@ const Result = () => {
       connectHeaders: {
         ...headers,
       },
-      debug: (message) => {
-        console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
-      },
+      // debug: (message) => {
+      //   console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
+      // },
     });
 
     // 클라이언트 활성화
     client.activate();
 
     client.onConnect = (frame) => {
-      console.log('연결');
+      // console.log('연결');
       // redux에 client 저장
       dispatch(createClient(client));
       router.push('/game/loading');
@@ -110,7 +112,9 @@ const Result = () => {
           )}
         </div>
         <div className='mt-7'>
-          <div className={`flex justify-center mb-3 text-2xl font-bold ${ratingProperty.color}`}>{ratingProperty.text}</div>
+          <div className={`flex justify-center mb-3 text-2xl font-bold ${ratingProperty.color}`}>
+            {ratingProperty.text}
+          </div>
           <Rank pageType='GAMERESULT' rating={gameResult.afterRating} tier={gameResult.afterTier} />
         </div>
         <div>
@@ -129,9 +133,11 @@ const Result = () => {
           </div>
         </div>
         <div className='space-y-3'>
-          <div className='flex justify-center'>
-            <FuncButton clickEvent={clickOneMore} value='한 판 더?' />
-          </div>
+          {origin !== 'room' && (
+            <div className='flex justify-center'>
+              <FuncButton clickEvent={clickOneMore} value='한 판 더?' />
+            </div>
+          )}
           <div className='flex justify-center'>
             <FuncButton clickEvent={clickGoToMain} value='메인으로' />
           </div>

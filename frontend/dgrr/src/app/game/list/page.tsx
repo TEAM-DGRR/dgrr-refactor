@@ -9,7 +9,7 @@ import { FindRoomModal } from './FindRoomModal';
 import { useEffect, useState } from 'react';
 import { Client, StompHeaders } from '@stomp/stompjs';
 import { useDispatch } from 'react-redux';
-import { createClient } from '@/store/gameSlice';
+import { createClient, saveOrigin } from '@/store/gameSlice';
 import axios from 'axios';
 import { saveRoomCode } from '@/store/roomSlice';
 import { useRouter } from 'next/navigation';
@@ -37,17 +37,17 @@ const ListPage = () => {
       connectHeaders: {
         ...headers,
       },
-      debug: (message) => {
-        console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
-      },
+      // debug: (message) => {
+      //   console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
+      // },
     });
 
     // 클라이언트 활성화
     client.activate();
 
     client.onConnect = (frame) => {
-      console.log('연결');
-      console.log(client);
+      // console.log('연결');
+      // console.log(client);
       // redux에 client 저장
       dispatch(createClient(client));
     };
@@ -59,19 +59,20 @@ const ListPage = () => {
       connectHeaders: {
         ...headers,
       },
-      debug: (message) => {
-        console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
-      },
+      // debug: (message) => {
+      //   console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
+      // },
     });
 
     // 클라이언트 활성화
     client.activate();
 
     client.onConnect = (frame) => {
-      console.log('연결');
-      console.log(client);
+      // console.log('연결');
+      // console.log(client);
       // redux에 client 저장
       dispatch(createClient(client));
+      dispatch(saveOrigin('room'));
     };
 
     if (client) {
@@ -94,6 +95,7 @@ const ListPage = () => {
   const joinRoom = () => {
     setIsModal(!isModal);
     connectStomp({ Authorization: memberId });
+    dispatch(saveOrigin('room'));
   };
   useEffect(() => {
     const memberId = localStorage.getItem('memberId');

@@ -22,7 +22,7 @@ const RommLoadingPage = () => {
     if (client) {
       client.subscribe(ENTER_SUB_URI, (message) => {
         const content = JSON.parse(message.body);
-        console.log('방 정보: ', content);
+        // console.log('방 정보: ', content);
         dispatch(saveRoomInfo(content));
         router.push('/room');
       });

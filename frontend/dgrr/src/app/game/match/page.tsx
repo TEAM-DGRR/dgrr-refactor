@@ -53,7 +53,7 @@ const MatchPage = () => {
           cameraPermissionStatus.state !== 'granted' ||
           microphonePermissionStatus.state !== 'granted'
         ) {
-          console.log('미디어 접근 권한을 요청합니다.');
+          // console.log('미디어 접근 권한을 요청합니다.');
           await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
           // 요청 후 스트림 사용하지 않으므로 바로 닫음
         }
@@ -115,7 +115,7 @@ const MatchPage = () => {
         .catch((error) => {
           console.log('OpenVidu 연결 실패', error.code, error.message);
         });
-      console.log('초반퍼블리셔: ', publisher);
+      // console.log('초반퍼블리셔: ', publisher);
     });
   };
 
@@ -124,10 +124,10 @@ const MatchPage = () => {
     const PYTHON_URL = process.env.NEXT_PUBLIC_PYTHON_URL;
     const websocket = new WebSocket(`${PYTHON_URL}`);
     dispatch(saveWebsocket(websocket));
-    websocket.onopen = () => console.log('WebSocket 연결됨');
-    websocket.onmessage = (event) => console.log('서버로부터 메세지 받음:', event.data);
+    // websocket.onopen = () => console.log('WebSocket 연결됨');
+    // websocket.onmessage = (event) => console.log('서버로부터 메세지 받음:', event.data);
     websocket.onerror = (error) => console.log('WebSocket 에러:', error);
-    websocket.onclose = () => console.log('WebSocket 연결 종료됨');
+    // websocket.onclose = () => console.log('WebSocket 연결 종료됨');
 
     connectOV();
   }, []);
