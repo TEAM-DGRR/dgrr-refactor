@@ -2,10 +2,14 @@
 
 import Header from '@/components/elements/Header';
 import RankingItem from '@/components/elements/RankingItem';
+import Toast from '@/components/elements/Toast';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Ranking = () => {
+  
+  const router = useRouter();
   const [currentSeason, setCurrentSeason] = useState(true);
   const [rankingData, setRankingData] = useState({
     memberRank: {
@@ -45,6 +49,20 @@ const Ranking = () => {
 
   useEffect(() => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     fetchRankingData();
   }, [currentSeason]);
 

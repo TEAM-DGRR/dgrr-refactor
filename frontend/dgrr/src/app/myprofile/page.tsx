@@ -10,8 +10,13 @@ import { KAKAO_LOGOUT_REDIRECT_URL } from '../../metadata/OAuth';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 import axios from 'axios';
 import { setUrl } from '@/utils/setUrl';
+import Toast from '@/components/elements/Toast';
+import { useRouter } from 'next/navigation';
 
 const MyProfile = () => {
+    
+  const router = useRouter();
+
   const [myInfo, setMyInfo] = useState({
     gameHistoryList: [
       {
@@ -56,6 +61,20 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
     const fetchData = async () => {
       try {

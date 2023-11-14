@@ -19,6 +19,7 @@ const matchAttack = '/images/match-attack.png';
 const matchDefense = '/images/match-defense.png';
 
 import './match.scss';
+import Toast from '@/components/elements/Toast';
 
 const MatchPage = () => {
   const [publisher, setPublisher] = useState<Publisher>();
@@ -79,6 +80,20 @@ const MatchPage = () => {
   }, []);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     if (gameInfo.turn === 'FIRST') {
       setRoleMessage(roleMessages[0]);
       setRoleImage(roleImages[0]);

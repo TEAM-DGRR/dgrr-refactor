@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { saveGameInfo, saveOrigin } from '@/store/gameSlice';
 import { publishMessage } from '@/components/Game/stomp';
 import { useRouter } from 'next/navigation';
+import Toast from '@/components/elements/Toast';
 
 const GameLoading = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -44,6 +45,20 @@ const GameLoading = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     audioRef.current = new Audio('/audio/game-loading.mp3');
     audioRef.current.play();
     const interval = setInterval(() => {

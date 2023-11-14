@@ -13,6 +13,7 @@ import ProbabilityGauge from './probabilityGauge';
 import attackImg from '@/../public/images/match-attack.png';
 import defenseImg from '@/../public/images/match-defense.png';
 import Image from 'next/image';
+import Toast from '@/components/elements/Toast';
 
 const PlayPage = () => {
   const client = useAppSelector((state) => state.game.client);
@@ -249,6 +250,20 @@ const PlayPage = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const alertTimeout = setTimeout(() => {
       // console.log(turn);
       setModalOpen(false);

@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 import { reset } from '@/store/gameSlice';
 import { disconnectSession } from '@/components/Game/openVidu';
+import Toast from '@/components/elements/Toast';
 
 const Result = () => {
   const [modalStatus, setModalStatus] = useState(false);
@@ -63,6 +64,20 @@ const Result = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const memberId = localStorage.getItem('memberId');
     if (memberId) {
       setMemberId(memberId);

@@ -13,6 +13,7 @@ import { createClient, saveOrigin } from '@/store/gameSlice';
 import axios from 'axios';
 import { saveRoomCode } from '@/store/roomSlice';
 import { useRouter } from 'next/navigation';
+import Toast from '@/components/elements/Toast';
 
 const ListPage = () => {
   const gameList = [
@@ -98,6 +99,20 @@ const ListPage = () => {
     dispatch(saveOrigin('room'));
   };
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const memberId = localStorage.getItem('memberId');
     if (memberId) {
       setMemberId(memberId);
