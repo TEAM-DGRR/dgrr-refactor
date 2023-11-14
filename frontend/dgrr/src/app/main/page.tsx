@@ -1,7 +1,6 @@
 'use client';
 import character from '@/../public/images/logo_character.png';
 import title from '@/../public/images/logo_title.png';
-import { FuncButton } from '@/components/FuncButton';
 import { LinkButton } from '@/components/LinkButton';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
 import { ExplainModal } from '@/components/elements/ExplainModal';
@@ -82,10 +81,6 @@ const MainPage = () => {
               <img src={clickMe} alt="click me" />
             </div>
             <img src={logoTutoral} alt="튜토리얼" />
-          </div>
-          {/* 게임 설명 버튼 */}
-          <div className="flex justify-center">
-            <FuncButton value="게임 설명" clickEvent={handleModal} />
           </div>
           {/* 게임 시작 버튼 */}
           <div className="flex justify-center">

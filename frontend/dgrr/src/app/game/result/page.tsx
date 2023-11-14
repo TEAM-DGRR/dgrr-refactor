@@ -147,7 +147,7 @@ const Result = () => {
       {modalStatus === true ? (
         <div className='z-10 bg-black/30 w-screen h-full max-w-[500px] fixed top-0 flex justify-center items-center'>
           <div className='w-72 h-fit bg-white rounded-lg border-2 border-black p-3'>
-            <div className='flex justify-end mb-1' onClick={closeModal}>
+            <div className='flex justify-end mb-1 cursor-hover' onClick={closeModal}>
               <button className='hover:text-[#E83F57]'>
                 <IoCloseOutline fontSize={'24px'} />
               </button>
