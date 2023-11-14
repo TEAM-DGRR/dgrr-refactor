@@ -19,7 +19,7 @@ export const TutorialModal = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div
-      className='z-10 bg-black/30 w-full h-full max-w-[500px] fixed top-0 flex justify-center items-center'
+      className='z-20 bg-black/30 w-full h-full max-w-[500px] fixed top-0 flex justify-center items-center'
       onClick={onClose}
     >
       <div
