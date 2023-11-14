@@ -102,7 +102,7 @@ const RoomPage = () => {
           ) : (
             <button
               disabled
-              className={`rounded-lg border-2 max-w-xs py-5 hover:brightness-110 w-20 cursor-hover bg-slate-300`}
+              className={`rounded-lg border-2 max-w-xs py-5 w-20 cursor-default bg-slate-300`}
             >
               <p className={`text-zinc-800 text-center text-base font-bold uppercase leading-none`}>
                 시작하기
@@ -114,10 +114,9 @@ const RoomPage = () => {
         )}
       </div>
       <div className='userVideo mt-3 mx-3'>
-        <p>{owner.nickname}</p>
         {enemy ? (
           <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
-            <Image
+            <img
               src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
               alt='상대프로필'
               width={160}

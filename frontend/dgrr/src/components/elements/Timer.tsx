@@ -39,7 +39,7 @@ export const Timer = memo(({ round }: { round: string }) => {
     };
   }, [round]);
 
-  return <>{round && <div className='text-white font-bold text-2xl'>0 : {second}</div>}</>;
+  return <>{round && <p className='text-white font-bold text-2xl w-fit'>0:{second}</p>}</>;
 });
 
 Timer.displayName = 'Timer';

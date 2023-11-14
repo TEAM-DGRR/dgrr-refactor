@@ -23,6 +23,7 @@ import { roomStompConfig } from '@/types/room';
 import { roomReset } from '@/store/roomSlice';
 import { disconnectSession } from '../Game/openVidu';
 import { Timer } from './Timer';
+import Toast from './Toast';
 
 export type headerType =
   | 'MAIN'
@@ -102,6 +103,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
         publishMessage(client, EXIT_SEND_URI, '');
         client.deactivate();
         dispatch(roomReset());
+        dispatch(reset());
         router.push('/main');
       }
       if (session) {
@@ -125,6 +127,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       try {
         await navigator.clipboard.writeText(roomCode);
         console.log(`${roomCode} 복사 성공`);
+        Toast.fire('코드가 복사되었습니다', '', 'success');
       } catch (error) {
         console.log('복사 실패😥');
       }
@@ -180,11 +183,12 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
           </Link>
         </div>
       ) : headerType === 'WAITING' ? (
-        <div className='bg-black h-[60px] top-0 right-0 gap-2 pe-4 flex justify-end items-center'>
+        <div className='bg-black h-[60px] top-0 right-0 gap-4 px-3 flex justify-between items-center'>
           <div
+            className='flex cursor-hover text-white hover:text-main-blue'
             onClick={() => handleCopyCode(roomCode)}
-            className='cursor-hover text-white hover:text-main-blue'
           >
+            <p className='text-white text-lg mr-2 hover:text-main-blue'>방 코드: {roomCode}</p>
             <IoCopyOutline fontSize={'27px'} />
           </div>
           <div className='cursor-hover text-white hover:text-main-blue' onClick={exitRoom}>
@@ -192,7 +196,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
           </div>
         </div>
       ) : headerType === 'GAME' ? (
-        <div className='bg-black h-[60px] top-0 right-0 gap-[107px] px-3 flex justify-between items-center'>
+        <div className='bg-black h-[60px] top-0 right-0 px-3 flex justify-between items-center'>
           <div className='w-[30px] h-full'></div>
           <Timer round={round} />
           <div className='cursor-hover text-white hover:text-main-blue' onClick={exitGame}>

@@ -3,9 +3,9 @@ import Swal from 'sweetalert2';
 const Toast = Swal.mixin({
   toast: true,
   position: 'top',
-  width: '70%',
+  width: '350px',
   showConfirmButton: false,
-  timer: 2000,
+  timer: 1000,
 });
 
 export default Toast;

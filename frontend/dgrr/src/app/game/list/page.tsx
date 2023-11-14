@@ -107,7 +107,7 @@ const ListPage = () => {
       <Header headerType='GAMESTART' />
       {isModal && <FindRoomModal handleModal={handleModal} />}
 
-      <div className='pt-6 space-y-6'>
+      <div className='pt-6 space-y-10 grid'>
         {gameList.map((item, index) =>
           index === 1 ? (
             <div className={`${commonClass} cursor-hover`} key={index} onClick={joinRoom}>
@@ -124,7 +124,10 @@ const ListPage = () => {
               }
               className={`${commonClass} cursor-hover`}
             >
-              <Link href={item.navLink} className='w-full h-full flex flex-col items-center cursor-hover'>
+              <Link
+                href={item.navLink}
+                className='w-full h-full flex flex-col items-center cursor-hover'
+              >
                 <Image src={item.imgLink} alt='이미지예시' className='w-20 h-20' />
                 <p className='font-bold text-base'>{item.value}</p>
               </Link>
