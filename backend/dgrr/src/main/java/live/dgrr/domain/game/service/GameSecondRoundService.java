@@ -149,16 +149,23 @@ public class GameSecondRoundService {
     public GameResultResponse leaveGame(String memberId, String gameRoomId) {
         GameRoom gameRoom = gameRoomRepository.findById(gameRoomId)
                 .orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
+        gameRoom.finishSecondRound(RoundResult.NO_LAUGH);
+        gameRoomRepository.save(gameRoom);
 
         GameMember myInfo = gameRoom.getEnemyInfo(memberId);
         GameMember enemyInfo = gameRoom.getMyInfo(memberId);
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), GameResult.WIN);
         Tier afterTier = TierCalculator.calculateRank(afterRating);
 
-        //todo: 게임 팅겼을 시 history 저장
-//        gameHistoryService.save(gameRoom, gameRoomId, memberId, GameResult.WIN, afterRating - myInfo.rating(), null);
+        int enemyAfterRating = EloCalculator.calculateRating(enemyInfo.rating(), myInfo.rating(), GameResult.LOSE);
+
+        //history 저장
+        gameHistoryService.leaveSave(gameRoom, gameRoomId, myInfo.memberId(), GameResult.WIN, afterRating - myInfo.rating());
+        gameHistoryService.leaveSave(gameRoom, gameRoomId, enemyInfo.memberId(), GameResult.LOSE, enemyAfterRating - enemyInfo.rating());
+
         //랭킹 저장
-        rankingRepository.addRanking(Long.parseLong(memberId), afterRating);
+        rankingRepository.addRanking(Long.parseLong(myInfo.memberId()), afterRating);
+        rankingRepository.addRanking(Long.parseLong(enemyInfo.memberId()), enemyAfterRating);
 
         return GameResultResponse.builder()
                 .gameResult(GameResult.WIN)
