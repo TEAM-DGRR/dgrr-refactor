@@ -31,6 +31,7 @@ const RoomPage = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef(null);
   const enemy = useAppSelector((state) => state.room.roomInfo[1]?.waitingMember);
+  const [userStream, setUserStream] = useState<MediaStream | null>(null);
 
   const subscribeRoom = () => {
     client?.subscribe(READY_SUB_URI, (message) => {
@@ -52,6 +53,12 @@ const RoomPage = () => {
     });
     client?.subscribe(GAME_URI, (message) => {
       // console.log('게임정보 받는 메세지: ', message.body);
+      const tracks = userStream?.getTracks();
+      if (tracks) {
+        tracks.forEach((track) => {
+          track.stop();
+        });
+      }
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
@@ -96,6 +103,7 @@ const RoomPage = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then((stream) => {
+        setUserStream(stream);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
