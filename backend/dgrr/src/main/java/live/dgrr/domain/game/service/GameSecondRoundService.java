@@ -120,6 +120,9 @@ public class GameSecondRoundService {
         }
 
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), gameResult);
+        if(gameRoom.getGameType().equals(GameType.PRIVATE)) {
+            afterRating = myInfo.rating();
+        }
         Tier afterTier = TierCalculator.calculateRank(afterRating);
 
         int roomId = waitingRoomService.createWaitingRoom();
@@ -155,9 +158,14 @@ public class GameSecondRoundService {
         GameMember myInfo = gameRoom.getEnemyInfo(memberId);
         GameMember enemyInfo = gameRoom.getMyInfo(memberId);
         int afterRating = EloCalculator.calculateRating(myInfo.rating(), enemyInfo.rating(), GameResult.WIN);
+        int enemyAfterRating = EloCalculator.calculateRating(enemyInfo.rating(), myInfo.rating(), GameResult.LOSE);
+        if(gameRoom.getGameType().equals(GameType.PRIVATE)) {
+            afterRating = myInfo.rating();
+            enemyAfterRating = enemyInfo.rating();
+        }
         Tier afterTier = TierCalculator.calculateRank(afterRating);
 
-        int enemyAfterRating = EloCalculator.calculateRating(enemyInfo.rating(), myInfo.rating(), GameResult.LOSE);
+
 
         //history 저장
         gameHistoryService.leaveSave(gameRoom, gameRoomId, myInfo.memberId(), GameResult.WIN, afterRating - myInfo.rating());
