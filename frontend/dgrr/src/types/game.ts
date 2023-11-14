@@ -1,5 +1,5 @@
 import { Client, StompHeaders } from '@stomp/stompjs';
-import { Publisher, StreamManager, Subscriber } from 'openvidu-browser';
+import { OpenVidu, Publisher, Session, StreamManager, Subscriber } from 'openvidu-browser';
 
 export type GameType = {
   client: Client | undefined;
@@ -9,6 +9,9 @@ export type GameType = {
   subscriber: Subscriber | undefined;
   websocket: WebSocket | undefined;
   roundResult: string;
+  OVsession: Session | undefined;
+  OV: OpenVidu | undefined;
+  round: string;
 };
 
 export interface IGameConfig {
@@ -37,6 +40,8 @@ export const stompConfig = {
     END_URI: '/send/game-end',
     // 게임 탈주 전송
     EXIT_URI: '/send/game-leave',
+    // 게임 매칭 취소
+    EXIT_MATCHING: '/send/matching-cancel',
 
     // 게임 시작 정보
     GAME_URI: '/user/recv/game-start',
@@ -90,7 +95,7 @@ export interface IMemberInfo {
 
 // 이미지 분석 결과
 export interface IImageResult {
-  success: string;
+  success: boolean;
   emotion: string;
   probability: number;
   smileProbability: number;

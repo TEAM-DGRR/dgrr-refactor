@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/store/providers';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,6 +14,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-NMQDF5YNSN" />
+      <Script id="google-analytics">
+        {`
+           window.dataLayer = window.dataLayer || [];
+           function gtag(){dataLayer.push(arguments);}
+           gtag('js', new Date());
+  
+           gtag('config', 'G-NMQDF5YNSN');
+         `}
+      </Script>
       <body className={`${inter.className} cursor-default`}>
         <Providers>{children}</Providers>
       </body>

@@ -17,7 +17,6 @@ const AuthPage = () => {
           router.push(`/signup?id=${res.data.id}`);
         } else {
           const member = res.data.member;
-          alert(`${member.nickname}님, 환영합니다.`);
           axios
             .get(`${setUrl}/kakao/login/${member.kakaoId}`)
             .then((res: any) => {

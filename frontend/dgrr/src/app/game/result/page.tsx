@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { IoCloseOutline } from 'react-icons/io5';
 import { FuncButton } from '@/components/FuncButton';
 import Rank from '@/components/elements/Rank';
@@ -8,29 +9,51 @@ import { useDispatch } from 'react-redux';
 import { Client, StompHeaders } from '@stomp/stompjs';
 import { createClient } from '@/store/gameSlice';
 import { useRouter } from 'next/navigation';
+import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
+import { reset } from '@/store/gameSlice';
+import { disconnectSession } from '@/components/Game/openVidu';
 
 const Result = () => {
   const [modalStatus, setModalStatus] = useState(false);
+  const session = useAppSelector((state) => state.game.OVsession);
+  const publisher = useAppSelector((state) => state.game.publisher);
+  const [memberId, setMemberId] = useState('');
+  const gameResult = useAppSelector((state) => state.game.gameResult);
+  const ratingProperty =
+    gameResult.afterRating > gameResult.myInfo.rating
+      ? {
+          text: `${gameResult.afterRating}(+${gameResult.afterRating - gameResult.myInfo.rating})`,
+          color: 'text-[#E83F57]',
+        }
+      : gameResult.afterRating < gameResult.myInfo.rating
+      ? {
+          text: `${gameResult.afterRating}(-${gameResult.myInfo.rating - gameResult.afterRating})`,
+          color: 'text-[#5383E8]',
+        }
+      : {
+          text: `${gameResult.afterRating}`,
+          color: 'text-[#868E96]',
+        };
+  const playsound = ButtonClickAudio();
 
   const openModal = () => {
+    playsound();
     setModalStatus(true);
-    console.log('Open Modal');
   };
   const closeModal = () => {
+    playsound();
     setModalStatus(false);
-    console.log('Close Modal');
   };
 
-  const gameResult = useAppSelector((state) => state.game.gameResult)
-  const [memberId, setMemberId] = useState('')
-
   const clickOneMore = () => {
-    console.log('One More Time');
+    dispatch(reset());
+    playsound();
     connectStomp({ Authorization: memberId });
   };
 
   const clickGoToMain = () => {
-    console.log('Go To Main');
+    dispatch(reset());
+    playsound();
     const newPathname = '/main';
     window.location.href = newPathname;
   };
@@ -38,11 +61,14 @@ const Result = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   useEffect(() => {
-    const memberId = localStorage.getItem('memberId')
+    const memberId = localStorage.getItem('memberId');
     if (memberId) {
-      setMemberId(memberId)
+      setMemberId(memberId);
     }
-  }, [])
+    if (session) {
+      disconnectSession(session, publisher);
+    }
+  }, [session]);
   const connectStomp = (headers: StompHeaders) => {
     const client = new Client({
       brokerURL: process.env.NEXT_PUBLIC_BROKER_URL,
@@ -61,38 +87,39 @@ const Result = () => {
       console.log('연결');
       // redux에 client 저장
       dispatch(createClient(client));
-      router.push('/game/loading')
+      router.push('/game/loading');
     };
   };
 
   return (
     <div className='flex justify-center items-center bg-main-blue w-screen h-screen max-w-[500px]'>
-      <div className='bg-white w-11/12 h-[522px] rounded-[12px] py-5 px-3'>
+      <div className='bg-white w-11/12 min-w-[264px] h-[575px] rounded-[12px] py-5 px-3'>
         <div className='text-[40px] font-bold text-center flex justify-between'>
           <div className='inline-block w-1/6'></div>
-          <div>{gameResult.gameResult}</div>
+          {gameResult.gameResult === 'LOSE' ? <div>LOSS</div> : <div>{gameResult.gameResult}</div>}
           {/* 하이라이트 사진 미리보기 */}
-          {gameResult.highlightImage
-            ? <img
+          {gameResult.highlightImage ? (
+            <img
               onClick={openModal}
               src={gameResult.highlightImage}
               alt='하이라이트 이미지'
-              className='inline-block w-1/6 aspect-square animate-bounce hover:cursor-pointer'
+              className='inline-block rounded-lg w-1/6 aspect-square animate-bounce cursor-hover'
             />
-            : <div className='inline-block w-1/6'></div>
-          }
-
+          ) : (
+            <div className='inline-block w-1/6'></div>
+          )}
         </div>
         <div className='mt-7'>
+          <div className={`flex justify-center mb-3 text-2xl font-bold ${ratingProperty.color}`}>{ratingProperty.text}</div>
           <Rank pageType='GAMERESULT' rating={gameResult.afterRating} tier={gameResult.afterTier} />
         </div>
         <div>
           <div className='flex items-center justify-center mt-9 mb-7 gap-x-2'>
             <div>
               <img
-                className='w-10 aspect-square rounded-full'
                 src={gameResult.enemyInfo.profileImage}
                 alt='상대방 프로필 사진'
+                className='w-10 aspect-square rounded-full'
               />
             </div>
             <div className='inline-block'>

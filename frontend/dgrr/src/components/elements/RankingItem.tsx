@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import RankingMedal from './RankingMedal';
 
 export type itemType = 'MY' | 'ALL';
@@ -36,16 +37,20 @@ const RankingItem = ({ itemType, item }: RankingItemProps) => {
       )}
       <div className='w-4/5 flex items-center bg-white rounded-r-lg'>
         <img
-          className='w-[60px] aspect-square rounded-full mx-3'
           src={profileImage}
           alt='프로필 사진'
+          className='w-[60px] aspect-square rounded-full mx-3'
         />
         <div className='inline-block me-3'>
           <div className='mb-1 font-semibold text-sm'>{item.nickname}</div>
           <div className='flex gap-x-2'>
-            <div className='flex w-[24px] aspect-square'>
-              <img src={medalColor} />
-            </div>
+            <Image
+              src={medalColor}
+              alt='메달 색깔'
+              width={500}
+              height={500}
+              className='flex w-[24px] aspect-square'
+            />
             <div className='flex items-center text-sm'>{item.rating}</div>
           </div>
         </div>

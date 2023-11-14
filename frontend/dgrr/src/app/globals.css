@@ -33,5 +33,10 @@ body {
 }
 
 .userVideo {
-  height: calc((100% - 60px) / 2);
+  height: calc((100% - 84px) / 2);
+  /* object-fit: fill; */
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

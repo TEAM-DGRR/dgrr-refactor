@@ -1,8 +1,9 @@
 'use client';
-import character from '@/../../public/images/logo_character.png';
+import character from '@/../../public/images/floating_bread_cropped.gif';
 import Image from 'next/image';
+import Header from '@/components/elements/Header';
 import { FuncButton } from '@/components/FuncButton';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ExplainModal } from '@/components/elements/ExplainModal';
 import { useAppSelector } from '@/store/hooks';
 import { stompConfig } from '@/types/game';
@@ -13,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 const GameLoading = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [seconds, setSeconds] = useState(0);
   const handleModal = () => {
     setOpenModal(!openModal);
   };
@@ -22,6 +24,7 @@ const GameLoading = () => {
   const { GAME_URI, MATCHING_URI } = DESTINATION_URI;
   const dispatch = useDispatch();
   const router = useRouter();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 랜덤매칭
   const gameMatch = () => {
@@ -41,16 +44,38 @@ const GameLoading = () => {
   };
 
   useEffect(() => {
+    audioRef.current = new Audio('/audio/game-loading.mp3');
+    audioRef.current.play();
+    const interval = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
     subscribeGame();
     gameMatch();
+    return () => { 
+      // 페이지를 벗어날 때 오디오 정지
+      audioRef.current?.pause();
+      clearInterval(interval);
+    }
   }, [client]);
 
   return (
-    <div className="grid place-items-center bg-main-blue w-screen h-screen max-w-[500px]">
+    <div className='bg-main-blue w-screen h-screen min-h-[580px] max-w-[500px]'>
+      <Header headerType='MATCHING' />
       {openModal && <ExplainModal onClose={handleModal} />}
-      <Image alt="캐릭터" src={character} className="w-40 h-40" />
-      <h1>게임 찾는 중...</h1>
-      <FuncButton value="게임 설명" clickEvent={handleModal} small={true} />
+      <div className='flex flex-col justify-between h-3/5 pt-10'>
+        <div className='flex justify-center mb-10'>
+          <Image alt='캐릭터' src={character} />
+        </div>
+        <div className='flex justify-center font-bold'>
+          <h1>게임 찾는 중</h1><span className='animate-blink'>.</span><span className='animate-blink2'>.</span>.<span className='animate-blink3'>.</span>
+        </div>
+        <div className='flex justify-center font-bold mt-10'>
+          <div className='Timer'>{seconds}s</div>
+        </div>
+        <div className='flex justify-center mt-40'>
+          <FuncButton value='게임 설명' clickEvent={handleModal}  />
+        </div>
+      </div>
     </div>
   );
 };
