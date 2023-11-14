@@ -133,14 +133,10 @@ const MatchPage = () => {
   }, []);
 
   return (
-    <div className='Container relative w-screen h-screen min-w-[500px] max-w-[500px] min-h-[565px] z-0 truncate'>
+    <div className='Container relative w-screen h-screen max-w-[500px] min-h-[580px] z-0 truncate'>
       <div className='Turn flex absolute items-center justify-center bg-match-versus mt-10 mx-3 m-2 rounded-lg'>
-        <img
-          className='MatchedPersonProfile w-[20%] rounded-full'
-          alt='역할 이미지'
-          src={roleImage}
-        />
-        <div className='text-[30px] text-[#000000] font-black'>
+        <img className='MatchedPersonProfile w-[20%]' alt='역할 이미지' src={roleImage} />
+        <div className='text-[#000000] font-black text-2xl'>
           <p>{roleMessage}</p>
         </div>
       </div>
@@ -148,27 +144,24 @@ const MatchPage = () => {
       <div className='flex flex-col justify-between h-full'>
         {/* 상대 정보 */}
 
-        <div className='flex flex-col flex-1 justify-end bg-match-white mx-6 my-0'>
-          <div className='flex flex-1 items-center justify-center bg-match-versus py-6 mx-3 my-4 rounded-lg'></div>
-          <div className='MatchedPerson1 flex flex-1 relative items-end justify-center bg-match-versus py-5 px-3 mx-3 my-2 rounded-lg'>
-            <div className='MatchedPersonBackground1 min-h-[150px] min-x-[400px] z-30'>
-              <div className='absolute text-[10px] text-[#9cd4ab] mt-4 ml-[85%] mb-[50px]'>
-                닉네임
+        <div className='flex flex-col flex-1 justify-end mx-6 my-0'>
+          <div className='flex flex-1 items-center justify-center py-6 mx-3 my-4 rounded-lg'></div>
+          <div className='MatchedPerson1 flex flex-1 relative items-end justify-center py-5 px-3 mx-3 my-2 rounded-lg'>
+            <div className='MatchedPersonBackground1 min-h-[150px] z-30 '>
+              <div className='ml-[160px] px-1 mt-3 text-right max-w-[240px] rounded-lg border-b-2 '>
+                <p className='text-[10px] text-[#9cd4ab] truncate'>닉네임</p>
+                <p className='text-[#fee691] text-lg truncate'>{gameInfo.enemyInfo.nickname}</p>
               </div>
-
-              <div className='w-[240px] px-2 mt-7 ml-[150px] text-right text-[#fee691] text-[18px] rounded-lg border-b-2 '>
-                <p>{gameInfo.enemyInfo.nickname}</p>
-              </div>
-              <div className='absolute text-[10px] text-[#9cd4ab] mt-3 ml-[80%] mb-[50px]'>
-                상태메시지
-              </div>
-              <div className='ml-[170px] px-2 min-w-[150px] text-right max-w-[220px] text-[14px] text-[#f2f2f2] mt-6rounded-lg border-b-2 '>
-                <p>{gameInfo.enemyInfo.description}</p>
+              <div className='ml-[180px] px-1 mt-3 text-right max-w-[220px] rounded-lg border-b-2 '>
+                <p className='text-[10px] text-[#9cd4ab] truncate'>상태메시지</p>
+                <p className='text-base text-[#f2f2f2] truncate'>
+                  {gameInfo.enemyInfo.description}
+                </p>
               </div>
             </div>
 
             <img
-              className='MatchedPersonProfile w-[160px] mb-[2%] mr-[60%] absolute rounded-full border-0 border-cyan-500 z-50'
+              className='MatchedPersonProfile w-40 h-40 mb-[2%] mr-[60%] absolute rounded-full border-0 border-cyan-500 z-50'
               alt='프로필 이미지'
               src={gameInfo.enemyInfo.profileImage}
             />
@@ -178,26 +171,29 @@ const MatchPage = () => {
         {/* ------------------------------------------------------------------------------------------------------------- */}
 
         {/* vsImage */}
-        <div className='VersusImage absolute w-[140px] left-[37.5%] top-[38%] z-40'>
-          <Image alt='vs이미지' src={vsImage} />
+        <div className='flex flex- relative justify-center -mt-[65px] -mb-[50px]'>
+          <div className='VersusImage w-[120px] z-40'>
+            <Image alt='vs이미지' src={vsImage} />
+          </div>
         </div>
         {/* ------------------------------------------------------------------------------------------------------------- */}
 
         {/* 내 정보 */}
-        <div className='flex flex-col flex-1 justify-end bg-match-white mx-6 my-0'>
-          <div className='MatchedPerson2 flex flex-1 relative items-start justify-center bg-match-versus py-5 px-2 mx-3 my-2 rounded-lg'>
-            <div className='MatchedPersonBackground2 min-h-[150px] min-x-[400px] z-30'>
-              <div className='absolute text-[10px] text-[#9cd4ab] mt-4 ml-5'>닉네임</div>
-              <div className='w-[240px] pl-2 mt-7 ml-4 text-[#fee691] text-[18px] rounded-lg border-b-2 '>
-                <p>{gameInfo.myInfo.nickname}</p>
+        <div className='flex flex-col flex-1 justify-end mx-6 my-0'>
+          <div className='MatchedPerson2 flex flex-1 relative items-start justify-center py-5 px-2 mx-3 my-2 rounded-lg'>
+            <div className='MatchedPersonBackground2 min-h-[150px]  z-30 '>
+              <div className='ml-2 px-1 mt-3 text-start max-w-[240px] truncate rounded-lg border-b-2 '>
+                <p className='text-[10px] text-[#9cd4ab] truncate'>닉네임</p>
+                <p className='text-[#fee691] text-lg truncate'>{gameInfo.myInfo.nickname}</p>
               </div>
-              <div className='absolute text-[10px] text-[#9cd4ab] mt-3 ml-5'>상태메시지</div>
-              <div className='min-w-[150px] max-w-[220px] text-[14px] text-[#f2f2f2] pl-2 mt-6 ml-4 rounded-lg border-b-2 '>
-                <p>{gameInfo.myInfo.description}</p>
+              <div className='ml-2 px-1 mt-3 text-start max-w-[220px] truncate rounded-lg border-b-2 '>
+                <p className='text-[10px] text-[#9cd4ab] truncate'>상태메시지</p>
+                <p className='text-base text-[#f2f2f2] truncate'>{gameInfo.myInfo.description}</p>
               </div>
             </div>
+
             <img
-              className='MatchedPersonProfile w-[160px] mt-[2%] ml-[52%] absolute rounded-full border-0 border-cyan-500 z-50'
+              className='MatchedPersonProfile w-40 h-40 mt-[2%] ml-[52%] absolute rounded-full border-0 border-cyan-500 z-50'
               alt='프로필 이미지'
               src={gameInfo.myInfo.profileImage}
             />
