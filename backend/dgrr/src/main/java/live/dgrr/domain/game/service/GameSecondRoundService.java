@@ -7,6 +7,7 @@ import live.dgrr.domain.game.entity.event.*;
 import live.dgrr.domain.game.repository.GamePrepareRepository;
 import live.dgrr.domain.game.repository.GameRoomRepository;
 import live.dgrr.domain.gamehistory.service.GameHistoryService;
+import live.dgrr.domain.ranking.repository.RankingRepository;
 import live.dgrr.domain.waitingroom.service.WaitingRoomService;
 import live.dgrr.global.entity.Tier;
 import live.dgrr.global.exception.ErrorCode;
@@ -33,6 +34,7 @@ public class GameSecondRoundService {
     private final GamePrepareRepository gamePrepareRepository;
     private final WaitingRoomService waitingRoomService;
     private final IHighlightService iHighlightService;
+    private final RankingRepository rankingRepository;
 
     private static final long ROUND_TIME = 30L;
     private static final String SECOND_ROUND_LAUGH = "/recv/secondroundend-laugh";
@@ -124,6 +126,8 @@ public class GameSecondRoundService {
 
         //게임 결과 저장
         gameHistoryService.save(gameRoom, gameRoomId, memberId, gameResult, afterRating - myInfo.rating(), highlightImage);
+        //랭킹 저장
+        rankingRepository.addRanking(Long.parseLong(memberId), afterRating);
 
         return GameResultResponse.builder()
                 .gameResult(gameResult)
@@ -153,6 +157,8 @@ public class GameSecondRoundService {
 
         //todo: 게임 팅겼을 시 history 저장
 //        gameHistoryService.save(gameRoom, gameRoomId, memberId, GameResult.WIN, afterRating - myInfo.rating(), null);
+        //랭킹 저장
+        rankingRepository.addRanking(Long.parseLong(memberId), afterRating);
 
         return GameResultResponse.builder()
                 .gameResult(GameResult.WIN)
