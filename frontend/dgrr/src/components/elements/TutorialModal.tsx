@@ -3,7 +3,7 @@ import { IoCloseOutline, IoChevronBackOutline, IoChevronForward } from 'react-ic
 
 export const TutorialModal = ({ onClose }: { onClose: () => void }) => {
   const [currentImage, setCurrentImage] = useState(1);
-  const totalImages = 5; // 총 이미지 수를 정의
+  const totalImages = 8; // 총 이미지 수를 정의
 
   const modalInClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -48,14 +48,14 @@ export const TutorialModal = ({ onClose }: { onClose: () => void }) => {
             </p>
             <div
               className={`${
-                currentImage === 5 ? 'invisible' : ''
+                currentImage === totalImages ? 'invisible' : ''
               } p-2 focus:outline-none cursor-hover hover:text-main-blue`}
               onClick={handleNext}
             >
               <IoChevronForward fontSize={'30px'} />
             </div>
           </div>
-          <img className='' alt='역할 이미지' src={`/images/tutorial_${currentImage}.png`} />
+          <img className='' alt='튜토리얼 이미지' src={`/images/tutorial_${currentImage}.png`} />
           <br />
         </div>
       </div>
