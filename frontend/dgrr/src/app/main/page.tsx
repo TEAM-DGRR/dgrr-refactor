@@ -2,22 +2,28 @@
 import character from '@/../public/images/logo_character.png';
 import title from '@/../public/images/logo_title.png';
 import { FuncButton } from '@/components/FuncButton';
+import Header from '@/components/elements/Header';
+import { ExplainModal } from '@/components/elements/ExplainModal';
+import { TutorialModal } from '@/components/elements/TutorialModal';
+import { useEffect, useState } from 'react';
 import { LinkButton } from '@/components/LinkButton';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
-import { ExplainModal } from '@/components/elements/ExplainModal';
-import Header from '@/components/elements/Header';
 import Toast from '@/components/elements/Toast';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 const MainPage = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [openTutorialModal, setOpenTutorialModal] = useState(false);
   const router = useRouter();
   const playSound = ButtonClickAudio();
   const handleModal = () => {
     playSound();
     setOpenModal(!openModal);
+  };
+  const handleTutorialModal = () => {
+    playSound();
+    setOpenTutorialModal(!openTutorialModal);
   };
 
   const requestCameraPermission = async () => {
@@ -52,6 +58,7 @@ const MainPage = () => {
     <div className='bg-main-blue w-screen h-screen min-h-[580px] max-w-[500px]'>
       <Header headerType='MAIN' />
       {openModal && <ExplainModal onClose={handleModal} />}
+      {openTutorialModal && <TutorialModal onClose={handleTutorialModal} />}
 
       <div className='flex flex-col justify-between h-5/6 pt-10'>
         <div>
@@ -65,6 +72,10 @@ const MainPage = () => {
           </div>
         </div>
         <div className='space-y-6'>
+          {/* 튜토리얼 버튼 */}
+          <div className='flex justify-center'>
+            <FuncButton value='튜토리얼' clickEvent={handleTutorialModal} />
+          </div>
           {/* 게임 설명 버튼 */}
           <div className='flex justify-center'>
             <FuncButton value='게임 설명' clickEvent={handleModal} />
