@@ -113,9 +113,23 @@ const Edit = () => {
           });
         })
         .catch((err: any) => {
-          console.log(err);
+          bigFileModal();
         });
     }
+  };
+
+  // 크거나 이상한 파일 올리면 모달 뜸
+  const bigFileModal = () => {
+    Swal.fire({
+      width: 400,
+      title: `파일이 크거나 형식에 맞지 않아요😥`,
+      icon: 'error',
+      confirmButtonColor: '#469FF6',
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
   };
 
   // 닉네임이 중복되었거나 없을 때, 모달 뜸
