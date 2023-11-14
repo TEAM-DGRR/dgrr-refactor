@@ -123,10 +123,9 @@ public class WaitingRoomService {
         checkGameStart(waitingRoom, waitingMembers, memberId);
 
         //게임 시작 로직
-        log.info("WaitingRoomService - gameStart-member1: {}, member2: {}", waitingMembers.get(0).getWaitingMemberId(), waitingMembers.get(1).getWaitingMemberId());
-
         waitingRoom.gameStart();
         waitingRoomRepository.save(waitingRoom);
+        Collections.shuffle(waitingMembers);
         Collections.shuffle(waitingMembers);
         publisher.publishEvent(new GameStartEvent(waitingMembers.get(0).getWaitingMemberId(), waitingMembers.get(1).getWaitingMemberId(), GameType.PRIVATE));
 

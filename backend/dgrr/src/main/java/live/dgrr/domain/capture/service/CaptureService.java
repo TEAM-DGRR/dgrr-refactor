@@ -45,7 +45,6 @@ public class CaptureService {
             String gameRoomId = captureResult.getHeader().getGameSessionId();
             GameRoom gameRoom = gameRoomRepository.findById(gameRoomId).orElseThrow(() -> new GameException(ErrorCode.GAME_ROOM_NOT_FOUND));
 
-            log.info(capture);
 
             if (captureResult.getEncodedImage() != null) {
                 publishingLaugh(captureResult);

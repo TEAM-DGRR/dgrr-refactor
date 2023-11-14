@@ -16,14 +16,13 @@ import java.util.Properties;
 public class YamlPropertySourceFactory implements PropertySourceFactory {
     @Override
     public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
-        log.info("Trying to load configuration resource {}", resource.getResource().getURI());
         YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
         factory.setResources(resource.getResource());
         try {
             Properties properties = factory.getObject();
             return new PropertiesPropertySource(resource.getResource().getFilename(), properties);
         } catch (Exception e) {
-            log.error("Configuration resource ({}) can't be loaded", resource.getResource().getURI());
+//            log.error("Configuration resource ({}) can't be loaded", resource.getResource().getURI());
             throw new GeneralException(ErrorCode.FILE_NOT_FOUND, e);
         }
     }
