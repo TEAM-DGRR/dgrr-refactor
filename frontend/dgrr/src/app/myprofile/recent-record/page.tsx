@@ -18,6 +18,7 @@ const RecentRecord = () => {
     setModalStatus(true);
   };
   const closeModal = () => {
+    playsound();
     setModalStatus(false);
     setSelectedItemIndex(0);
   };
@@ -77,14 +78,14 @@ const RecentRecord = () => {
       <div className='px-4 pt-2'>
         {myInfo.gameHistoryList.map((item, index) => (
           <div key={index}>
-            {item.gameResult === 'WIN' ? (
+            {item.gameResult === 'WIN' && item.highlightImage ? (
               <div
                 onClick={() => openModal(index)}
                 className='cursor-hover hover:bg-blue-200 hover:rounded-lg'
               >
                 <RecentRecordItem pageType='RECENT-RECORD' item={item} />
               </div>
-            ) : item.gameResult === 'LOSE' ? (
+            ) : item.gameResult === 'LOSE' && item.highlightImage ? (
               <div
                 onClick={() => openModal(index)}
                 className='cursor-hover hover:bg-red-200 hover:rounded-lg'
