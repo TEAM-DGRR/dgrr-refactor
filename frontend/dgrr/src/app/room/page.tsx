@@ -28,10 +28,7 @@ const RoomPage = () => {
   const { DESTINATION_URI } = stompConfig;
   const { GAME_URI } = DESTINATION_URI;
   const value = readyState ? '취소하기' : '준비하기';
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef(null);
   const enemy = useAppSelector((state) => state.room.roomInfo[1]?.waitingMember);
-  const [userStream, setUserStream] = useState<MediaStream | null>(null);
 
   const subscribeRoom = () => {
     client?.subscribe(READY_SUB_URI, (message) => {
@@ -53,12 +50,7 @@ const RoomPage = () => {
     });
     client?.subscribe(GAME_URI, (message) => {
       // console.log('게임정보 받는 메세지: ', message.body);
-      const tracks = userStream?.getTracks();
-      if (tracks) {
-        tracks.forEach((track) => {
-          track.stop();
-        });
-      }
+
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
@@ -100,23 +92,29 @@ const RoomPage = () => {
     if (memberId) {
       setMemberId(memberId);
     }
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        setUserStream(stream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      })
-      .catch((err) => console.log('웹캠 에러:', err));
   }, [client, memberId, owner]);
 
   return (
     <div className='w-screen h-screen max-w-[500px] min-h-[565px] bg-black relative'>
       <Header headerType='WAITING' roomCode={roomcode} />
-      <div className='userVideo mx-3'>
-        <video ref={videoRef} className='object-none h-full mx-auto' autoPlay muted />
-        <canvas ref={canvasRef} width='640' height='480' style={{ display: 'none' }} />
+      <div className='userVideo mb-3 mx-3'>
+        {enemy ? (
+          <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
+            <img
+              src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
+              alt='상대프로필'
+              className='w-40 h-40 rounded-full border border-black'
+            />
+            <p className='font-bold text-2xl mt-6'>
+              {owner.waitingMemberId === memberId ? enemy.nickname : owner.nickname}
+            </p>
+          </div>
+        ) : (
+          <div className='bg-white grid place-items-center w-full h-full mx-auto max-w-[412px]'>
+            <Image src={character} alt='식빵' className='w-40 h-40 animate-spin' />
+            <p className='font-bold text-2xl mt-6'>상대를 기다리는 중입니다</p>
+          </div>
+        )}
       </div>
       <div className='absolute left-1/2 -ml-8'>
         {enemy ? (
@@ -138,24 +136,15 @@ const RoomPage = () => {
           ''
         )}
       </div>
-      <div className='userVideo mt-3 mx-3'>
-        {enemy ? (
-          <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
-            <img
-              src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
-              alt='상대프로필'
-              className='w-40 h-40 rounded-full border border-black'
-            />
-            <p className='font-bold text-2xl mt-6'>
-              {owner.waitingMemberId === memberId ? enemy.nickname : owner.nickname}
-            </p>
-          </div>
-        ) : (
-          <div className='bg-white grid place-items-center w-full h-full mx-auto max-w-[412px]'>
-            <Image src={character} alt='식빵' className='w-40 h-40 animate-spin' />
-            <p className='font-bold text-2xl mt-6'>상대를 기다리는 중입니다</p>
-          </div>
-        )}
+      <div className='userVideo bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
+        <img
+          src={owner.waitingMemberId === memberId ? owner.profileImage : enemy.profileImage}
+          alt='내 이미지'
+          className='w-40 h-40 rounded-full border border-black'
+        />
+        <p className='font-bold text-2xl mt-6'>
+          {owner.waitingMemberId === memberId ? owner.nickname : enemy.nickname}
+        </p>
       </div>
     </div>
   );
