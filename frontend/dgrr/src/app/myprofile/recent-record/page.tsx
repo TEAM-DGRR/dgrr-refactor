@@ -6,6 +6,7 @@ import RecentRecordItem from '@/components/elements/RecentRecordItem';
 import { useEffect, useState } from 'react';
 import { getMyInfoApi } from '@/apis/myProfileApi';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
+import axios from 'axios';
 
 const RecentRecord = () => {
   const [modalStatus, setModalStatus] = useState(false);
@@ -56,6 +57,7 @@ const RecentRecord = () => {
   });
 
   useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
     const fetchData = async () => {
       try {
         const response = await getMyInfoApi();
