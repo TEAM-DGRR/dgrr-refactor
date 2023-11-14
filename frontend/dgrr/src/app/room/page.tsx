@@ -138,7 +138,7 @@ const RoomPage = () => {
       </div>
       <div className='userVideo bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
         <img
-          src={owner.waitingMemberId === memberId && owner.profileImage}
+          src={owner.waitingMemberId === memberId ? owner.profileImage : ''}
           alt='내 이미지'
           className='w-40 h-40 rounded-full border border-black'
         />

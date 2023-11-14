@@ -68,7 +68,7 @@ const PlayPage = () => {
         if (turn === 'SECOND') {
           // 표정 분석 결과
           // console.log('캡쳐 시작해줘');
-          intervalId = setInterval(() => captureAndSend(1), 1000);
+          intervalId = setInterval(() => captureAndSend(1), 100);
         }
       }
     });
@@ -140,7 +140,7 @@ const PlayPage = () => {
         if (turn === 'FIRST') {
           // 표정 분석 결과
           // console.log('캡쳐 시작해줘');
-          intervalId = setInterval(() => captureAndSend(2), 1000);
+          intervalId = setInterval(() => captureAndSend(2), 100);
         }
       }
     });
