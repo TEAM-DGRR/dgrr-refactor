@@ -281,7 +281,7 @@ const PlayPage = () => {
     <div className='w-screen h-screen max-w-[500px] min-h-[565px] bg-black'>
       <Header headerType='GAME' />
       {modalOpen && <GameStateModal when={when} gameState={turn} />}
-      <div className='relative'>
+      <div className='relative userVideo'>
         <Image
           src={
             round === 'first'
@@ -303,7 +303,7 @@ const PlayPage = () => {
           className={`w-4 h-4 rounded-full ml-3 ${recognition ? 'bg-green-500' : 'bg-red-600'}`}
         ></div>
       </div>
-      <div className='relative'>
+      <div className='relative userVideo'>
         {!modalOpen && (
           <Image
             src={

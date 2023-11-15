@@ -34,7 +34,8 @@ body {
 
 .userVideo {
   height: calc((100% - 84px) / 2);
-  /* object-fit: fill; */
+  width: 100%;
+  object-fit: fill;
 }
 
 ::-webkit-scrollbar {
