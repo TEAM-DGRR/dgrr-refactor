@@ -9,10 +9,11 @@ import { FindRoomModal } from './FindRoomModal';
 import { useEffect, useState } from 'react';
 import { Client, StompHeaders } from '@stomp/stompjs';
 import { useDispatch } from 'react-redux';
-import { createClient } from '@/store/gameSlice';
+import { createClient, saveOrigin } from '@/store/gameSlice';
 import axios from 'axios';
 import { saveRoomCode } from '@/store/roomSlice';
 import { useRouter } from 'next/navigation';
+import Toast from '@/components/elements/Toast';
 
 const ListPage = () => {
   const gameList = [
@@ -37,17 +38,17 @@ const ListPage = () => {
       connectHeaders: {
         ...headers,
       },
-      debug: (message) => {
-        console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
-      },
+      // debug: (message) => {
+      //   console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
+      // },
     });
 
     // 클라이언트 활성화
     client.activate();
 
     client.onConnect = (frame) => {
-      console.log('연결');
-      console.log(client);
+      // console.log('연결');
+      // console.log(client);
       // redux에 client 저장
       dispatch(createClient(client));
     };
@@ -59,19 +60,20 @@ const ListPage = () => {
       connectHeaders: {
         ...headers,
       },
-      debug: (message) => {
-        console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
-      },
+      // debug: (message) => {
+      //   console.log('[Stomp Debug :: message]', message); // 웹소켓 디버깅 로그 추가
+      // },
     });
 
     // 클라이언트 활성화
     client.activate();
 
     client.onConnect = (frame) => {
-      console.log('연결');
-      console.log(client);
+      // console.log('연결');
+      // console.log(client);
       // redux에 client 저장
       dispatch(createClient(client));
+      dispatch(saveOrigin('room'));
     };
 
     if (client) {
@@ -94,8 +96,23 @@ const ListPage = () => {
   const joinRoom = () => {
     setIsModal(!isModal);
     connectStomp({ Authorization: memberId });
+    dispatch(saveOrigin('room'));
   };
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const memberId = localStorage.getItem('memberId');
     if (memberId) {
       setMemberId(memberId);

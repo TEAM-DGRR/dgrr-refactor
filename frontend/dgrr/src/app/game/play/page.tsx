@@ -13,6 +13,7 @@ import ProbabilityGauge from './probabilityGauge';
 import attackImg from '@/../public/images/match-attack.png';
 import defenseImg from '@/../public/images/match-defense.png';
 import Image from 'next/image';
+import Toast from '@/components/elements/Toast';
 
 const PlayPage = () => {
   const client = useAppSelector((state) => state.game.client);
@@ -54,25 +55,25 @@ const PlayPage = () => {
   // 1라운드 관련 구독
   const subscribeFirstGame = () => {
     client?.subscribe(FIRST_ROUND_GO_URI, (message) => {
-      console.log('1라운드 메세지: ', message.body);
+      // console.log('1라운드 메세지: ', message.body);
       if (message.body == 'START') {
-        console.log('1라운드 시작');
+        // console.log('1라운드 시작');
         setWhen('ROUND');
         client?.subscribe(STATUS_URI, (message) => {
           const imageResult: IImageResult = JSON.parse(message.body);
-          console.log('표정인식 결과: ', imageResult);
+          // console.log('표정인식 결과: ', imageResult);
           setRecognition(imageResult.success);
           setSmileProbability(imageResult.smileProbability);
         });
         if (turn === 'SECOND') {
           // 표정 분석 결과
-          console.log('캡쳐 시작해줘');
-          intervalId = setInterval(() => captureAndSend(1), 1000);
+          // console.log('캡쳐 시작해줘');
+          intervalId = setInterval(() => captureAndSend(1), 100);
         }
       }
     });
     client?.subscribe(FIRST_ROUND_NO_LAUGH_URI, (message) => {
-      console.log('1라운드 결과: ', message.body);
+      // console.log('1라운드 결과: ', message.body);
       if (message) {
         dispatch(saveRoundResult('NO_LAUGH'));
         setModalOpen(true);
@@ -89,7 +90,7 @@ const PlayPage = () => {
       }
     });
     client?.subscribe(FIRST_ROUND_LAUGH_URI, (message) => {
-      console.log('1라운드 결과: ', message.body);
+      // console.log('1라운드 결과: ', message.body);
       dispatch(saveRoundResult(message.body));
       setModalOpen(true);
       if (turn === 'SECOND') {
@@ -110,7 +111,7 @@ const PlayPage = () => {
 
     // 게임 결과
     client?.subscribe(RESULT_URI, (message) => {
-      console.log(message.body);
+      // console.log(message.body);
       if (message.body) {
         dispatch(saveGameResult(JSON.parse(message.body)));
         client.deactivate();
@@ -121,7 +122,7 @@ const PlayPage = () => {
 
     // 상대 탈주 정보
     client?.subscribe(ENEMY_LEFT_URI, (message) => {
-      console.log('상대 나감: ', message.body);
+      // console.log('상대 나감: ', message.body);
       dispatch(saveGameResult(JSON.parse(message.body)));
       client.deactivate();
       disconnectWs();
@@ -133,18 +134,18 @@ const PlayPage = () => {
   // 2라운드 관련 구독
   const subscribeSecondGame = () => {
     client?.subscribe(SECOND_ROUND_GO_URI, (message) => {
-      console.log('2라운드 메세지: ', message.body);
+      // console.log('2라운드 메세지: ', message.body);
       if (message.body == 'START') {
-        console.log('2라운드 시작');
+        // console.log('2라운드 시작');
         if (turn === 'FIRST') {
           // 표정 분석 결과
-          console.log('캡쳐 시작해줘');
-          intervalId = setInterval(() => captureAndSend(2), 1000);
+          // console.log('캡쳐 시작해줘');
+          intervalId = setInterval(() => captureAndSend(2), 100);
         }
       }
     });
     client?.subscribe(SECOND_ROUND_NO_LAUGH_URI, (message) => {
-      console.log('2라운드 결과: ', message.body);
+      // console.log('2라운드 결과: ', message.body);
       setWhen('END');
       clearInterval(intervalId);
       setModalOpen(true);
@@ -154,7 +155,7 @@ const PlayPage = () => {
       }, 1000);
     });
     client?.subscribe(SECOND_ROUND_LAUGH_URI, (message) => {
-      console.log('2라운드 결과: ', message.body);
+      // console.log('2라운드 결과: ', message.body);
       setWhen('END');
       clearInterval(intervalId);
       gameEnd();
@@ -169,8 +170,8 @@ const PlayPage = () => {
   // 1라운드 시작
   const firstRoundStart = () => {
     if (client) {
-      console.log('1라운드 시작한다고 메세지 보낼거임');
-      console.log(gameRoomID);
+      // console.log('1라운드 시작한다고 메세지 보낼거임');
+      // console.log(gameRoomID);
       publishMessage(client, FIRST_ROUND_START_URI, gameRoomID);
       dispatch(saveRound('first'));
     }
@@ -179,7 +180,7 @@ const PlayPage = () => {
   // 2라운드 시작
   const secondRoundStart = () => {
     if (client) {
-      console.log('2라운드 시작한다고 메세지 보낼거임');
+      // console.log('2라운드 시작한다고 메세지 보낼거임');
       publishMessage(client, SECOND_ROUND_START_URI, gameRoomID);
     }
   };
@@ -187,7 +188,7 @@ const PlayPage = () => {
   // 게임 종료
   const gameEnd = () => {
     if (client) {
-      console.log('게임 종료 메세지 보낼거임');
+      // console.log('게임 종료 메세지 보낼거임');
       publishMessage(client, END_URI, gameRoomID);
     }
   };
@@ -196,7 +197,7 @@ const PlayPage = () => {
   const disconnectWs = () => {
     if (ws) {
       ws.close();
-      console.log('연결 해제');
+      // console.log('연결 해제');
     }
   };
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -211,6 +212,8 @@ const PlayPage = () => {
     if (publisher && canvasRef.current) {
       const videoElement = publisher.videos[0].video;
       const canvas = canvasRef.current;
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
       const ctx = canvas.getContext('2d');
 
       // Canvas에 비디오 화면 그리기
@@ -249,8 +252,22 @@ const PlayPage = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const alertTimeout = setTimeout(() => {
-      console.log(turn);
+      // console.log(turn);
       setModalOpen(false);
       subscribeFirstGame();
     }, 2000);
@@ -267,7 +284,7 @@ const PlayPage = () => {
       <div className='relative userVideo'>
         <Image
           src={
-            round === 'FIRST'
+            round === 'first'
               ? turn === 'FIRST'
                 ? defenseImg
                 : attackImg
@@ -276,7 +293,7 @@ const PlayPage = () => {
               : defenseImg
           }
           alt='공격상태'
-          className='w-10 h-10 rounded-full bg-white absolute left-6 top-3'
+          className='w-10 h-10 rounded-full bg-white absolute left-6 top-3 z-1'
         />
         <UserVideoComponent streamManager={subscriber} />
       </div>
@@ -287,19 +304,21 @@ const PlayPage = () => {
         ></div>
       </div>
       <div className='relative userVideo'>
-        <Image
-          src={
-            round === 'FIRST'
-              ? turn === 'FIRST'
-                ? attackImg
-                : defenseImg
-              : turn === 'FIRST'
-              ? defenseImg
-              : attackImg
-          }
-          alt='공격상태'
-          className='w-10 h-10 rounded-full bg-white absolute left-6 top-3'
-        />
+        {!modalOpen && (
+          <Image
+            src={
+              round === 'first'
+                ? turn === 'FIRST'
+                  ? attackImg
+                  : defenseImg
+                : turn === 'FIRST'
+                ? defenseImg
+                : attackImg
+            }
+            alt='공격상태'
+            className='w-10 h-10 rounded-full bg-white absolute left-6 top-3 z-10'
+          />
+        )}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <canvas ref={canvasRef} width='640' height='480' style={{ display: 'none' }} />

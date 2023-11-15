@@ -1,7 +1,7 @@
 'use client';
 import { publishMessage } from '@/components/Game/stomp';
 import { useAppSelector } from '@/store/hooks';
-import { saveRoomInfo } from '@/store/roomSlice';
+import { saveRoomCode, saveRoomInfo } from '@/store/roomSlice';
 import { roomStompConfig } from '@/types/room';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
@@ -27,8 +27,9 @@ export const FindRoomModal = ({ handleModal }: FindModalProps) => {
     if (client) {
       client.subscribe(ENTER_SUB_URI, (message) => {
         const content = JSON.parse(message.body);
-        console.log('방 정보: ', content);
+        // console.log('방 정보: ', content);
         dispatch(saveRoomInfo(content));
+        dispatch(saveRoomCode(content[0].roomId));
         router.push('/room');
       });
       publishMessage(client, ENTER_SEND_URI, roomCode);
@@ -54,7 +55,9 @@ export const FindRoomModal = ({ handleModal }: FindModalProps) => {
             />
           </label>
           <div className='grid place-items-center'>
-            <button className='bg-main-blue text-white rounded-lg py-2 px-4 w-fit cursor-hover'>확인</button>
+            <button className='bg-main-blue text-white rounded-lg py-2 px-4 w-fit cursor-hover'>
+              확인
+            </button>
           </div>
         </form>
       </div>

@@ -9,6 +9,8 @@ import { UpdateMyInfoProps, getMyInfoApi, updateMyInfoApi } from '@/apis/myProfi
 import { setUrl } from '@/utils/setUrl';
 import axios from 'axios';
 import ButtonClickAudio from '@/components/audio/ButtonClickAudio';
+import Toast from '@/components/elements/Toast';
+import { useRouter } from 'next/navigation';
 
 type UploadImg = {
   file: File | { buffer: Buffer; size: number; type: string };
@@ -17,6 +19,8 @@ type UploadImg = {
 };
 
 const Edit = () => {
+  const router = useRouter();
+
   const playsound = ButtonClickAudio();
   // 수정하기 전, 원래 닉네임
   const [myNickName, setMyNickname] = useState('');
@@ -37,6 +41,20 @@ const Edit = () => {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     const fetchData = async () => {
       try {
         const response = await getMyInfoApi();
@@ -113,9 +131,23 @@ const Edit = () => {
           });
         })
         .catch((err: any) => {
-          console.log(err);
+          bigFileModal();
         });
     }
+  };
+
+  // 크거나 이상한 파일 올리면 모달 뜸
+  const bigFileModal = () => {
+    Swal.fire({
+      width: 400,
+      title: `파일이 크거나 형식에 맞지 않아요😥`,
+      icon: 'error',
+      confirmButtonColor: '#469FF6',
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-confirm-button',
+      },
+    });
   };
 
   // 닉네임이 중복되었거나 없을 때, 모달 뜸
@@ -227,52 +259,55 @@ const Edit = () => {
   };
 
   return (
-    <div className='w-screen max-w-[500px]'>
-      <Header headerType='OTHER'>프로필 수정</Header>
+    <div className="w-screen max-w-[500px]">
+      <Header headerType="OTHER">프로필 수정</Header>
       <div>
         <ImageInput myProfileImage={nowProfileImage?.thumbnail} profileImageUpdate={uploadImg} />
-        <div className='px-6 mb-7 '>
-          <div className='mb-2 font-semibold'>닉네임</div>
+        <div className="px-6 mb-7 ">
+          <div className="mb-2 font-semibold">닉네임</div>
 
           <div>
-            <div className='text-xs text-[#767676] mb-[10px]'>
+            <div className="text-xs text-[#767676] mb-[10px]">
               한글/영어/숫자 최소 2자~최대 12자 가능
             </div>
-            <div className='flex'>
+            <div className="flex">
               <input
-                type='text'
+                type="text"
                 value={nowNickname}
                 onChange={handleNicknameChange}
                 minLength={2}
                 maxLength={12}
-                className='bg-[#F4F4F6] w-full text-xs p-4 rounded-lg focus:outline-none focus:ring focus:ring-main-blue'
+                className="bg-[#F4F4F6] w-full text-xs p-4 rounded-lg focus:outline-none focus:ring focus:ring-main-blue"
               />
-              <span onClick={checkNickname} className='min-w-fit ml-3 pl-2 pr-2 cursor-hover flex items-center bg-gray-300 rounded-lg hover:brightness-110'>
-                <div className='text-black text-center text-sm font-bold'>중복 확인</div>
+              <span
+                onClick={checkNickname}
+                className="min-w-fit ml-3 pl-2 pr-2 cursor-hover flex items-center bg-gray-300 rounded-lg hover:brightness-110"
+              >
+                <div className="text-black text-center text-sm font-bold">중복 확인</div>
               </span>
             </div>
           </div>
 
           {/* 닉네임이 중복되면 경고 문구 뜸 */}
           {nicknameExists === true ? (
-            <div className='text-xs h-4 pt-2 ms-1 text-red-500'>이미 존재하는 닉네임입니다</div>
+            <div className="text-xs h-4 pt-2 ms-1 text-red-500">이미 존재하는 닉네임입니다</div>
           ) : (
-            <div className='text-xs h-4 pt-2'></div>
+            <div className="text-xs h-4 pt-2"></div>
           )}
         </div>
         <DataInput
-          inputType='DESCRIPTION'
-          pageType='PROFILE_EDIT'
+          inputType="DESCRIPTION"
+          pageType="PROFILE_EDIT"
           onChange={handleDescirptChange}
           value={nowDescription}
         />
       </div>
-      <div className='px-6'>
+      <div className="px-6">
         <div
           onClick={handleSaveButton}
-          className='bg-main-blue rounded-lg w-full max-w-[500px] p-4 hover:brightness-110'
+          className="bg-main-blue rounded-lg w-full max-w-[500px] p-4 hover:brightness-110"
         >
-          <div className='text-white text-center text-base font-bold cursor-hover uppercase leading-none'>
+          <div className="text-white text-center text-base font-bold cursor-hover uppercase leading-none">
             저장
           </div>
         </div>

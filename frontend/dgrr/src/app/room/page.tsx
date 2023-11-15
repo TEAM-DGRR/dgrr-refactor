@@ -28,27 +28,29 @@ const RoomPage = () => {
   const { DESTINATION_URI } = stompConfig;
   const { GAME_URI } = DESTINATION_URI;
   const value = readyState ? '취소하기' : '준비하기';
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef(null);
   const enemy = useAppSelector((state) => state.room.roomInfo[1]?.waitingMember);
 
   const subscribeRoom = () => {
     client?.subscribe(READY_SUB_URI, (message) => {
       const content = JSON.parse(message.body);
-      console.log('준비상황: ', content);
+      // console.log('준비상황: ', content);
       dispatch(setReady(content.waitingMember.ready));
     });
     client?.subscribe(EXIT_SUB_URI, (message) => {
-      console.log('나갔음: ', message.body);
-      if (owner.waitingMemberId !== memberId) {
+      // console.log('나갔음: ', message.body);
+      const content = JSON.parse(message.body);
+      if (owner.waitingMemberId == content.waitingMember.waitingMemberId) {
         Toast.fire({
           html: '방장이 방을 나가<br>권한이 위임되었습니다.',
         });
+      } else {
+        Toast.fire('상대가 방을 나갔습니다');
       }
-      dispatch(deleteMember(JSON.parse(message.body)));
+      dispatch(deleteMember(content));
     });
     client?.subscribe(GAME_URI, (message) => {
-      console.log('게임정보 받는 메세지: ', message.body);
+      // console.log('게임정보 받는 메세지: ', message.body);
+
       // 게임 정보 저장
       dispatch(saveGameInfo(JSON.parse(message.body)));
       // 게임 정보가 왔다면 매칭 페이지로 이동
@@ -69,6 +71,20 @@ const RoomPage = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const parseJwt = (token: any) => {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+      };
+      const id = parseJwt(token).id;
+      localStorage.setItem('memberId', id);
+    } else {
+      Toast.fire('로그인이 필요합니다!', '', 'warning');
+      // 토큰 없으면 로그인 화면으로 보내기
+      router.push('/');
+    }
     if (client) {
       subscribeRoom();
     }
@@ -76,22 +92,29 @@ const RoomPage = () => {
     if (memberId) {
       setMemberId(memberId);
     }
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      })
-      .catch((err) => console.log('웹캠 에러:', err));
   }, [client, memberId, owner]);
 
   return (
     <div className='w-screen h-screen max-w-[500px] min-h-[565px] bg-black relative'>
       <Header headerType='WAITING' roomCode={roomcode} />
-      <div className='userVideo mx-3'>
-        <video ref={videoRef} className='object-none h-full mx-auto' autoPlay muted />
-        <canvas ref={canvasRef} width='640' height='480' style={{ display: 'none' }} />
+      <div className='userVideo mb-3 mx-3'>
+        {enemy ? (
+          <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
+            <img
+              src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
+              alt='상대프로필'
+              className='w-40 h-40 rounded-full border border-black'
+            />
+            <p className='font-bold text-2xl mt-6'>
+              {owner.waitingMemberId === memberId ? enemy.nickname : owner.nickname}
+            </p>
+          </div>
+        ) : (
+          <div className='bg-white grid place-items-center w-full h-full mx-auto max-w-[412px]'>
+            <Image src={character} alt='식빵' className='w-40 h-40 animate-spin' />
+            <p className='font-bold text-2xl mt-6'>상대를 기다리는 중입니다</p>
+          </div>
+        )}
       </div>
       <div className='absolute left-1/2 -ml-8'>
         {enemy ? (
@@ -113,24 +136,28 @@ const RoomPage = () => {
           ''
         )}
       </div>
-      <div className='userVideo mt-3 mx-3'>
+      <div className='userVideo mb-3 mx-3'>
         {enemy ? (
           <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
             <img
-              src={owner.waitingMemberId === memberId ? enemy.profileImage : owner.profileImage}
+              src={owner.waitingMemberId === memberId ? owner.profileImage : enemy.profileImage}
               alt='상대프로필'
-              width={160}
-              height={160}
-              className='rounded-full border border-black'
+              className='w-40 h-40 rounded-full border border-black'
             />
             <p className='font-bold text-2xl mt-6'>
-              {owner.waitingMemberId === memberId ? enemy.nickname : owner.nickname}
+              {owner.waitingMemberId === memberId ? owner.nickname : enemy.nickname}
             </p>
           </div>
         ) : (
-          <div className='bg-white grid place-items-center w-full h-full mx-auto max-w-[412px]'>
-            <Image src={character} alt='식빵' className='w-40 h-40 animate-spin' />
-            <p className='font-bold text-2xl mt-6'>상대를 기다리는 중입니다</p>
+          <div className='bg-white grid place-items-center h-full mx-auto w-full max-w-[412px]'>
+            <img
+              src={owner.waitingMemberId === memberId ? owner.profileImage : ''}
+              alt='상대프로필'
+              className='w-40 h-40 rounded-full border border-black'
+            />
+            <p className='font-bold text-2xl mt-6'>
+              {owner.waitingMemberId === memberId && owner.nickname}
+            </p>
           </div>
         )}
       </div>

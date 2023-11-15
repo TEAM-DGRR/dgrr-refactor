@@ -25,6 +25,7 @@ const initialState: GameType = {
   OVsession: undefined,
   OV: undefined,
   round: '',
+  origin: '',
 };
 
 const gameSlice = createSlice({
@@ -35,7 +36,7 @@ const gameSlice = createSlice({
       return initialState;
     },
     saveGameInfo: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       const newGameInfo = action.payload;
       state.gameInfo = newGameInfo;
     },
@@ -44,35 +45,38 @@ const gameSlice = createSlice({
       state.client = action.payload;
     },
     saveGameResult: (state, action) => {
-      console.log('총 결과: ', action.payload);
+      // console.log('총 결과: ', action.payload);
       state.gameResult = action.payload;
     },
     savePublisher: (state, action) => {
-      console.log('퍼블리셔 오나요?', action.payload);
+      // console.log('퍼블리셔 오나요?', action.payload);
       state.publisher = action.payload;
     },
     saveSubscriber: (state, action) => {
-      console.log('섭스도 오나요?', action.payload);
+      // console.log('섭스도 오나요?', action.payload);
       state.subscriber = action.payload;
     },
     saveWebsocket: (state, action) => {
-      console.log('웹소켓 오나요?', action.payload);
+      // console.log('웹소켓 오나요?', action.payload);
       state.websocket = action.payload;
     },
     saveRoundResult: (state, action) => {
-      console.log('게임 결과 왜 안옴?: ', action.payload);
+      // console.log('게임 결과 왜 안옴?: ', action.payload);
       state.roundResult = action.payload;
     },
     saveOVSession: (state, action) => {
-      console.log('OVsession 저장', action.payload);
+      // console.log('OVsession 저장', action.payload);
       state.OVsession = action.payload;
     },
     saveOV: (state, action) => {
-      console.log('OV 저장', action.payload);
+      // console.log('OV 저장', action.payload);
       state.OV = action.payload;
     },
     saveRound: (state, action) => {
       state.round = action.payload;
+    },
+    saveOrigin: (state, action) => {
+      state.origin = action.payload;
     },
   },
 });
@@ -90,4 +94,5 @@ export const {
   saveOVSession,
   saveOV,
   saveRound,
+  saveOrigin,
 } = gameSlice.actions;

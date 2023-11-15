@@ -22,7 +22,7 @@ export const UserVideoComponent = forwardRef<ChildMethods, IUserVideoComponent>(
 
     return (
       <div className='h-full w-full px-3'>
-        <video autoPlay={true} ref={videoRef} className='h-full object-cover mx-auto' />
+        <video autoPlay={true} ref={videoRef} className='w-full h-full object-cover mx-auto' />
       </div>
     );
   }

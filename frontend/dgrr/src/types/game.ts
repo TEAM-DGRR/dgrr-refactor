@@ -12,6 +12,7 @@ export type GameType = {
   OVsession: Session | undefined;
   OV: OpenVidu | undefined;
   round: string;
+  origin: string;
 };
 
 export interface IGameConfig {
