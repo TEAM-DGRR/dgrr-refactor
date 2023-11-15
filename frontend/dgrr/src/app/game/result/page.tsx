@@ -55,10 +55,8 @@ const Result = () => {
   };
 
   const clickGoToMain = () => {
-    dispatch(reset());
+    router.push('/main');
     playsound();
-    const newPathname = '/main';
-    window.location.href = newPathname;
   };
 
   const dispatch = useDispatch();
