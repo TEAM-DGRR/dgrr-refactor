@@ -67,7 +67,7 @@ const Ranking = () => {
   }, [currentSeason]);
 
   return (
-    <div className='w-screen max-w-[500px]'>
+    <div className='w-screen max-w-[500px] min-w-[270px]'>
       <Header headerType='OTHER'>랭킹 조회</Header>
       {currentSeason === true ? (
         <div className='flex justify-center mt-3 mb-8'>

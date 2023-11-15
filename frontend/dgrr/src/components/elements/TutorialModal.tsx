@@ -23,13 +23,13 @@ export const TutorialModal = ({ onClose }: { onClose: () => void }) => {
       onClick={onClose}
     >
       <div
-        className='w-4/5 h-fit max-h-[600px] overflow-scroll bg-white rounded-lg border-2 border-black px-4 pb-4 overflow-x-hidden'
+        className='w-4/5 3sm:w-[330px] h-fit max-h-[600px] overflow-scroll bg-white rounded-lg border-2 border-black px-4 pb-4 overflow-x-hidden'
         onClick={modalInClick}
       >
         <div className='flex justify-between sticky top-0 bg-white pt-4'>
           <p className='w-8'></p>
           <p className='font-bold text-2xl'>튜토리얼</p>
-          <button className='cursor-hover'>
+          <button className='cursor-hover hover:text-[#E83F57]'>
             <IoCloseOutline onClick={onClose} fontSize={'32px'} />
           </button>
         </div>
@@ -55,7 +55,7 @@ export const TutorialModal = ({ onClose }: { onClose: () => void }) => {
               <IoChevronForward fontSize={'30px'} />
             </div>
           </div>
-          <img className='' alt='튜토리얼 이미지' src={`/images/tutorial_${currentImage}.png`} />
+          <img className='flex justify-center 3sm:max-h-[470px] 3sm:w-[320px]' alt='튜토리얼 이미지' src={`/images/tutorial_${currentImage}.png`} />
           <br />
         </div>
       </div>

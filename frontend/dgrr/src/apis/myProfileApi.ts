@@ -53,7 +53,6 @@ export const getGameHistoryApi = async () => {
   return res.data;
 };
 
-
 export const updateMyInfoApi = async (props: UpdateMyInfoProps) => {
   const res = await axios.put<MemberProps>(`${apiUrl}`, props);
   return res.data;

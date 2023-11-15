@@ -3,6 +3,8 @@ import axios from 'axios';
 import { setUrl } from '../../utils/setUrl';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
+import character from '@/../../public/images/floating_bread_cropped.gif';
 
 const AuthPage = () => {
   const searchParams = useSearchParams();
@@ -37,7 +39,20 @@ const AuthPage = () => {
   useEffect(() => {
     onClick();
   }, [searchParams]);
-  return <div>로그인 중...</div>;
+  return (
+    <div className='bg-main-blue w-screen h-screen max-w-[500px] pt-32'>
+      <div className='flex flex-col justify-between'>
+        <div className='flex justify-center mb-10'>
+          <Image alt='캐릭터' src={character} />
+        </div>
+        <div className='flex justify-center font-bold text-xl text-white mt-5'>
+          로그인 중
+          <span className='animate-blink'>.</span>
+          <span className='animate-blink2'>.</span>.<span className='animate-blink3'>.</span>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AuthPage;

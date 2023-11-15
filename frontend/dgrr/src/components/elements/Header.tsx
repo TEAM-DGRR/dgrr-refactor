@@ -205,7 +205,7 @@ const Header = ({ headerType, roomCode, children }: HeaderProps) => {
       ) : headerType === 'MATCHING' ? (
         <div className='h-[60px] top-0 right-0 flex items-center'>
           <div className='flex gap-2 ms-2'>
-            <div onClick={exitMatching} className='cursor-hover hover:text-main-blue'>
+            <div onClick={exitMatching} className='cursor-hover hover:text-white'>
               <IoChevronBackOutline fontSize={'27px'} />
             </div>
             <div className='inline-block text-lg font-semibold'>{children}</div>
