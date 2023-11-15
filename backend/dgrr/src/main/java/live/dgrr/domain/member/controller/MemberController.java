@@ -29,21 +29,18 @@ public class MemberController {
 
     @GetMapping("/member-id")
     public ResponseEntity<MemberInfoResponse> getMyInfo (Authentication authentication) {
-        log.info("MemberController - getMyInfo");
         String memberId = authentication.getName();
         return new ResponseEntity<>(memberService.getMyInfo(memberId), HttpStatus.OK);
     }
 
     @GetMapping("/game-history/member-id")
     public ResponseEntity<List<GameHistoryWithOpponentInfoResponse>> getMyGameHistory(Authentication authentication) {
-        log.info("MemberController - getMyGameHistory");
         String memberId = authentication.getName();
         return new ResponseEntity<>(memberService.getMyGameHistory(memberId), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<Void> updateMember(Authentication authentication, @Valid @RequestBody MemberRequest memberRequest) {
-        log.info("MemberController - updateMember");
         String memberId = authentication.getName();
         memberService.updateByMember(memberId, memberRequest);
         return new ResponseEntity<>(HttpStatus.OK);

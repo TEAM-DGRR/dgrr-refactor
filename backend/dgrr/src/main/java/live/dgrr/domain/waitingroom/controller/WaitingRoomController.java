@@ -38,13 +38,11 @@ public class WaitingRoomController {
 
     @PostMapping
     public ResponseEntity<Integer> createWaitingRoom () {
-        log.info("WaitingRoomController - createWaitingRoom");
         return new ResponseEntity<>(waitingRoomService.createWaitingRoom(), HttpStatus.OK);
     }
 
     @MessageMapping("/room-enter")
     public void enterWaitingRoom (Principal principal, @Payload int roomId) {
-        log.info("WaitingRoomController - enterWaitingRoom by : {}, roomId : {}", principal.getName(), roomId);
 
         Member member = memberService.findMemberById(Long.parseLong(principal.getName()));
         List<WaitingMemberInfoResponseDto> waitingMemberInfoDtoList = waitingRoomService.enterWaitingRoom(roomId, member);
@@ -58,7 +56,6 @@ public class WaitingRoomController {
 
     @MessageMapping("/room-exit")
     public void exitWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - exitWaitingRoom by : {}", principal.getName());
 
         MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
         WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.exitWaitingRoom(memberRoomMapping.getRoomId(), principal.getName());
@@ -72,7 +69,6 @@ public class WaitingRoomController {
 
     @MessageMapping("/room-ready")
     public void readyWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - readyWaitingRoom by : {}", principal.getName());
 
         MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
         WaitingMemberInfoResponseDto waitingMemberInfoDto = waitingRoomService.readyWaitingRoom(memberRoomMapping.getRoomId(),principal.getName());
@@ -86,7 +82,6 @@ public class WaitingRoomController {
 
     @MessageMapping("/room-start")
     public void startWaitingRoom (Principal principal) {
-        log.info("WaitingRoomController - startWaitingRoom by : {}", principal.getName());
 
         MemberRoomMapping memberRoomMapping = memberRoomMappingService.findRoomIdByMemberId(Long.parseLong(principal.getName()));
         waitingRoomService.startWaitingRoom(memberRoomMapping.getRoomId(),principal.getName());

@@ -18,6 +18,7 @@ public class MatchingRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
     private static final String WAITING_MEMBERS_KEY = "waitingQueue";
+    private static final int MATCHING_RANGE = 150;
 
 
     public void addMember(String memberId, Double rating) {
@@ -35,8 +36,8 @@ public class MatchingRepository {
 
     public String findClosestRatingMember(double memberRating) {
         // 정의된 레이팅 범위. +/- 50 내에서 검색
-        double minRatingRange = memberRating - 50;
-        double maxRatingRange = memberRating + 50;
+        double minRatingRange = memberRating - MATCHING_RANGE;
+        double maxRatingRange = memberRating + MATCHING_RANGE;
 
         Set<String> closeRatingMembers = redisTemplate.opsForZSet().rangeByScore(WAITING_MEMBERS_KEY, minRatingRange, maxRatingRange);
 

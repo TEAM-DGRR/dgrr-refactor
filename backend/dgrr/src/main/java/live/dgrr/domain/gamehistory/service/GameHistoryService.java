@@ -34,4 +34,18 @@ public class GameHistoryService {
                 .build();
         gameHistoryRepository.save(history);
     }
+
+    public void leaveSave(GameRoom gameRoom, String gameRoomId, String memberId, GameResult gameResult, int ratingChange) {
+        Member member = memberRepository.findById(Long.parseLong(memberId))
+                .orElseThrow(() -> new GameException(ErrorCode.MEMBER_NOT_FOUND));
+
+        GameHistory history = GameHistory.builder()
+                .member(member)
+                .gameRoomId(gameRoomId)
+                .gameResult(gameResult)
+                .gameType(gameRoom.getGameType())
+                .ratingChange(ratingChange)
+                .build();
+        gameHistoryRepository.save(history);
+    }
 }
