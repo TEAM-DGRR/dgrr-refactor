@@ -23,7 +23,8 @@ interface RecentRecordItemProps {
 }
 
 const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
-  const itemHeight = pageType === 'RECENT-RECORD' ? 'h-[50px]' : 'h-[42px]';
+  const itemHeight = pageType === 'RECENT-RECORD' ? 'h-[59px]' : 'h-[44px]';
+  const itemWidth = pageType === 'RECENT-RECORD' ? 'min-w-[255px]' : 'min-w-[245px]';
   const borderColor =
     item.gameResult === 'WIN'
       ? 'border-[#5383E8]'
@@ -48,7 +49,7 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
   return (
     <div>
       <div
-        className={`flex ${itemHeight} min-w-[305px] mb-3 justify-between rounded-lg border-2 ${borderColor}`}
+        className={`flex ${itemHeight} ${itemWidth} mb-3 justify-between rounded-lg border-2 ${borderColor}`}
       >
         <div className='gap-x-[12px] flex items-center ms-2'>
           <div
@@ -72,11 +73,7 @@ const RecentRecordItem = ({ pageType, item }: RecentRecordItemProps) => {
         </div>
         <div className='flex items-center me-2'>
           {item.highlightImage !== null ? (
-            <div>
-              {pageType === 'RECENT-RECORD' ? (
-                <IoImageOutline fontSize={'24px'} />
-              ) : null}
-            </div>
+            <div>{pageType === 'RECENT-RECORD' ? <IoImageOutline fontSize={'24px'} /> : null}</div>
           ) : null}
           <div className='text-sm inline-block w-[69px] text-right'>
             {useTimeStamp(item.createdAt)}

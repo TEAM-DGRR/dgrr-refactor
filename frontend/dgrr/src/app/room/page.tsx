@@ -9,7 +9,7 @@ import { deleteMember, setReady } from '@/store/roomSlice';
 import { stompConfig } from '@/types/game';
 import { roomStompConfig } from '@/types/room';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import character from '@/../public/images/logo_character.png';
 import Image from 'next/image';

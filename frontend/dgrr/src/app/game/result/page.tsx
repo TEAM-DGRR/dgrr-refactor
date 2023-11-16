@@ -21,7 +21,7 @@ const Result = () => {
   const [memberId, setMemberId] = useState('');
   const gameResult = useAppSelector((state) => state.game.gameResult);
   const origin = useAppSelector((state) => state.game.origin);
-
+  const whiteBoxHeight = origin !== 'room' ? 'h-[575px]' : 'h-[515px]';
   const ratingProperty =
     gameResult.afterRating > gameResult.myInfo.rating
       ? {
@@ -108,7 +108,7 @@ const Result = () => {
 
   return (
     <div className='flex justify-center items-center bg-main-blue w-screen h-screen max-w-[500px]'>
-      <div className='bg-white w-11/12 min-w-[264px] h-[575px] rounded-[12px] py-5 px-3'>
+      <div className={`bg-white w-11/12 min-w-[264px] ${whiteBoxHeight} rounded-[12px] py-5 px-3`}>
         <div className='text-[40px] font-bold text-center flex justify-between'>
           <div className='inline-block w-1/6'></div>
           {gameResult.gameResult === 'LOSE' ? <div>LOSS</div> : <div>{gameResult.gameResult}</div>}

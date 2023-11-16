@@ -93,7 +93,7 @@ const MyProfile = () => {
   }, []);
 
   return (
-    <div className='w-screen max-w-[500px]'>
+    <div className='w-screen max-w-[500px] min-w-[297px]'>
       <Header headerType='PROFILE' />
       <div className='h-[220px] flex justify-center items-center'>
         <div>

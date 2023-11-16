@@ -51,11 +51,11 @@ const RommLoadingPage = () => {
   return (
     <div className='bg-main-blue w-screen h-screen min-h-[580px] max-w-[500px]'>
       <Header headerType='MATCHING' />
-      <div className='flex flex-col justify-between h-3/5 pt-10'>
+      <div className='flex flex-col justify-between pt-12'>
         <div className='flex justify-center mb-10'>
           <Image alt='캐릭터' src={character} />
         </div>
-        <div className='flex justify-center font-bold'>
+        <div className='flex justify-center font-bold text-white text-xl'>
           <h1>방 만드는 중</h1>
           <span className='animate-blink'>.</span>
           <span className='animate-blink2'>.</span>.<span className='animate-blink3'>.</span>
@@ -66,3 +66,4 @@ const RommLoadingPage = () => {
 };
 
 export default RommLoadingPage;
+
