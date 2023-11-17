@@ -1,0 +1,4 @@
+# value for redis
+ranking:
+  key: "ranking:season:"
+  season: 1
